@@ -2,7 +2,7 @@ package com.mailboom.api.application.usecase;
 
 import com.mailboom.api.domain.model.User;
 import com.mailboom.api.domain.model.valueobjects.*;
-import com.mailboom.api.domain.repository.UserRepository;
+import com.mailboom.api.infrastructure.persistence.adapter.UserRepositoryAdapter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.stereotype.Component;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Data
 @AllArgsConstructor
 public class CreateNewUserUseCase {
-    private final UserRepository userRepository;
+    private final UserRepositoryAdapter userRepository;
 
 
     public User execute(String email, String password, PlanType plan) {
