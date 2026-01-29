@@ -1,6 +1,6 @@
-package com.mailboom.api.domain;
+package com.mailboom.api.domain.entity;
 
-import com.mailboom.api.domain.valueobjects.*;
+import com.mailboom.api.domain.entity.valueobjects.*;
 import lombok.Getter;
 
 @Getter
@@ -39,5 +39,5 @@ public class User {
     public User resetMonthlyEmails() {
         return new User(id, email, password, plan, EmailCounter.zero());
     }
-    
+
 }
