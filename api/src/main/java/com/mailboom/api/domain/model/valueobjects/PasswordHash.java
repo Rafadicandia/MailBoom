@@ -16,4 +16,7 @@ public record PasswordHash(String hash) {
         return hash;
     }
 
+    public String value() {
+        return hash;
+    }
 }
