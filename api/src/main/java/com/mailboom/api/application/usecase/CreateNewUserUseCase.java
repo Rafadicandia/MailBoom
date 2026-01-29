@@ -1,7 +1,7 @@
 package com.mailboom.api.application.usecase;
 
-import com.mailboom.api.domain.entity.User;
-import com.mailboom.api.domain.entity.valueobjects.*;
+import com.mailboom.api.domain.model.User;
+import com.mailboom.api.domain.model.valueobjects.*;
 import com.mailboom.api.domain.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import lombok.Data;
