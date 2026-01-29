@@ -29,4 +29,7 @@ public record UserId(UUID userId) {
     }
 
 
+    public UUID value() {
+        return userId;
+    }
 }
