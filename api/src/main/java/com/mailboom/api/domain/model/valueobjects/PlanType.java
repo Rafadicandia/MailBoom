@@ -1,4 +1,4 @@
-package com.mailboom.api.domain.entity.valueobjects;
+package com.mailboom.api.domain.model.valueobjects;
 
 public enum PlanType {
     FREE(100, false),

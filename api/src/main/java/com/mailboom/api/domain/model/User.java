@@ -1,6 +1,6 @@
-package com.mailboom.api.domain.entity;
+package com.mailboom.api.domain.model;
 
-import com.mailboom.api.domain.entity.valueobjects.*;
+import com.mailboom.api.domain.model.valueobjects.*;
 import lombok.Getter;
 
 @Getter
