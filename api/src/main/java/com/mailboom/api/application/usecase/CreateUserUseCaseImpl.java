@@ -1,0 +1,33 @@
+package com.mailboom.api.application.usecase;
+
+import com.mailboom.api.application.exception.UserWithEmailAlreadyExistsException;
+import com.mailboom.api.application.port.in.CreateUserUseCase;
+import com.mailboom.api.application.usecase.command.CreateUserCommand;
+import com.mailboom.api.domain.model.User;
+import com.mailboom.api.domain.repository.UserRepository;
+import com.mailboom.api.domain.model.valueobjects.*;
+import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+@Service
+@AllArgsConstructor
+public class CreateUserUseCaseImpl implements CreateUserUseCase {
+
+    private final UserRepository userRepository;
+
+    @Override
+    @Transactional
+    public User execute(CreateUserCommand command) {
+        if (userRepository.existsByEmail(command.email())) {
+            throw new UserWithEmailAlreadyExistsException("User with email " + command.email() + " already exists");
+        }
+
+        UserId userId = UserId.generate();
+        Email userEmail = Email.fromString(command.email());
+        PasswordHash passwordHash = PasswordHash.fromString(command.password());
+
+        User newUser = User.create(userId, userEmail, passwordHash, command.plan(), EmailCounter.zero());
+        return userRepository.save(newUser);
+    }
+}
