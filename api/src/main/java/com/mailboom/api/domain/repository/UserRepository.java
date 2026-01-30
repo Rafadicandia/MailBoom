@@ -10,7 +10,7 @@ public interface UserRepository {
     
     boolean existsByEmail(String email);
     
-    User findByEmail(String email);
+    User findByEmail(String email) throws Exception;
     
     void delete(UserId id);
     
