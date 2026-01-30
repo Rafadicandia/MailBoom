@@ -1,8 +1,9 @@
 package com.mailboom.api.infrastructure.persistence.adapter;
 
 import com.mailboom.api.domain.model.User;
-import com.mailboom.api.domain.repository.UserRepository;
 import com.mailboom.api.domain.model.valueobjects.UserId;
+import com.mailboom.api.domain.repository.UserRepository;
+import com.mailboom.api.infrastructure.exception.EmailNotFoundException;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.UserEntity;
 import com.mailboom.api.infrastructure.persistence.jpa.mapper.UserMapper;
 import com.mailboom.api.infrastructure.persistence.jpa.repository.SpringDataUserRepository;
@@ -42,6 +43,9 @@ public class UserRepositoryAdapter implements UserRepository {
 
     @Override
     public User findByEmail(String email) {
+        if (!jpaRepository.existsByEmail(email)) {
+            throw new EmailNotFoundException("Email not found");
+        }
         return jpaRepository.findByEmail(email)
                 .map(userMapper::toDomain)
                 .orElse(null);
