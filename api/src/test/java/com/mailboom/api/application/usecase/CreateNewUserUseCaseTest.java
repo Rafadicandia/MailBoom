@@ -1,11 +1,10 @@
 package com.mailboom.api.application.usecase;
 
 import com.mailboom.api.application.exception.UserWithEmailAlreadyExistsException;
+import com.mailboom.api.application.usecase.command.CreateUserCommand;
 import com.mailboom.api.domain.model.User;
 import com.mailboom.api.domain.repository.UserRepository;
 import com.mailboom.api.domain.model.valueobjects.PlanType;
-import com.mailboom.api.infrastructure.persistence.adapter.UserRepositoryAdapter;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -20,26 +19,25 @@ import static org.mockito.Mockito.*;
 class CreateNewUserUseCaseTest {
 
     @Mock
-    private UserRepositoryAdapter userRepository;
-
+    private UserRepository userRepository;
 
     @InjectMocks
-    private CreateNewUserUseCase createNewUserUseCase;
+    private CreateUserUseCaseImpl createNewUserUseCase;
 
     @Test
     void shouldCreateAndSaveUser_whenEmailDoesNotExist() {
-        // Arrange
+
         String email = "test@example.com";
         String password = "password123";
         PlanType plan = PlanType.FREE;
 
+        CreateUserCommand command = new CreateUserCommand(email, password, plan);
+
         when(userRepository.existsByEmail(email)).thenReturn(false);
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Act
-        User result = createNewUserUseCase.execute(email, password, plan);
+        User result = createNewUserUseCase.execute(command);
 
-        // Assert
         assertNotNull(result);
         assertEquals(email, result.getEmail().email());
         assertEquals(plan, result.getPlan());
@@ -53,16 +51,17 @@ class CreateNewUserUseCaseTest {
 
     @Test
     void shouldThrowException_whenEmailAlreadyExists() {
-        // Arrange
+
         String email = "existing@example.com";
         String password = "password123";
         PlanType plan = PlanType.FREE;
 
+        CreateUserCommand command = new CreateUserCommand(email, password, plan);
+
         when(userRepository.existsByEmail(email)).thenReturn(true);
 
-        // Act & Assert
         UserWithEmailAlreadyExistsException exception = assertThrows(UserWithEmailAlreadyExistsException.class, () -> {
-            createNewUserUseCase.execute(email, password, plan);
+            createNewUserUseCase.execute(command);
         });
 
         assertEquals("User with email " + email + " already exists", exception.getMessage());
