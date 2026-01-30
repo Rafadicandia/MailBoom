@@ -1,5 +1,6 @@
 package com.mailboom.api.application.usecase;
 
+import com.mailboom.api.application.exception.UserWithEmailAlreadyExistsException;
 import com.mailboom.api.domain.model.User;
 import com.mailboom.api.domain.model.valueobjects.*;
 import com.mailboom.api.infrastructure.persistence.adapter.UserRepositoryAdapter;
@@ -16,7 +17,7 @@ public class CreateNewUserUseCase {
 
     public User execute(String email, String password, PlanType plan) {
         if (userRepository.existsByEmail(email)) {
-            throw new IllegalArgumentException("User with email " + email + " already exists");
+            throw new UserWithEmailAlreadyExistsException("User with email " + email + " already exists");
         }
 
         UserId userId = UserId.generate();
