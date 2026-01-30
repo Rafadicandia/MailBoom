@@ -5,7 +5,7 @@ import com.mailboom.api.domain.model.valueobjects.UserId;
 import com.mailboom.api.domain.repository.UserRepository;
 import com.mailboom.api.infrastructure.exception.EmailNotFoundException;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.UserEntity;
-import com.mailboom.api.infrastructure.persistence.jpa.mapper.UserMapper;
+import com.mailboom.api.infrastructure.persistence.jpa.mapper.UserEntityMapper;
 import com.mailboom.api.infrastructure.persistence.jpa.repository.SpringDataUserRepository;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
@@ -15,9 +15,9 @@ import org.springframework.stereotype.Repository;
 public class UserRepositoryAdapter implements UserRepository {
 
     private final SpringDataUserRepository jpaRepository;
-    private final UserMapper userMapper;
+    private final UserEntityMapper userMapper;
 
-    public UserRepositoryAdapter(SpringDataUserRepository jpaRepository, UserMapper userMapper) {
+    public UserRepositoryAdapter(SpringDataUserRepository jpaRepository, UserEntityMapper userMapper) {
         this.jpaRepository = jpaRepository;
         this.userMapper = userMapper;
     }
