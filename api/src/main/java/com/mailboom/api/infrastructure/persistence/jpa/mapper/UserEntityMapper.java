@@ -12,6 +12,7 @@ public class UserEntityMapper {
         UserEntity entity = new UserEntity();
         entity.setId(user.getId().value());
         entity.setEmail(user.getEmail().email());
+        entity.setName(user.getName().toString());
         entity.setPassword(user.getPassword().value());
         entity.setPlan(user.getPlan());
         entity.setEmailsSentThisMonth(user.getEmailsSentThisMonth().amountOfEmails());
