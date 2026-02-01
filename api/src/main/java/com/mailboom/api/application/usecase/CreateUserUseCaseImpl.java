@@ -7,6 +7,7 @@ import com.mailboom.api.domain.model.User;
 import com.mailboom.api.domain.repository.UserRepository;
 import com.mailboom.api.domain.model.valueobjects.*;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class CreateUserUseCaseImpl implements CreateUserUseCase {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -25,7 +27,7 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
 
         UserId userId = UserId.generate();
         Email userEmail = Email.fromString(command.email());
-        PasswordHash passwordHash = PasswordHash.fromString(command.password());
+        PasswordHash passwordHash = PasswordHash.fromString(passwordEncoder.encode(command.password()));
         Name name = Name.fromString(command.name());
 
         User newUser = User.create(userId, userEmail, name, passwordHash, EmailCounter.zero());
