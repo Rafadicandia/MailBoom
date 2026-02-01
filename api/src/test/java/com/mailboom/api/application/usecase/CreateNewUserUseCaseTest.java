@@ -29,9 +29,9 @@ class CreateNewUserUseCaseTest {
 
         String email = "test@example.com";
         String password = "password123";
-        PlanType plan = PlanType.FREE;
+        String name = "Test User";
 
-        CreateUserCommand command = new CreateUserCommand(email, password, plan);
+        CreateUserCommand command = new CreateUserCommand(email, password, name);
 
         when(userRepository.existsByEmail(email)).thenReturn(false);
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -40,7 +40,7 @@ class CreateNewUserUseCaseTest {
 
         assertNotNull(result);
         assertEquals(email, result.getEmail().email());
-        assertEquals(plan, result.getPlan());
+        assertEquals(PlanType.FREE, result.getPlan());
         assertNotNull(result.getId());
         assertNotNull(result.getPassword().value());
         assertEquals(0, result.getEmailsSentThisMonth().amountOfEmails());
@@ -54,9 +54,9 @@ class CreateNewUserUseCaseTest {
 
         String email = "existing@example.com";
         String password = "password123";
-        PlanType plan = PlanType.FREE;
+        String name = "Existing User";
 
-        CreateUserCommand command = new CreateUserCommand(email, password, plan);
+        CreateUserCommand command = new CreateUserCommand(email, password, name);
 
         when(userRepository.existsByEmail(email)).thenReturn(true);
 
