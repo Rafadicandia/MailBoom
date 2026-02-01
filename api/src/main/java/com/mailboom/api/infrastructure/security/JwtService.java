@@ -1,14 +1,17 @@
 package com.mailboom.api.infrastructure.security;
 
 import com.mailboom.api.infrastructure.persistence.jpa.entity.UserEntity;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.Value;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.sql.Date;
+import java.util.function.Function;
 
 @Service
 public class JwtService {
@@ -22,9 +25,17 @@ public class JwtService {
     @Value("${application.security.jwt.refresh-token.expiration}")
     private long refreshExpiration;
 
+    public String extractUsername(String token) {
+        return extractClaim(token, Claims::getSubject);
+    }
+
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = extractAllClaims(token);
+        return claimsResolver.apply(claims);
+    }
+
     public String generateToken(final UserEntity user){
         return buildToken(user, jwtExpiration);
-
     }
 
     public String generateRefreshToken(final UserEntity user){
@@ -33,13 +44,33 @@ public class JwtService {
 
     public String buildToken(final UserEntity user, final long expiration){
         return Jwts.builder()
-                .setSubject(user.getId().toString())
+                .setSubject(user.getEmail())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(getSignInKey())
                 .compact();
+    }
 
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && !isTokenExpired(token);
+    }
 
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).before(new Date(System.currentTimeMillis()));
+    }
+
+    private java.util.Date extractExpiration(String token) {
+        return extractClaim(token, Claims::getExpiration);
+    }
+
+    private Claims extractAllClaims(String token) {
+        return Jwts
+                .parserBuilder()
+                .setSigningKey(getSignInKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
     }
 
     private SecretKey getSignInKey() {
