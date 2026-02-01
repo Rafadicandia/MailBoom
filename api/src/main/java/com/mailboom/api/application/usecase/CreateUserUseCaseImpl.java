@@ -26,8 +26,9 @@ public class CreateUserUseCaseImpl implements CreateUserUseCase {
         UserId userId = UserId.generate();
         Email userEmail = Email.fromString(command.email());
         PasswordHash passwordHash = PasswordHash.fromString(command.password());
+        Name name = Name.fromString(command.name());
 
-        User newUser = User.create(userId, userEmail, passwordHash, command.plan(), EmailCounter.zero());
+        User newUser = User.create(userId, userEmail, name, passwordHash, EmailCounter.zero());
         return userRepository.save(newUser);
     }
 }
