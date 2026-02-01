@@ -6,7 +6,7 @@ import com.mailboom.api.infrastructure.persistence.jpa.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class UserMapper {
+public class UserEntityMapper {
 
     public UserEntity toEntity(User user) {
         UserEntity entity = new UserEntity();
@@ -15,6 +15,7 @@ public class UserMapper {
         entity.setPassword(user.getPassword().value());
         entity.setPlan(user.getPlan());
         entity.setEmailsSentThisMonth(user.getEmailsSentThisMonth().amountOfEmails());
+        entity.setRole(user.getRole());
         return entity;
     }
 
@@ -22,9 +23,11 @@ public class UserMapper {
         return User.create(
                 new UserId(entity.getId()),
                 new Email(entity.getEmail()),
+                new Name(entity.getName()),
                 new PasswordHash(entity.getPassword()),
                 entity.getPlan(),
-                new EmailCounter(entity.getEmailsSentThisMonth())
+                new EmailCounter(entity.getEmailsSentThisMonth()),
+                entity.getRole()
         );
     }
 }
