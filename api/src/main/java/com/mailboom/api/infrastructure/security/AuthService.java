@@ -1,6 +1,5 @@
 package com.mailboom.api.infrastructure.security;
 
-
 import com.mailboom.api.application.port.in.CreateUserUseCase;
 import com.mailboom.api.application.usecase.command.CreateUserCommand;
 import com.mailboom.api.domain.model.User;
@@ -29,16 +28,15 @@ public class AuthService {
     private final UserEntityMapper mapper;
     private final SpringDataUserRepository userRepository;
 
-
     public TokenResponse register(CreateUserCommand command) {
-
         User newUser = createUserUseCase.execute(command);
         UserEntity savedUser = mapper.toEntity(newUser);
-        var jwtToken = jwtService.generateToken(savedUser);
-        var refreshToken = jwtService.generateRefreshToken(savedUser);
+        UserPrincipal userPrincipal = new UserPrincipal(newUser);
+        
+        var jwtToken = jwtService.generateToken(userPrincipal);
+        var refreshToken = jwtService.generateRefreshToken(userPrincipal);
         saveUserToken(savedUser, jwtToken);
         return new TokenResponse(jwtToken, refreshToken);
-
     }
 
     public TokenResponse login(LoginRequest request) {
@@ -48,14 +46,16 @@ public class AuthService {
                         request.password()
                 )
         );
-        var user = userRepository.findByEmail(request.email())
+        var userEntity = userRepository.findByEmail(request.email())
                 .orElseThrow();
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user, jwtToken);
+        var user = mapper.toDomain(userEntity);
+        UserPrincipal userPrincipal = new UserPrincipal(user);
+        
+        var jwtToken = jwtService.generateToken(userPrincipal);
+        var refreshToken = jwtService.generateRefreshToken(userPrincipal);
+        revokeAllUserTokens(userEntity);
+        saveUserToken(userEntity, jwtToken);
         return new TokenResponse(jwtToken, refreshToken);
-
     }
 
     private void revokeAllUserTokens(UserEntity user) {
@@ -68,7 +68,6 @@ public class AuthService {
             }
         }
         tokenRepository.saveAll(validUserTokens);
-
     }
 
     private void saveUserToken(UserEntity user, String jwtToken) {
@@ -83,30 +82,29 @@ public class AuthService {
     }
 
     public TokenResponse refreshToken(final String authHeader) {
-        if (authHeader == null || !authHeader.startsWith("Bearer")) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             throw new IllegalArgumentException("Invalid token");
-
         }
         final String refreshToken = authHeader.substring(7);
         final String userEmail = jwtService.extractUsername(refreshToken);
 
         if (userEmail == null) {
             throw new IllegalArgumentException("Invalid Refresh token");
-
         }
 
-        final UserEntity user = userRepository.findByEmail(userEmail)
+        final UserEntity userEntity = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new UsernameNotFoundException(userEmail));
+        
+        var user = mapper.toDomain(userEntity);
+        UserPrincipal userPrincipal = new UserPrincipal(user);
 
-        if (!jwtService.isTokenValid(refreshToken, user)) {
+        if (!jwtService.isTokenValid(refreshToken, userPrincipal)) {
             throw new IllegalArgumentException("Invalid Refresh token");
         }
 
-        final String accessToken = jwtService.generateToken(user);
-        revokeAllUserTokens(user);
-        saveUserToken(user, accessToken);
+        final String accessToken = jwtService.generateToken(userPrincipal);
+        revokeAllUserTokens(userEntity);
+        saveUserToken(userEntity, accessToken);
         return new TokenResponse(accessToken, refreshToken);
-
-
     }
 }
