@@ -1,50 +1,25 @@
 package com.mailboom.api.domain.model;
 
-import com.mailboom.api.domain.model.valueobjects.ContactId;
+import com.mailboom.api.domain.exception.ContactListMustHaveNameException;
 import com.mailboom.api.domain.model.valueobjects.ContactListId;
+import com.mailboom.api.domain.model.valueobjects.Name;
 import com.mailboom.api.domain.model.valueobjects.UserId;
 
-import java.util.Set;
-
 public class ContactList {
-
     private final ContactListId id;
     private final UserId owner;
-    private String name;
-    private Set<ContactId> contacts;
+    private final Name name;
+    private final long totalContacts;
 
-    public ContactList(ContactListId id, UserId owner, String name, Set<ContactId> contacts) {
+    private ContactList(ContactListId id, UserId owner, Name name, long totalContacts) {
         this.id = id;
         this.owner = owner;
         this.name = name;
-        this.contacts = contacts;
+        this.totalContacts = 0;
     }
 
-    public void addContact(ContactId contactId) {
-        this.contacts.add(contactId);
-    }
-
-    public void removeContact(ContactId contactId) {
-        this.contacts.remove(contactId);
-    }
-
-    public ContactListId getId() {
-        return id;
-    }
-
-    public UserId getOwner() {
-        return owner;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Set<ContactId> getContacts() {
-        return contacts;
+    public ContactList updateName(String newName) {
+        if (newName == null || newName.isBlank()) throw new ContactListMustHaveNameException("Name required");
+        return new ContactList(id, owner, new Name(newName), totalContacts);
     }
 }
