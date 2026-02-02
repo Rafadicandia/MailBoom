@@ -3,6 +3,10 @@ package com.mailboom.api.domain.model;
 import com.mailboom.api.domain.model.valueobjects.*;
 import lombok.Getter;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 @Getter
 public class User {
     private final UserId id;
@@ -12,8 +16,9 @@ public class User {
     private final PlanType plan;
     private final EmailCounter emailsSentThisMonth;
     private final Role role;
+    private final Set<ContactListId> contactLists;
 
-    private User(UserId id, Email email, Name name, PasswordHash password, PlanType plan, EmailCounter emailsSentThisMonth, Role role) {
+    private User(UserId id, Email email, Name name, PasswordHash password, PlanType plan, EmailCounter emailsSentThisMonth, Role role, Set<ContactListId> contactLists) {
         this.id = id;
         this.email = email;
         this.name = name;
@@ -21,19 +26,20 @@ public class User {
         this.plan = plan;
         this.emailsSentThisMonth = emailsSentThisMonth;
         this.role = role;
+        this.contactLists = contactLists;
     }
 
-    public static User create(UserId id, Email email, Name name, PasswordHash password, PlanType plan, EmailCounter emailsSentThisMonth, Role role) {
-        return new User(id, email,name, password, plan, emailsSentThisMonth, role);
+    public static User create(UserId id, Email email, Name name, PasswordHash password, PlanType plan, EmailCounter emailsSentThisMonth, Role role, Set<ContactListId> contactLists) {
+        return new User(id, email, name, password, plan, emailsSentThisMonth, role, contactLists);
     }
 
     // Sobrecarga para crear usuarios normales por defecto
     public static User create(UserId id, Email email, Name name, PasswordHash password, EmailCounter emailsSentThisMonth) {
-        return new User(id, email, name , password, PlanType.FREE, emailsSentThisMonth, Role.USER);
+        return new User(id, email, name, password, PlanType.FREE, emailsSentThisMonth, Role.USER, new HashSet<>());
     }
 
     public User incrementEmailsSent() {
-        return new User(id, email, name , password, plan, emailsSentThisMonth.increment(), role);
+        return new User(id, email, name, password, plan, emailsSentThisMonth.increment(), role, contactLists);
     }
 
     public boolean canSendMoreEmails(int quantity) {
@@ -46,6 +52,19 @@ public class User {
     }
 
     public User resetMonthlyEmails() {
-        return new User(id, email, name , password, plan, EmailCounter.zero(), role);
+        return new User(id, email, name, password, plan, EmailCounter.zero(), role, contactLists);
+    }
+
+    public User addContactList(ContactListId contactListId) {
+        Set<ContactListId> updatedLists = new HashSet<>(this.contactLists);
+        updatedLists.add(contactListId);
+        return new User(id, email, name, password, plan, emailsSentThisMonth, role, updatedLists);
+    }
+
+    public User removeContactList(ContactListId contactListId) {
+        Set<ContactListId> updatedLists = this.contactLists.stream()
+                .filter(id -> !id.equals(contactListId))
+                .collect(Collectors.toSet());
+        return new User(id, email, name, password, plan, emailsSentThisMonth, role, updatedLists);
     }
 }
