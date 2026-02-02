@@ -5,6 +5,8 @@ import com.mailboom.api.domain.model.valueobjects.*;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.HashSet;
+
 @Component
 public class UserEntityMapper {
 
@@ -28,7 +30,8 @@ public class UserEntityMapper {
                 new PasswordHash(entity.getPassword()),
                 entity.getPlan(),
                 new EmailCounter(entity.getEmailsSentThisMonth()),
-                entity.getRole()
+                entity.getRole(),
+                new HashSet<>()
         );
     }
 }
