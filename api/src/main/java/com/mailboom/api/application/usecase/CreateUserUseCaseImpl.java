@@ -4,7 +4,7 @@ import com.mailboom.api.application.exception.UserWithEmailAlreadyExistsExceptio
 import com.mailboom.api.application.port.in.CreateUserUseCase;
 import com.mailboom.api.application.usecase.command.CreateUserCommand;
 import com.mailboom.api.domain.model.User;
-import com.mailboom.api.domain.repository.UserRepository;
+import com.mailboom.api.domain.port.out.UserRepository;
 import com.mailboom.api.domain.model.valueobjects.*;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;

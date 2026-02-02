@@ -1,7 +1,7 @@
 package com.mailboom.api.infrastructure.security;
 
 import com.mailboom.api.domain.model.User;
-import com.mailboom.api.domain.repository.UserRepository;
+import com.mailboom.api.domain.port.out.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
