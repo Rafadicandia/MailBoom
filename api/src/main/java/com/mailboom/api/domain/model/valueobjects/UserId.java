@@ -6,7 +6,7 @@ import java.util.UUID;
 
 public record UserId(UUID userId) {
     public UserId {
-        if (userId == null|| userId.toString().isEmpty()) {
+        if (userId == null || userId.toString().isEmpty()) {
             throw new UserCannotBeNullException("User ID cannot be null");
         }
     }
@@ -24,9 +24,6 @@ public record UserId(UUID userId) {
         return userId.toString();
     }
 
-    public static UserId random() {
-        return new UserId(UUID.randomUUID());
-    }
 
 
     public UUID value() {
