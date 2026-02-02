@@ -3,7 +3,7 @@ package com.mailboom.api.application.usecase;
 import com.mailboom.api.application.exception.UserWithEmailAlreadyExistsException;
 import com.mailboom.api.application.usecase.command.CreateUserCommand;
 import com.mailboom.api.domain.model.User;
-import com.mailboom.api.domain.repository.UserRepository;
+import com.mailboom.api.domain.port.out.UserRepository;
 import com.mailboom.api.domain.model.valueobjects.PlanType;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
