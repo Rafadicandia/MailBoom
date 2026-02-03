@@ -1,5 +1,6 @@
 package com.mailboom.api.application.usecase;
 
+import com.mailboom.api.application.exception.ContactListAlreadyExistException;
 import com.mailboom.api.application.port.in.CreateContactListUseCase;
 import com.mailboom.api.application.usecase.command.CreateContactListCommand;
 import com.mailboom.api.domain.model.ContactList;
@@ -21,7 +22,7 @@ public class CreateContactListUseCaseImpl implements CreateContactListUseCase {
     public ContactList execute(CreateContactListCommand command) {
         if (contactListRepository.findAllByUserId(command.ownerId()).stream().anyMatch(
                 contactList -> contactList.getName().toString().trim().toLowerCase().equals(command.name()))) {
-            throw new IllegalArgumentException("Contact list with name " + command.name() + " already exists");
+            throw new ContactListAlreadyExistException("Contact list with name " + command.name() + " already exists");
         }
         return contactListRepository.save(
                 ContactList.create(
