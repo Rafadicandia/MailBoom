@@ -3,6 +3,7 @@ package com.mailboom.api.application.usecase;
 import com.mailboom.api.application.port.in.CreateContactListUseCase;
 import com.mailboom.api.application.port.in.ImportContactsFromFileUseCase;
 import com.mailboom.api.domain.model.Contact;
+import com.mailboom.api.domain.model.ContactList;
 import com.mailboom.api.domain.model.valueobjects.*;
 import com.mailboom.api.domain.port.out.ContactFileParser;
 import com.mailboom.api.domain.port.out.ContactListRepository;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
@@ -29,9 +31,10 @@ public class ImportContactsFromFileUseCaseImpl implements ImportContactsFromFile
     @Override
     @Transactional
     public void execute(ContactListId listId, UserId ownerId, InputStream fileStream, String contentType) {
+        Optional<ContactList> contactListOpt = contactListRepository.findById(listId.value());
 
-        if (!contactListRepository.findById(listId.value()).isPresent() && !contactListRepository.findById(listId.value()).get().getOwner().equals(ownerId)) {
-            throw new IllegalArgumentException("Contact List is not assigned to owner id. Please proceed to create a new contact list");
+        if (contactListOpt.isEmpty() || !contactListOpt.get().getOwner().equals(ownerId)) {
+            throw new IllegalArgumentException("Contact List not found or you don't have permission to access it.");
         }
 
         ContactFileParser parser = parserFactory.getParser(contentType);
