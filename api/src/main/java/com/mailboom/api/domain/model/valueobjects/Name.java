@@ -1,5 +1,7 @@
 package com.mailboom.api.domain.model.valueobjects;
 
+import java.util.UUID;
+
 public record Name(String name) {
     public Name {
         if (name == null || name.isBlank()) {
@@ -18,6 +20,10 @@ public record Name(String name) {
 
     @Override
     public String toString() {
+        return name;
+    }
+
+    public String value() {
         return name;
     }
 }
