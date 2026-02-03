@@ -10,4 +10,5 @@ public interface ContactRepository {
     List<Contact> findAllByUserId(UUID userId);
     Contact save(Contact contact);
     void deleteById(UUID id);
+    void saveAll(List<Contact> contacts);
 }
