@@ -29,15 +29,16 @@ public class ImportContactsFromFileUseCaseImpl implements ImportContactsFromFile
     @Override
     @Transactional
     public void execute(ContactListId listId, UserId ownerId, InputStream fileStream, String contentType) {
-        // 1. Validar propiedad de la lista (Asumiendo que se hará en otro lugar o no es necesaria aquí)
+
         if (!contactListRepository.findById(listId.value()).isPresent() && !contactListRepository.findById(listId.value()).get().getOwner().equals(ownerId)) {
             throw new IllegalArgumentException("Contact List is not assigned to owner id. Please proceed to create a new contact list");
         }
 
-        // 2. Obtener el parser adecuado
         ContactFileParser parser = parserFactory.getParser(contentType);
+        if (parser == null) {
+            throw new IllegalArgumentException("Unsupported file type");
+        }
 
-        // 3. Procesar por lotes (Chunks) de 1000 para eficiencia
         List<ContactData> batch = new ArrayList<>();
         parser.parse(fileStream, contactData -> {
             batch.add(contactData);
@@ -47,7 +48,6 @@ public class ImportContactsFromFileUseCaseImpl implements ImportContactsFromFile
             }
         });
 
-        // Guardar el remanente
         if (!batch.isEmpty()) {
             saveBatch(batch, listId);
         }
