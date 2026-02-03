@@ -4,7 +4,9 @@ import com.mailboom.api.domain.exception.ContactListMustHaveNameException;
 import com.mailboom.api.domain.model.valueobjects.ContactListId;
 import com.mailboom.api.domain.model.valueobjects.Name;
 import com.mailboom.api.domain.model.valueobjects.UserId;
+import lombok.Getter;
 
+@Getter
 public class ContactList {
     private final ContactListId id;
     private final UserId owner;
@@ -16,6 +18,11 @@ public class ContactList {
         this.owner = owner;
         this.name = name;
         this.totalContacts = 0;
+    }
+
+    public static ContactList create(UserId owner, Name name){
+        if (name == null || name.toString().isBlank()) throw new ContactListMustHaveNameException("Name required");
+        return new ContactList(ContactListId.generate(), owner, name, 0);
     }
 
     public ContactList updateName(String newName) {
