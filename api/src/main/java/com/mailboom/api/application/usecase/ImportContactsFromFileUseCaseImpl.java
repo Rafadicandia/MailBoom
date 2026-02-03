@@ -1,6 +1,5 @@
 package com.mailboom.api.application.usecase;
 
-import com.mailboom.api.application.port.in.CreateContactListUseCase;
 import com.mailboom.api.application.port.in.ImportContactsFromFileUseCase;
 import com.mailboom.api.domain.model.Contact;
 import com.mailboom.api.domain.model.ContactList;
@@ -26,7 +25,6 @@ public class ImportContactsFromFileUseCaseImpl implements ImportContactsFromFile
     private final ContactRepository contactRepository;
     private final FileParserFactory parserFactory;
     private final ContactListRepository contactListRepository;
-    private final CreateContactListUseCase createContactListUseCase;
 
     @Override
     @Transactional
