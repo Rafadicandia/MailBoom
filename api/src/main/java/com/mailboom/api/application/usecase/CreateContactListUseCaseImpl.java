@@ -20,10 +20,13 @@ public class CreateContactListUseCaseImpl implements CreateContactListUseCase {
     @Override
     @Transactional
     public ContactList execute(CreateContactListCommand command) {
+        String normalizedCommandName = command.name().trim().toLowerCase();
+        
         if (contactListRepository.findAllByUserId(command.ownerId()).stream().anyMatch(
-                contactList -> contactList.getName().toString().trim().toLowerCase().equals(command.name()))) {
+                contactList -> contactList.getName().value().trim().toLowerCase().equals(normalizedCommandName))) {
             throw new ContactListAlreadyExistException("Contact list with name " + command.name() + " already exists");
         }
+
         return contactListRepository.save(
                 ContactList.create(
                         new UserId(command.ownerId()),
