@@ -7,20 +7,17 @@ import com.mailboom.api.infrastructure.exception.EmailNotFoundException;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.UserEntity;
 import com.mailboom.api.infrastructure.persistence.jpa.mapper.UserEntityMapper;
 import com.mailboom.api.infrastructure.persistence.jpa.repository.SpringDataUserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @Primary
+@AllArgsConstructor
 public class UserRepositoryAdapter implements UserRepository {
 
     private final SpringDataUserRepository jpaRepository;
     private final UserEntityMapper userMapper;
-
-    public UserRepositoryAdapter(SpringDataUserRepository jpaRepository, UserEntityMapper userMapper) {
-        this.jpaRepository = jpaRepository;
-        this.userMapper = userMapper;
-    }
 
     @Override
     public User findById(UserId id) {
