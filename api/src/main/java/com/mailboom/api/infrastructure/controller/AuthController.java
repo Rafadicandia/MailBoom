@@ -1,7 +1,7 @@
 package com.mailboom.api.infrastructure.controller;
 
 
-import com.mailboom.api.application.usecase.command.CreateUserCommand;
+import com.mailboom.api.application.user.usecase.command.CreateUserCommand;
 import com.mailboom.api.infrastructure.dto.LoginRequest;
 import com.mailboom.api.infrastructure.dto.NewUserRequest;
 import com.mailboom.api.infrastructure.dto.TokenResponse;
