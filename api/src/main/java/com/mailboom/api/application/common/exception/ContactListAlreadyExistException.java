@@ -1,4 +1,4 @@
-package com.mailboom.api.application.exception;
+package com.mailboom.api.application.common.exception;
 
 public class ContactListAlreadyExistException extends RuntimeException {
     public ContactListAlreadyExistException(String message) {
