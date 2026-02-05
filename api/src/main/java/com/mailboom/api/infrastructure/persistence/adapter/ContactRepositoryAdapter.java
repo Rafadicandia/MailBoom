@@ -2,6 +2,9 @@ package com.mailboom.api.infrastructure.persistence.adapter;
 
 import com.mailboom.api.domain.model.Contact;
 import com.mailboom.api.domain.model.ContactList;
+import com.mailboom.api.domain.model.valueobjects.ContactId;
+import com.mailboom.api.domain.model.valueobjects.ContactListId;
+import com.mailboom.api.domain.model.valueobjects.Email;
 import com.mailboom.api.domain.model.valueobjects.UserId;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.domain.port.out.ContactRepository;
@@ -16,7 +19,6 @@ import org.springframework.stereotype.Repository;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository
@@ -29,17 +31,17 @@ public class ContactRepositoryAdapter implements ContactRepository {
     private final UserRepository userRepository;
 
     @Override
-    public Optional<Contact> findById(UUID id) {
-        return contactRepository.findById(id).map(contactEntityMapper::toDomain);
+    public Optional<Contact> findById(ContactId id) {
+        return contactRepository.findById(id.value()).map(contactEntityMapper::toDomain);
     }
 
     @Override
-    public List<Contact> findAllByUserId(UUID userId) {
-        if (userRepository.findById(new UserId(userId)) == null) {
+    public List<Contact> findAllByUserId(UserId userId) {
+        if (userRepository.findById(userId) == null) {
             throw new UserNotFoundException("User with id " + userId + " not found.");
         }
 
-        List<ContactList> userContactLists = contactListRepository.findAllByUserId(userId);
+        List<ContactList> userContactLists = contactListRepository.findAllByUserId(userId.value());
         if (userContactLists.isEmpty()) {
             return Collections.emptyList();
         }
@@ -58,8 +60,8 @@ public class ContactRepositoryAdapter implements ContactRepository {
     }
 
     @Override
-    public void deleteById(UUID id) {
-        contactRepository.deleteById(id);
+    public void deleteById(ContactId id) {
+        contactRepository.deleteById(id.value());
     }
 
     @Override
@@ -68,5 +70,17 @@ public class ContactRepositoryAdapter implements ContactRepository {
                 .map(contactEntityMapper::toEntity)
                 .collect(Collectors.toList());
         contactRepository.saveAll(entities);
+    }
+
+    @Override
+    public List<Contact> findAllByContactListId(ContactListId contactListId) {
+        return contactRepository.findAllByContactListId_Id(contactListId.value()).stream()
+                .map(contactEntityMapper::toDomain)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<Contact> findByEmail(Email email) {
+        return contactRepository.findByEmail(email.toString()).map(contactEntityMapper::toDomain);
     }
 }
