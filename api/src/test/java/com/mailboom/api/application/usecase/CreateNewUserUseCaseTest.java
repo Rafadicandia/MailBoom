@@ -1,7 +1,8 @@
 package com.mailboom.api.application.usecase;
 
-import com.mailboom.api.application.exception.UserWithEmailAlreadyExistsException;
-import com.mailboom.api.application.usecase.command.CreateUserCommand;
+import com.mailboom.api.application.common.exception.UserWithEmailAlreadyExistsException;
+import com.mailboom.api.application.user.usecase.CreateUserUseCaseImpl;
+import com.mailboom.api.application.user.usecase.command.CreateUserCommand;
 import com.mailboom.api.domain.model.User;
 import com.mailboom.api.domain.port.out.UserRepository;
 import com.mailboom.api.domain.model.valueobjects.PlanType;

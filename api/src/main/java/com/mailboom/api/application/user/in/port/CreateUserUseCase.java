@@ -1,6 +1,6 @@
-package com.mailboom.api.application.port.in;
+package com.mailboom.api.application.user.in.port;
 
-import com.mailboom.api.application.usecase.command.CreateUserCommand;
+import com.mailboom.api.application.user.usecase.command.CreateUserCommand;
 import com.mailboom.api.domain.model.User;
 
 public interface CreateUserUseCase {
