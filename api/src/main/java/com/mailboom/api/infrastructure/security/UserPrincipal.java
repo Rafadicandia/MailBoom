@@ -1,6 +1,6 @@
 package com.mailboom.api.infrastructure.security;
 
-import com.mailboom.api.domain.model.User;
+import com.mailboom.api.domain.model.user.User;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;

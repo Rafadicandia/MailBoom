@@ -2,7 +2,7 @@ package com.mailboom.api.infrastructure.security;
 
 import com.mailboom.api.application.user.in.port.CreateUserUseCase;
 import com.mailboom.api.application.user.usecase.command.CreateUserCommand;
-import com.mailboom.api.domain.model.User;
+import com.mailboom.api.domain.model.user.User;
 import com.mailboom.api.infrastructure.dto.LoginRequest;
 import com.mailboom.api.infrastructure.dto.TokenResponse;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.TokenEntity;

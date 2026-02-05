@@ -1,13 +1,17 @@
 package com.mailboom.api.application.contact.usecase;
 
 import com.mailboom.api.application.contact.port.in.ImportContactsFromFileUseCase;
-import com.mailboom.api.domain.model.Contact;
-import com.mailboom.api.domain.model.ContactList;
-import com.mailboom.api.domain.model.valueobjects.*;
+import com.mailboom.api.domain.model.common.valueobjects.Email;
+import com.mailboom.api.domain.model.common.valueobjects.Name;
+import com.mailboom.api.domain.model.contact.Contact;
+import com.mailboom.api.domain.model.contact.ContactList;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
 import com.mailboom.api.domain.port.out.ContactFileParser;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.domain.port.out.ContactRepository;
 import com.mailboom.api.domain.port.out.FileParserFactory;
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.infrastructure.dto.ContactData;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;

@@ -1,9 +1,6 @@
 package com.mailboom.api.infrastructure.persistence.adapter;
 
-import com.mailboom.api.domain.model.ContactList;
-import com.mailboom.api.domain.model.valueobjects.ContactListId;
-import com.mailboom.api.domain.model.valueobjects.Name;
-import com.mailboom.api.domain.model.valueobjects.UserId;
+import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.ContactListEntity;
 import com.mailboom.api.infrastructure.persistence.jpa.mapper.ContactListEntityMapper;

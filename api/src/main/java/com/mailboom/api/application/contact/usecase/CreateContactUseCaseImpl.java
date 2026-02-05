@@ -2,11 +2,11 @@ package com.mailboom.api.application.contact.usecase;
 
 import com.mailboom.api.application.contact.port.in.CreateContactUseCase;
 import com.mailboom.api.application.contact.usecase.command.CreateContactCommand;
-import com.mailboom.api.domain.model.Contact;
-import com.mailboom.api.domain.model.valueobjects.ContactId;
-import com.mailboom.api.domain.model.valueobjects.ContactListId;
-import com.mailboom.api.domain.model.valueobjects.Email;
-import com.mailboom.api.domain.model.valueobjects.Name;
+import com.mailboom.api.domain.model.contact.Contact;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
+import com.mailboom.api.domain.model.common.valueobjects.Email;
+import com.mailboom.api.domain.model.common.valueobjects.Name;
 import com.mailboom.api.domain.port.out.ContactRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

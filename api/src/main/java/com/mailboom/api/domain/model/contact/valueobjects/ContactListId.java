@@ -1,4 +1,4 @@
-package com.mailboom.api.domain.model.valueobjects;
+package com.mailboom.api.domain.model.contact.valueobjects;
 
 import com.mailboom.api.domain.exception.ContactListIdCannotBeNullException;
 

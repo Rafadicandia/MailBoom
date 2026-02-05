@@ -1,7 +1,6 @@
 package com.mailboom.api.domain.port.out;
 
-import com.mailboom.api.domain.model.Contact;
-import com.mailboom.api.domain.model.ContactList;
+import com.mailboom.api.domain.model.contact.ContactList;
 
 import java.util.List;
 import java.util.Optional;

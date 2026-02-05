@@ -1,7 +1,5 @@
 package com.mailboom.api.application.user.usecase.command;
 
-import com.mailboom.api.domain.model.valueobjects.PlanType;
-
 public record CreateUserCommand(
     String email,
     String password,

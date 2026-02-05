@@ -1,7 +1,7 @@
 package com.mailboom.api.infrastructure.persistence.jpa.entity;
 
-import com.mailboom.api.domain.model.valueobjects.PlanType;
-import com.mailboom.api.domain.model.valueobjects.Role;
+import com.mailboom.api.domain.model.user.valueobjects.PlanType;
+import com.mailboom.api.domain.model.user.valueobjects.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

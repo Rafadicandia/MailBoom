@@ -2,7 +2,7 @@ package com.mailboom.api.application.contact.usecase;
 
 import com.mailboom.api.application.contact.port.in.DeleteContactUseCase;
 import com.mailboom.api.application.contact.usecase.command.DeleteContactCommand;
-import com.mailboom.api.domain.model.valueobjects.ContactId;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
 import com.mailboom.api.domain.port.out.ContactRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;

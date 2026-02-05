@@ -1,14 +1,13 @@
 package com.mailboom.api.domain.port.out;
 
-import com.mailboom.api.domain.model.Contact;
-import com.mailboom.api.domain.model.valueobjects.ContactId;
-import com.mailboom.api.domain.model.valueobjects.ContactListId;
-import com.mailboom.api.domain.model.valueobjects.Email;
-import com.mailboom.api.domain.model.valueobjects.UserId;
+import com.mailboom.api.domain.model.contact.Contact;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
+import com.mailboom.api.domain.model.common.valueobjects.Email;
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public interface ContactRepository {
     Optional<Contact> findById(ContactId id);

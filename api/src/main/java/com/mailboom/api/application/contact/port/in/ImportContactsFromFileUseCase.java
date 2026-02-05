@@ -1,7 +1,7 @@
 package com.mailboom.api.application.contact.port.in;
 
-import com.mailboom.api.domain.model.valueobjects.ContactListId;
-import com.mailboom.api.domain.model.valueobjects.UserId;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 
 import java.io.InputStream;
 

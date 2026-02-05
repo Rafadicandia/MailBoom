@@ -1,7 +1,7 @@
 package com.mailboom.api.domain.port.out;
 
-import com.mailboom.api.domain.model.User;
-import com.mailboom.api.domain.model.valueobjects.UserId;
+import com.mailboom.api.domain.model.user.User;
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 
 public interface UserRepository {
     User findById(UserId id);

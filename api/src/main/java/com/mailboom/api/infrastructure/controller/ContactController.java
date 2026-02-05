@@ -4,7 +4,7 @@ import com.mailboom.api.application.contact.port.in.CreateContactUseCase;
 import com.mailboom.api.application.contact.port.in.DeleteContactUseCase;
 import com.mailboom.api.application.contact.usecase.command.CreateContactCommand;
 import com.mailboom.api.application.contact.usecase.command.DeleteContactCommand;
-import com.mailboom.api.domain.model.Contact;
+import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.infrastructure.dto.DeleteContactRequest;
 import com.mailboom.api.infrastructure.dto.NewContactRequest;
 import com.mailboom.api.infrastructure.dto.NewContactResponse;

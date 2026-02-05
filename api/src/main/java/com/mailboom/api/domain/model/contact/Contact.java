@@ -1,9 +1,9 @@
-package com.mailboom.api.domain.model;
+package com.mailboom.api.domain.model.contact;
 
-import com.mailboom.api.domain.model.valueobjects.ContactId;
-import com.mailboom.api.domain.model.valueobjects.ContactListId;
-import com.mailboom.api.domain.model.valueobjects.Email;
-import com.mailboom.api.domain.model.valueobjects.Name;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
+import com.mailboom.api.domain.model.common.valueobjects.Email;
+import com.mailboom.api.domain.model.common.valueobjects.Name;
 import lombok.Getter;
 
 import java.util.Map;

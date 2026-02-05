@@ -1,6 +1,12 @@
-package com.mailboom.api.domain.model;
+package com.mailboom.api.domain.model.user;
 
-import com.mailboom.api.domain.model.valueobjects.*;
+import com.mailboom.api.domain.model.common.valueobjects.Email;
+import com.mailboom.api.domain.model.common.valueobjects.Name;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
+import com.mailboom.api.domain.model.model.valueobjects.*;
+import com.mailboom.api.domain.model.user.valueobjects.*;
+import com.mailboom.api.domain.user.model.valueobjects.*;
+import com.mailboom.api.domain.user.valueobjects.*;
 import lombok.Getter;
 
 import java.util.HashSet;

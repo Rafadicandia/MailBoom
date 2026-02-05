@@ -1,7 +1,4 @@
-package com.mailboom.api.domain.model.valueobjects;
-
-import com.mailboom.api.domain.exception.SubjectFormatException;
-import org.springframework.util.Assert;
+package com.mailboom.api.domain.model.campaign.valueobjects;
 
 import com.mailboom.api.domain.exception.SubjectFormatException;
 

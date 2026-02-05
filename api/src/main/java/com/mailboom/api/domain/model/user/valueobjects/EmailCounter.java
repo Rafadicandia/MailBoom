@@ -1,4 +1,4 @@
-package com.mailboom.api.domain.model.valueobjects;
+package com.mailboom.api.domain.model.user.valueobjects;
 
 public record EmailCounter(int amountOfEmails) {
 

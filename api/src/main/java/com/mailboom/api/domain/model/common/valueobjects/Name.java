@@ -1,6 +1,4 @@
-package com.mailboom.api.domain.model.valueobjects;
-
-import java.util.UUID;
+package com.mailboom.api.domain.model.common.valueobjects;
 
 public record Name(String name) {
     public Name {

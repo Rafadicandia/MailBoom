@@ -1,6 +1,9 @@
-package com.mailboom.api.domain.model;
+package com.mailboom.api.domain.model.campaign;
 
-import com.mailboom.api.domain.model.valueobjects.*;
+import com.mailboom.api.domain.model.campaign.model.valueobjects.*;
+import com.mailboom.api.domain.model.campaign.valueobjects.*;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import lombok.Getter;
 
 import java.time.Instant;

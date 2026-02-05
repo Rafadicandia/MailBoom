@@ -1,11 +1,11 @@
 package com.mailboom.api.application.usecase;
 
 import com.mailboom.api.application.contact.usecase.ImportContactsFromFileUseCaseImpl;
-import com.mailboom.api.domain.model.Contact;
-import com.mailboom.api.domain.model.ContactList;
-import com.mailboom.api.domain.model.valueobjects.ContactListId;
-import com.mailboom.api.domain.model.valueobjects.Name;
-import com.mailboom.api.domain.model.valueobjects.UserId;
+import com.mailboom.api.domain.model.contact.Contact;
+import com.mailboom.api.domain.model.contact.ContactList;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
+import com.mailboom.api.domain.model.common.valueobjects.Name;
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.domain.port.out.ContactRepository;
 import com.mailboom.api.domain.port.out.FileParserFactory;

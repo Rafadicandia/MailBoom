@@ -1,9 +1,9 @@
-package com.mailboom.api.domain.model;
+package com.mailboom.api.domain.model.contact;
 
 import com.mailboom.api.domain.exception.ContactListMustHaveNameException;
-import com.mailboom.api.domain.model.valueobjects.ContactListId;
-import com.mailboom.api.domain.model.valueobjects.Name;
-import com.mailboom.api.domain.model.valueobjects.UserId;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
+import com.mailboom.api.domain.model.common.valueobjects.Name;
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import lombok.Getter;
 
 @Getter

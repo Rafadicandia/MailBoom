@@ -1,4 +1,4 @@
-package com.mailboom.api.domain.model.valueobjects;
+package com.mailboom.api.domain.model.common.valueobjects;
 
 import com.mailboom.api.domain.exception.EmailCannotBeNullException;
 import com.mailboom.api.domain.exception.InvalidEmailException;
