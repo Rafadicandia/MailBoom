@@ -1,8 +1,8 @@
-package com.mailboom.api.application.usecase;
+package com.mailboom.api.application.contact.usecase;
 
-import com.mailboom.api.application.exception.ContactListAlreadyExistException;
-import com.mailboom.api.application.port.in.CreateContactListUseCase;
-import com.mailboom.api.application.usecase.command.CreateContactListCommand;
+import com.mailboom.api.application.common.exception.ContactListAlreadyExistException;
+import com.mailboom.api.application.contact.port.in.CreateContactListUseCase;
+import com.mailboom.api.application.contact.usecase.command.CreateContactListCommand;
 import com.mailboom.api.domain.model.ContactList;
 import com.mailboom.api.domain.model.valueobjects.Name;
 import com.mailboom.api.domain.model.valueobjects.UserId;
