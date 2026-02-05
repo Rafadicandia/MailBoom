@@ -1,4 +1,4 @@
-package com.mailboom.api.application.usecase.command;
+package com.mailboom.api.application.contact.usecase.command;
 
 import java.util.UUID;
 
