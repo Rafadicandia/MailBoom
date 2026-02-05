@@ -1,4 +1,4 @@
-package com.mailboom.api.application.port.in;
+package com.mailboom.api.application.contact.port.in;
 
 import com.mailboom.api.domain.model.valueobjects.ContactListId;
 import com.mailboom.api.domain.model.valueobjects.UserId;

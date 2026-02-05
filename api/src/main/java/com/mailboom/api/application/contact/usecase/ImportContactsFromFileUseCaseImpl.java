@@ -1,6 +1,6 @@
-package com.mailboom.api.application.usecase;
+package com.mailboom.api.application.contact.usecase;
 
-import com.mailboom.api.application.port.in.ImportContactsFromFileUseCase;
+import com.mailboom.api.application.contact.port.in.ImportContactsFromFileUseCase;
 import com.mailboom.api.domain.model.Contact;
 import com.mailboom.api.domain.model.ContactList;
 import com.mailboom.api.domain.model.valueobjects.*;
