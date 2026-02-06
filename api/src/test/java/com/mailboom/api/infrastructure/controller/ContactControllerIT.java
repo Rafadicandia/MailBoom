@@ -1,12 +1,11 @@
 package com.mailboom.api.infrastructure.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mailboom.api.domain.model.common.valueobjects.Email;
+import com.mailboom.api.domain.model.common.valueobjects.Name;
 import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
-import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
-import com.mailboom.api.domain.model.common.valueobjects.Email;
-import com.mailboom.api.domain.model.common.valueobjects.Name;
 import com.mailboom.api.domain.model.user.User;
 import com.mailboom.api.domain.model.user.valueobjects.EmailCounter;
 import com.mailboom.api.domain.model.user.valueobjects.PasswordHash;
@@ -14,7 +13,9 @@ import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.domain.port.out.ContactRepository;
 import com.mailboom.api.domain.port.out.UserRepository;
+import com.mailboom.api.infrastructure.dto.NewContactListRequest;
 import com.mailboom.api.infrastructure.dto.NewContactRequest;
+import com.mailboom.api.infrastructure.dto.UpdateContactListRequest;
 import com.mailboom.api.infrastructure.dto.UpdateContactRequest;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.TokenEntity;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.UserEntity;
@@ -53,6 +54,27 @@ class ContactControllerIT {
 
     @Container
     static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15-alpine");
+    @Autowired
+    private MockMvc mockMvc;
+    @Autowired
+    private ObjectMapper objectMapper;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private SpringDataUserRepository springDataUserRepository;
+    @Autowired
+    private TokenRepository tokenRepository;
+    @Autowired
+    private ContactListRepository contactListRepository;
+    @Autowired
+    private ContactRepository contactRepository;
+    @Autowired
+    private JwtService jwtService;
+    @Autowired
+    private UserDetailsService userDetailsService;
+    private String jwtToken;
+    private User testUser;
+    private ContactList testList;
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -65,37 +87,6 @@ class ContactControllerIT {
         registry.add("application.security.jwt.expiration", () -> 86400000);
         registry.add("application.security.jwt.refresh-token.expiration", () -> 604800000);
     }
-
-    @Autowired
-    private MockMvc mockMvc;
-
-    @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
-    private SpringDataUserRepository springDataUserRepository;
-
-    @Autowired
-    private TokenRepository tokenRepository;
-
-    @Autowired
-    private ContactListRepository contactListRepository;
-
-    @Autowired
-    private ContactRepository contactRepository;
-
-    @Autowired
-    private JwtService jwtService;
-
-    @Autowired
-    private UserDetailsService userDetailsService;
-
-    private String jwtToken;
-    private User testUser;
-    private ContactList testList;
 
     @BeforeEach
     void setUp() {
@@ -111,7 +102,7 @@ class ContactControllerIT {
                 new EmailCounter(20)
         );
         userRepository.save(testUser);
-        
+
         springDataUserRepository.flush();
 
         UserEntity userEntity = springDataUserRepository.findByEmail("pepito@hotmail.com")
@@ -141,11 +132,21 @@ class ContactControllerIT {
         NewContactRequest request = new NewContactRequest(testList.getId().value().toString(), "newcontact@example.com", "New Contact", new HashMap<>(), true);
 
         mockMvc.perform(post("/contacts/new")
-                .header("Authorization", "Bearer " + jwtToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("newcontact@example.com"));
+    }
+
+    @Test
+    void shouldCreateContactListSuccessfully() throws Exception {
+        NewContactListRequest newContactListRequest = new NewContactListRequest("New List", UUID.randomUUID().toString());
+        mockMvc.perform(post("/contacts/new/list")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(newContactListRequest)))
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -172,13 +173,29 @@ class ContactControllerIT {
 
         // When & Then
         mockMvc.perform(put("/contacts/" + contact.getId().value() + "/update")
-                .header("Authorization", "Bearer " + jwtToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(request)))
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("updated@example.com"))
                 .andExpect(jsonPath("$.name").value("Updated Name"))
                 .andExpect(jsonPath("$.subscribed").value(false));
+    }
+
+    @Test
+    void shouldUpdateContactListSuccessfully() throws Exception {
+        // Given
+        ContactList contactList = ContactList.create(testUser.getId(), new Name("Original Name"));
+        contactListRepository.save(contactList);
+
+        UpdateContactListRequest request = new UpdateContactListRequest("Updated Name", UUID.randomUUID().toString());
+        // When & Then
+        mockMvc.perform(put("/contacts/" + contactList.getId().value() + "/list/update")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk());
+
     }
 
     @Test
@@ -196,18 +213,19 @@ class ContactControllerIT {
 
         // When & Then
         mockMvc.perform(delete("/contacts/" + contact.getId().value() + "/delete")
-                .header("Authorization", "Bearer " + jwtToken))
+                        .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isNoContent());
     }
+
     @Test
-    void shouldDeleteContactListSuccessfully() throws Exception{
+    void shouldDeleteContactListSuccessfully() throws Exception {
         // Given
         ContactList contactList = ContactList.create(testUser.getId(), new Name("Delete Me"));
         contactListRepository.save(contactList);
 
         // When & Then
         mockMvc.perform(delete("/contacts/" + contactList.getId().value() + "/list/delete")
-                .header("Authorization", "Bearer " + jwtToken))
+                        .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isNoContent());
 
     }
@@ -227,9 +245,29 @@ class ContactControllerIT {
 
         // When & Then
         mockMvc.perform(get("/contacts/" + contact.getId().value())
-                .header("Authorization", "Bearer " + jwtToken))
+                        .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("get@example.com"))
                 .andExpect(jsonPath("$.name").value("Get Me"));
+    }
+
+    @Test
+    void shouldGetContactListSuccessfully() throws Exception {
+        // Given
+        ContactList contactList = ContactList.create(testUser.getId(), new Name("Get Me"));
+        contactListRepository.save(contactList);
+        // When & Then
+        mockMvc.perform(get("/contacts/" + contactList.getId().value() + "/list")
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.name").value("Get Me"));
+    }
+
+    @Test
+    void shouldGetContactListsFromOwnerSuccessfully() throws Exception {
+        // Given
+        mockMvc.perform(get("/contacts/list/user/" + testUser.getId().value())
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isOk());
     }
 }
