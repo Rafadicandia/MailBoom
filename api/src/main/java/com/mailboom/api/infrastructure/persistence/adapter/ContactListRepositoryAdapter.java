@@ -27,7 +27,7 @@ public class ContactListRepositoryAdapter implements ContactListRepository {
 
     @Override
     public List<ContactList> findAllByUserId(UUID userId) {
-        return jpaRepository.findAllByOwnerId(userId).stream()
+        return jpaRepository.findAllByUser_Id(userId).stream()
                 .map(contactListEntityMapper::toDomain)
                 .collect(Collectors.toList());
     }
