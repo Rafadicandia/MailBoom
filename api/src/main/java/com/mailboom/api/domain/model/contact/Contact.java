@@ -31,6 +31,10 @@ public class Contact {
         return new Contact(id, listId, email, name, customFields, subscribed);
     }
 
+    public Contact updateContact(Email email, Name name, Map<String, Object> customFields, boolean subscribed){
+        return new Contact(this.id, this.listId, email, name, customFields, subscribed);
+    }
+
     public Contact subscribe(Contact contact){
         return Contact.create(id, listId, email, name, customFields, true);
     }
