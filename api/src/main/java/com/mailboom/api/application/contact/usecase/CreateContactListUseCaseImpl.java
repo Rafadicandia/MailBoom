@@ -22,7 +22,7 @@ public class CreateContactListUseCaseImpl implements CreateContactListUseCase {
     public ContactList execute(CreateContactListCommand command) {
         String normalizedCommandName = command.name().trim().toLowerCase();
         
-        if (contactListRepository.findAllByUserId(command.ownerId()).stream().anyMatch(
+        if (contactListRepository.findAllByUserId(new UserId(command.ownerId())).stream().anyMatch(
                 contactList -> contactList.getName().value().trim().toLowerCase().equals(normalizedCommandName))) {
             throw new ContactListAlreadyExistException("Contact list with name " + command.name() + " already exists");
         }
