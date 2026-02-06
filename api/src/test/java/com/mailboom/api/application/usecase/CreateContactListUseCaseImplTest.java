@@ -42,7 +42,7 @@ class CreateContactListUseCaseImplTest {
     @Test
     void shouldCreateContactListSuccessfully() {
         // Given
-        when(contactListRepository.findAllByUserId(ownerId.value())).thenReturn(Collections.emptyList());
+        when(contactListRepository.findAllByUserId(new UserId(ownerId.value()))).thenReturn(Collections.emptyList());
         when(contactListRepository.save(any(ContactList.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
@@ -58,7 +58,7 @@ class CreateContactListUseCaseImplTest {
     void shouldThrowExceptionWhenContactListAlreadyExists() {
         // Given
         ContactList existingList = ContactList.create(ownerId, new Name("Test List"));
-        when(contactListRepository.findAllByUserId(ownerId.value())).thenReturn(Collections.singletonList(existingList));
+        when(contactListRepository.findAllByUserId(new UserId(ownerId.value()))).thenReturn(Collections.singletonList(existingList));
 
         // When & Then
         assertThrows(ContactListAlreadyExistException.class, () -> {
