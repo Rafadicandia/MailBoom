@@ -33,7 +33,7 @@ public class ImportContactsFromFileUseCaseImpl implements ImportContactsFromFile
     @Override
     @Transactional
     public void execute(ContactListId listId, UserId ownerId, InputStream fileStream, String contentType) {
-        Optional<ContactList> contactListOpt = contactListRepository.findById(listId.value());
+        Optional<ContactList> contactListOpt = contactListRepository.findById(new ContactListId(listId.value()));
 
         if (contactListOpt.isEmpty() || !contactListOpt.get().getOwner().equals(ownerId)) {
             throw new IllegalArgumentException("Contact List not found or you don't have permission to access it.");

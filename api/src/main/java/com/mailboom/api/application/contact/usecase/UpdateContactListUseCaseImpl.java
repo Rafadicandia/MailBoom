@@ -5,6 +5,7 @@ import com.mailboom.api.application.contact.port.in.UpdateContactListUseCase;
 import com.mailboom.api.application.contact.usecase.command.UpdateContactListCommand;
 import com.mailboom.api.domain.model.common.valueobjects.Name;
 import com.mailboom.api.domain.model.contact.ContactList;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -19,11 +20,12 @@ public class UpdateContactListUseCaseImpl implements UpdateContactListUseCase {
 
     @Override
     public ContactList execute(UpdateContactListCommand command) {
-        if(contactListRepository.findById(UUID.fromString(command.id())).isEmpty()){
+        ContactListId contactListId = new ContactListId(UUID.fromString(command.id()));
+        if(contactListRepository.findById(contactListId).isEmpty()){
             throw new ContactListIdNotFoundException("ContactList not found with id: " + command.id());
 
         }
-        Optional<ContactList> contactList = contactListRepository.findById(UUID.fromString(command.id()));
+        Optional<ContactList> contactList = contactListRepository.findById(contactListId);
         if (contactList.isPresent()) {
             ContactList updatedContactList = contactList.get().updateName(new Name(command.name()));
             return contactListRepository.save(updatedContactList);

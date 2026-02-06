@@ -67,7 +67,7 @@ class ImportContactsFromFileUseCaseImplTest {
     @Test
     void shouldImportContactsSuccessfully() {
         // Given
-        when(listRepository.findById(listId.value())).thenReturn(Optional.of(existingList));
+        when(listRepository.findById(new ContactListId(listId.value()))).thenReturn(Optional.of(existingList));
         when(parserFactory.getParser(contentType)).thenReturn(parser);
         
         doAnswer(invocation -> {
@@ -93,7 +93,7 @@ class ImportContactsFromFileUseCaseImplTest {
     @Test
     void shouldProcessContactsInBatches() {
         // Given
-        when(listRepository.findById(listId.value())).thenReturn(Optional.of(existingList));
+        when(listRepository.findById(new ContactListId(listId.value()))).thenReturn(Optional.of(existingList));
         when(parserFactory.getParser(contentType)).thenReturn(parser);
         
         doAnswer(invocation -> {
@@ -116,7 +116,7 @@ class ImportContactsFromFileUseCaseImplTest {
     @Test
     void shouldThrowExceptionWhenListNotFound() {
         // Given
-        when(listRepository.findById(listId.value())).thenReturn(Optional.empty());
+        when(listRepository.findById(new ContactListId(listId.value()))).thenReturn(Optional.empty());
 
         // When & Then
         assertThrows(IllegalArgumentException.class, () -> {
@@ -129,7 +129,7 @@ class ImportContactsFromFileUseCaseImplTest {
         // Given
         UserId anotherOwner = new UserId(UUID.randomUUID());
         ContactList listWithDifferentOwner = ContactList.create(anotherOwner, new Name("Another List"));
-        when(listRepository.findById(listId.value())).thenReturn(Optional.of(listWithDifferentOwner));
+        when(listRepository.findById(new ContactListId(listId.value()))).thenReturn(Optional.of(listWithDifferentOwner));
 
         // When & Then
         assertThrows(IllegalArgumentException.class, () -> {
