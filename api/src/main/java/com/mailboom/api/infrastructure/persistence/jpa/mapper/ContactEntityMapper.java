@@ -6,15 +6,20 @@ import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
 import com.mailboom.api.domain.model.common.valueobjects.Email;
 import com.mailboom.api.domain.model.common.valueobjects.Name;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.ContactEntity;
+import com.mailboom.api.infrastructure.persistence.jpa.entity.ContactListEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ContactEntityMapper {
     public ContactEntity toEntity(Contact contact) {
+        ContactListEntity listEntity = new ContactListEntity();
+        listEntity.setId(contact.getListId().value());
+
         return ContactEntity.builder()
                 .id(contact.getId().value())
-                .email(contact.getEmail().email())
-                .name(contact.getName().toString())
+                .contactListId(listEntity)
+                .email(contact.getEmail().toString())
+                .name(contact.getName().value())
                 .customFields(contact.getCustomFields())
                 .subscribed(contact.isSubscribed())
                 .build();
@@ -30,6 +35,4 @@ public class ContactEntityMapper {
                 entity.isSubscribed()
         );
     }
-
-
 }
