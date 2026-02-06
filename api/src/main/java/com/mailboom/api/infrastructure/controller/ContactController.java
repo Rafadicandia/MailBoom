@@ -4,7 +4,6 @@ import com.mailboom.api.application.contact.port.in.*;
 import com.mailboom.api.application.contact.usecase.command.*;
 import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.ContactList;
-import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.infrastructure.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +23,10 @@ public class ContactController {
     private final GetContactUseCase getContactUseCase;
     private final DeleteContactListUseCase deleteContactListUseCase;
     private final CreateContactListUseCase createContactListUseCase;
+    private final UpdateContactListUseCase updateContactListUseCase;
 
 
-//new contact
+    //new contact
     @PostMapping("/new")
     public ResponseEntity<NewContactResponse> createContact(
             @RequestBody NewContactRequest request) {
@@ -85,7 +85,29 @@ public class ContactController {
 
 
     }
-//Delete contact
+//updateContactList
+    @PutMapping("/{id}/list/update")
+    public ResponseEntity<UpdateContactListResponse> updateContactList(
+            @PathVariable UUID id,
+            @RequestBody UpdateContactListRequest request) {
+        UpdateContactListCommand updateContactListCommand = new UpdateContactListCommand(
+                id.toString(),
+                request.name(),
+                UUID.fromString(request.ownerId()).toString()
+        );
+        ContactList updateContactList = updateContactListUseCase.execute(updateContactListCommand);
+
+        return ResponseEntity.ok(new UpdateContactListResponse(
+                updateContactList.getId().toString(),
+                updateContactList.getName().toString(),
+                updateContactList.getOwner().toString(),
+                updateContactList.getTotalContacts()));
+
+
+    }
+
+
+    //Delete contact
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Void> deleteContact(@PathVariable UUID id) {
 
@@ -96,7 +118,8 @@ public class ContactController {
 
 
     }
-//Delete contact List
+
+    //Delete contact List
     @DeleteMapping("/{id}/list/delete")
     public ResponseEntity<Void> deleteContactList(@PathVariable UUID id) {
 
