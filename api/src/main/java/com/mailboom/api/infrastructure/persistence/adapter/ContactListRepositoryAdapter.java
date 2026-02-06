@@ -2,6 +2,7 @@ package com.mailboom.api.infrastructure.persistence.adapter;
 
 import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.ContactListEntity;
 import com.mailboom.api.infrastructure.persistence.jpa.mapper.ContactListEntityMapper;
@@ -22,13 +23,13 @@ public class ContactListRepositoryAdapter implements ContactListRepository {
     private final ContactListEntityMapper contactListEntityMapper;
 
     @Override
-    public Optional<ContactList> findById(UUID id) {
-        return jpaRepository.findById(id).map(contactListEntityMapper::toDomain);
+    public Optional<ContactList> findById(ContactListId id) {
+        return jpaRepository.findById(id.value()).map(contactListEntityMapper::toDomain);
     }
 
     @Override
-    public List<ContactList> findAllByUserId(UUID userId) {
-        return jpaRepository.findAllByUser_Id(userId).stream()
+    public List<ContactList> findAllByUserId(UserId userId) {
+        return jpaRepository.findAllByUser_Id(userId.value()).stream()
                 .map(contactListEntityMapper::toDomain)
                 .collect(Collectors.toList());
     }
