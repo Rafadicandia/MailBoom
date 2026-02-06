@@ -1,10 +1,12 @@
 package com.mailboom.api.infrastructure.persistence.jpa.entity;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Type;
 
 import java.util.Map;
 import java.util.UUID;
@@ -20,7 +22,7 @@ public class ContactEntity {
     @Id
     private UUID id;
 
-    @ManyToOne(fetch = jakarta.persistence.FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contact_list_id", nullable = false)
     private ContactListEntity contactListId;
 
@@ -30,10 +32,8 @@ public class ContactEntity {
     @Column(nullable = false)
     private String name;
 
-    @ElementCollection
-    @CollectionTable(name = "contact_custom_fields", joinColumns = @JoinColumn(name = "contact_id"))
-    @MapKeyColumn(name = "field_name")
-    @Column(name = "field_value")
+    @Type(JsonType.class)
+    @Column(name = "custom_fields", columnDefinition = "jsonb")
     private Map<String, Object> customFields;
 
     @Column(nullable = false)
