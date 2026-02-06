@@ -3,7 +3,7 @@ package com.mailboom.api.infrastructure.persistence.adapter;
 import com.mailboom.api.domain.model.user.User;
 import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.port.out.UserRepository;
-import com.mailboom.api.infrastructure.exception.EmailNotFoundException;
+import com.mailboom.api.infrastructure.common.exception.EmailNotFoundException;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.UserEntity;
 import com.mailboom.api.infrastructure.persistence.jpa.mapper.UserEntityMapper;
 import com.mailboom.api.infrastructure.persistence.jpa.repository.SpringDataUserRepository;

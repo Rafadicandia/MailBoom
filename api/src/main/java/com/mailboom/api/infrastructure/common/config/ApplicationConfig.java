@@ -1,4 +1,4 @@
-package com.mailboom.api.infrastructure.config;
+package com.mailboom.api.infrastructure.common.config;
 
 import com.mailboom.api.infrastructure.security.CustomUserDetailsService;
 import lombok.RequiredArgsConstructor;

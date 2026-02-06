@@ -1,9 +1,9 @@
 package com.mailboom.api.infrastructure.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mailboom.api.infrastructure.dto.LoginRequest;
-import com.mailboom.api.infrastructure.dto.NewUserRequest;
-import com.mailboom.api.infrastructure.dto.TokenResponse;
+import com.mailboom.api.infrastructure.user.dto.LoginRequest;
+import com.mailboom.api.infrastructure.user.dto.NewUserRequest;
+import com.mailboom.api.infrastructure.user.dto.TokenResponse;
 import com.mailboom.api.infrastructure.persistence.jpa.repository.SpringDataUserRepository;
 import com.mailboom.api.infrastructure.persistence.jpa.repository.TokenRepository;
 import org.junit.jupiter.api.BeforeEach;

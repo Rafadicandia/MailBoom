@@ -13,10 +13,10 @@ import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.domain.port.out.ContactRepository;
 import com.mailboom.api.domain.port.out.UserRepository;
-import com.mailboom.api.infrastructure.dto.NewContactListRequest;
-import com.mailboom.api.infrastructure.dto.NewContactRequest;
-import com.mailboom.api.infrastructure.dto.UpdateContactListRequest;
-import com.mailboom.api.infrastructure.dto.UpdateContactRequest;
+import com.mailboom.api.infrastructure.contact.dto.NewContactListRequest;
+import com.mailboom.api.infrastructure.contact.dto.NewContactRequest;
+import com.mailboom.api.infrastructure.contact.dto.UpdateContactListRequest;
+import com.mailboom.api.infrastructure.contact.dto.UpdateContactRequest;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.TokenEntity;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.UserEntity;
 import com.mailboom.api.infrastructure.persistence.jpa.repository.SpringDataUserRepository;
@@ -39,7 +39,6 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.HashMap;
-import java.util.UUID;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -141,7 +140,7 @@ class ContactControllerIT {
 
     @Test
     void shouldCreateContactListSuccessfully() throws Exception {
-        NewContactListRequest newContactListRequest = new NewContactListRequest("New List", UUID.randomUUID().toString());
+        NewContactListRequest newContactListRequest = new NewContactListRequest("New List", testUser.getId().value().toString());
         mockMvc.perform(post("/contacts/new/list")
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -188,7 +187,7 @@ class ContactControllerIT {
         ContactList contactList = ContactList.create(testUser.getId(), new Name("Original Name"));
         contactListRepository.save(contactList);
 
-        UpdateContactListRequest request = new UpdateContactListRequest("Updated Name", UUID.randomUUID().toString());
+        UpdateContactListRequest request = new UpdateContactListRequest("Updated Name", testUser.getId().value().toString());
         // When & Then
         mockMvc.perform(put("/contacts/" + contactList.getId().value() + "/list/update")
                         .header("Authorization", "Bearer " + jwtToken)

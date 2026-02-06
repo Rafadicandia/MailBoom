@@ -12,7 +12,7 @@ import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.domain.port.out.ContactRepository;
 import com.mailboom.api.domain.port.out.FileParserFactory;
 import com.mailboom.api.domain.model.user.valueobjects.UserId;
-import com.mailboom.api.infrastructure.dto.ContactData;
+import com.mailboom.api.infrastructure.contact.dto.ContactData;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,9 +1,10 @@
-package com.mailboom.api.infrastructure.dto;
+package com.mailboom.api.infrastructure.contact.dto;
 
-public record ContactListDataResponse(
+public record UpdateContactListResponse(
         String id,
         String name,
         String ownerId,
         long totalContacts
+
 ) {
 }

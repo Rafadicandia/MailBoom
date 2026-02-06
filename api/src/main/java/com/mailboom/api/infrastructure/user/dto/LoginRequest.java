@@ -1,4 +1,4 @@
-package com.mailboom.api.infrastructure.dto;
+package com.mailboom.api.infrastructure.user.dto;
 
 import org.antlr.v4.runtime.misc.NotNull;
 

@@ -1,8 +1,8 @@
-package com.mailboom.api.infrastructure.dto;
+package com.mailboom.api.infrastructure.contact.dto;
 
 import java.util.Map;
 
-public record ContactDataResponse(
+public record UpdateContactResponse(
         String contactId,
         String contactListId,
         String email,

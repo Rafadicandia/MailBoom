@@ -6,7 +6,7 @@ import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.domain.port.out.UserRepository;
-import com.mailboom.api.infrastructure.exception.UserNotFoundException;
+import com.mailboom.api.infrastructure.common.exception.UserNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 

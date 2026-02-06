@@ -42,6 +42,11 @@ public class User {
         return new User(id, email, name, password, PlanType.FREE, emailsSentThisMonth, Role.USER, new HashSet<>());
     }
 
+    public static User createAdmin(UserId id, Email email, Name name, PasswordHash password){
+        return new User(id, email, name, password, PlanType.ENTERPRISE, EmailCounter.zero(), Role.ADMIN, new HashSet<>());
+
+    }
+
     public User incrementEmailsSent() {
         return new User(id, email, name, password, plan, emailsSentThisMonth.increment(), role, contactLists);
     }

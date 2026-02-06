@@ -1,4 +1,4 @@
-package com.mailboom.api.infrastructure.adapter.file;
+package com.mailboom.api.infrastructure.contact.adapter.file;
 
 import com.mailboom.api.domain.port.out.ContactFileParser;
 import com.mailboom.api.domain.port.out.FileParserFactory;

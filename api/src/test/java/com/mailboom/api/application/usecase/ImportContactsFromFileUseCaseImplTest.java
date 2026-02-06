@@ -10,7 +10,7 @@ import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.domain.port.out.ContactRepository;
 import com.mailboom.api.domain.port.out.FileParserFactory;
 import com.mailboom.api.domain.port.out.ContactFileParser;
-import com.mailboom.api.infrastructure.dto.ContactData;
+import com.mailboom.api.infrastructure.contact.dto.ContactData;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

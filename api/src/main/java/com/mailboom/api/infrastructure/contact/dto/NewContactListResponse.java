@@ -1,4 +1,4 @@
-package com.mailboom.api.infrastructure.dto;
+package com.mailboom.api.infrastructure.contact.dto;
 
 public record NewContactListResponse(
         String id,

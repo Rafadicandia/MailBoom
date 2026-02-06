@@ -2,9 +2,9 @@ package com.mailboom.api.infrastructure.controller;
 
 
 import com.mailboom.api.application.user.usecase.command.CreateUserCommand;
-import com.mailboom.api.infrastructure.dto.LoginRequest;
-import com.mailboom.api.infrastructure.dto.NewUserRequest;
-import com.mailboom.api.infrastructure.dto.TokenResponse;
+import com.mailboom.api.infrastructure.user.dto.LoginRequest;
+import com.mailboom.api.infrastructure.user.dto.NewUserRequest;
+import com.mailboom.api.infrastructure.user.dto.TokenResponse;
 import com.mailboom.api.infrastructure.security.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

@@ -1,9 +1,8 @@
-package com.mailboom.api.infrastructure.dto;
+package com.mailboom.api.infrastructure.contact.dto;
 
 import org.antlr.v4.runtime.misc.NotNull;
 
-
-public record NewContactListRequest(
+public record UpdateContactListRequest(
         @NotNull String name,
         @NotNull String ownerId
 ) {

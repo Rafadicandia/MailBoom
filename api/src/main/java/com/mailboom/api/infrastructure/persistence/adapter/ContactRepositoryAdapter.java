@@ -9,7 +9,7 @@ import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.domain.port.out.ContactRepository;
 import com.mailboom.api.domain.port.out.UserRepository;
-import com.mailboom.api.infrastructure.exception.UserNotFoundException;
+import com.mailboom.api.infrastructure.common.exception.UserNotFoundException;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.ContactEntity;
 import com.mailboom.api.infrastructure.persistence.jpa.mapper.ContactEntityMapper;
 import com.mailboom.api.infrastructure.persistence.jpa.repository.SpringDataContactRepository;

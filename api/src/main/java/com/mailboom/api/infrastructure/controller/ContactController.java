@@ -4,9 +4,10 @@ import com.mailboom.api.application.contact.port.in.*;
 import com.mailboom.api.application.contact.usecase.command.*;
 import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.ContactList;
-import com.mailboom.api.infrastructure.dto.*;
+import com.mailboom.api.infrastructure.contact.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/contacts")
 @RequiredArgsConstructor
+@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 public class ContactController {
 
     private final CreateContactUseCase createContactUseCase;
@@ -29,10 +31,9 @@ public class ContactController {
     private final GetContactListFromUserUseCase getContactListsFromOwnerUseCase;
 
 
-
-
     //new contact
     @PostMapping("/new")
+    @PreAuthorize("@userSecurity.isListOwner(authentication, #request.contactListId())")
     public ResponseEntity<NewContactResponse> createContact(
             @RequestBody NewContactRequest request) {
         CreateContactCommand createContactCommand = new CreateContactCommand(
@@ -56,6 +57,7 @@ public class ContactController {
 
     //new contactList
     @PostMapping("/new/list")
+    @PreAuthorize("@userSecurity.isOwner(authentication, #request.ownerId())")
     public ResponseEntity<NewContactListResponse> createContactList(
             @RequestBody NewContactListRequest request) {
         CreateContactListCommand createContactListCommand = new CreateContactListCommand(
@@ -67,8 +69,10 @@ public class ContactController {
                 newContactList.getName().toString(),
                 newContactList.getOwner().toString()));
     }
-//Update Contact
+    
+    //Update Contact
     @PutMapping("/{id}/update")
+    @PreAuthorize("@userSecurity.isContactOwner(authentication, #id)")
     public ResponseEntity<UpdateContactResponse> updateContact(
             @PathVariable UUID id,
             @RequestBody UpdateContactRequest request) {
@@ -90,8 +94,10 @@ public class ContactController {
 
 
     }
-//updateContactList
+    
+    //updateContactList
     @PutMapping("/{id}/list/update")
+    @PreAuthorize("@userSecurity.isListOwner(authentication, #id)")
     public ResponseEntity<UpdateContactListResponse> updateContactList(
             @PathVariable UUID id,
             @RequestBody UpdateContactListRequest request) {
@@ -114,6 +120,7 @@ public class ContactController {
 
     //Delete contact
     @DeleteMapping("/{id}/delete")
+    @PreAuthorize("@userSecurity.isContactOwner(authentication, #id)")
     public ResponseEntity<Void> deleteContact(@PathVariable UUID id) {
 
         DeleteContactCommand deleteContactCommand = new DeleteContactCommand(id.toString());
@@ -126,6 +133,7 @@ public class ContactController {
 
     //Delete contact List
     @DeleteMapping("/{id}/list/delete")
+    @PreAuthorize("@userSecurity.isListOwner(authentication, #id)")
     public ResponseEntity<Void> deleteContactList(@PathVariable UUID id) {
 
         DeleteContactListCommand deleteContactListCommand = new DeleteContactListCommand(id.toString());
@@ -135,8 +143,9 @@ public class ContactController {
 
     }
 
-//Get contact
+    //Get contact
     @GetMapping("/{id}")
+    @PreAuthorize("@userSecurity.isContactOwner(authentication, #id)")
     public ResponseEntity<ContactDataResponse> getContact(@PathVariable UUID id) {
         GetContactCommand getContactCommand = new GetContactCommand(id.toString());
         Contact contact = getContactUseCase.execute(getContactCommand);
@@ -154,6 +163,7 @@ public class ContactController {
 
     //Get contactLit
     @GetMapping("/{id}/list")
+    @PreAuthorize("@userSecurity.isListOwner(authentication, #id)")
     public ResponseEntity<ContactListDataResponse> getContactList(@PathVariable UUID id) {
         GetContactListCommand getContactListCommand = new GetContactListCommand(id.toString());
         ContactList contactList = getContactListUseCase.execute(getContactListCommand);
@@ -166,6 +176,7 @@ public class ContactController {
 
     //get contactLists from owner
     @GetMapping("/list/user/{id}")
+    @PreAuthorize("@userSecurity.isOwner(authentication, #id)")
     public ResponseEntity<List<ContactListDataResponse>> getContactListsFromOwner(@PathVariable UUID id) {
         GetContactListFromUserCommand getContactListsFromOwnerCommand = new GetContactListFromUserCommand(id.toString());
         List<ContactList> contactLists = getContactListsFromOwnerUseCase.execute(getContactListsFromOwnerCommand);
@@ -179,7 +190,5 @@ public class ContactController {
         );
 
     }
-
-
 
 }
