@@ -199,6 +199,18 @@ class ContactControllerIT {
                 .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isNoContent());
     }
+    @Test
+    void shouldDeleteContactListSuccessfully() throws Exception{
+        // Given
+        ContactList contactList = ContactList.create(testUser.getId(), new Name("Delete Me"));
+        contactListRepository.save(contactList);
+
+        // When & Then
+        mockMvc.perform(delete("/contacts/" + contactList.getId().value() + "/list/delete")
+                .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNoContent());
+
+    }
 
     @Test
     void shouldGetContactSuccessfully() throws Exception {
