@@ -41,7 +41,7 @@ public class ContactRepositoryAdapter implements ContactRepository {
             throw new UserNotFoundException("User with id " + userId + " not found.");
         }
 
-        List<ContactList> userContactLists = contactListRepository.findAllByUserId(userId.value());
+        List<ContactList> userContactLists = contactListRepository.findAllByUserId(new UserId(userId.value()));
         if (userContactLists.isEmpty()) {
             return Collections.emptyList();
         }
