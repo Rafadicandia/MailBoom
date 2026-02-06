@@ -1,4 +1,4 @@
-package com.mailboom.api.infrastructure.controller;
+package com.mailboom.api.infrastructure.contact.controller;
 
 import com.mailboom.api.application.contact.port.in.*;
 import com.mailboom.api.application.contact.usecase.command.*;

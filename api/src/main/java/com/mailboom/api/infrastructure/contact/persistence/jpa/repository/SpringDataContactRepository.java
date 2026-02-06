@@ -1,6 +1,6 @@
-package com.mailboom.api.infrastructure.persistence.jpa.repository;
+package com.mailboom.api.infrastructure.contact.persistence.jpa.repository;
 
-import com.mailboom.api.infrastructure.persistence.jpa.entity.ContactEntity;
+import com.mailboom.api.infrastructure.contact.persistence.jpa.entity.ContactEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

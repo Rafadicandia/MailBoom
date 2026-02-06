@@ -1,12 +1,12 @@
-package com.mailboom.api.infrastructure.persistence.jpa.mapper;
+package com.mailboom.api.infrastructure.contact.persistence.jpa.mapper;
 
 import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
 import com.mailboom.api.domain.model.common.valueobjects.Email;
 import com.mailboom.api.domain.model.common.valueobjects.Name;
-import com.mailboom.api.infrastructure.persistence.jpa.entity.ContactEntity;
-import com.mailboom.api.infrastructure.persistence.jpa.entity.ContactListEntity;
+import com.mailboom.api.infrastructure.contact.persistence.jpa.entity.ContactEntity;
+import com.mailboom.api.infrastructure.contact.persistence.jpa.entity.ContactListEntity;
 import org.springframework.stereotype.Component;
 
 @Component

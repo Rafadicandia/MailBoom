@@ -1,5 +1,6 @@
-package com.mailboom.api.infrastructure.persistence.jpa.entity;
+package com.mailboom.api.infrastructure.contact.persistence.jpa.entity;
 
+import com.mailboom.api.infrastructure.user.persistence.jpa.entity.UserEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

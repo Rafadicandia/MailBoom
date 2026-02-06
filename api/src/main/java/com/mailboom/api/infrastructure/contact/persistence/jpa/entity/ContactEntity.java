@@ -1,4 +1,4 @@
-package com.mailboom.api.infrastructure.persistence.jpa.entity;
+package com.mailboom.api.infrastructure.contact.persistence.jpa.entity;
 
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;

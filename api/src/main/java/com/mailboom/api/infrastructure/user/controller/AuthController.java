@@ -1,4 +1,4 @@
-package com.mailboom.api.infrastructure.controller;
+package com.mailboom.api.infrastructure.user.controller;
 
 
 import com.mailboom.api.application.user.usecase.command.CreateUserCommand;

@@ -1,4 +1,4 @@
-package com.mailboom.api.infrastructure.persistence.jpa.entity;
+package com.mailboom.api.infrastructure.user.persistence.jpa.entity;
 
 import com.mailboom.api.domain.model.user.valueobjects.PlanType;
 import com.mailboom.api.domain.model.user.valueobjects.Role;

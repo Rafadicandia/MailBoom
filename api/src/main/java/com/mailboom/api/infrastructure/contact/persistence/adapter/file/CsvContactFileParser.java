@@ -1,4 +1,4 @@
-package com.mailboom.api.infrastructure.contact.adapter.file;
+package com.mailboom.api.infrastructure.contact.persistence.adapter.file;
 
 import com.mailboom.api.infrastructure.contact.dto.ContactData;
 import com.mailboom.api.domain.port.out.ContactFileParser;

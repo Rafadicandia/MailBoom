@@ -1,12 +1,12 @@
-package com.mailboom.api.infrastructure.persistence.adapter;
+package com.mailboom.api.infrastructure.user.persistence.adapter;
 
 import com.mailboom.api.domain.model.user.User;
 import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.port.out.UserRepository;
 import com.mailboom.api.infrastructure.common.exception.EmailNotFoundException;
-import com.mailboom.api.infrastructure.persistence.jpa.entity.UserEntity;
-import com.mailboom.api.infrastructure.persistence.jpa.mapper.UserEntityMapper;
-import com.mailboom.api.infrastructure.persistence.jpa.repository.SpringDataUserRepository;
+import com.mailboom.api.infrastructure.user.persistence.jpa.entity.UserEntity;
+import com.mailboom.api.infrastructure.user.persistence.jpa.mapper.UserEntityMapper;
+import com.mailboom.api.infrastructure.user.persistence.jpa.repository.SpringDataUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;

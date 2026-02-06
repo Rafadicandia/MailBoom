@@ -1,6 +1,6 @@
-package com.mailboom.api.infrastructure.persistence.jpa.repository;
+package com.mailboom.api.infrastructure.user.persistence.jpa.repository;
 
-import com.mailboom.api.infrastructure.persistence.jpa.entity.TokenEntity;
+import com.mailboom.api.infrastructure.user.persistence.jpa.entity.TokenEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

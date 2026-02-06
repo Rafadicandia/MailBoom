@@ -1,7 +1,7 @@
 package com.mailboom.api.infrastructure.security;
 
-import com.mailboom.api.infrastructure.persistence.jpa.entity.TokenEntity;
-import com.mailboom.api.infrastructure.persistence.jpa.repository.TokenRepository;
+import com.mailboom.api.infrastructure.user.persistence.jpa.entity.TokenEntity;
+import com.mailboom.api.infrastructure.user.persistence.jpa.repository.TokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

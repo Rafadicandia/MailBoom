@@ -1,4 +1,4 @@
-package com.mailboom.api.infrastructure.persistence.adapter;
+package com.mailboom.api.infrastructure.contact.persistence.adapter.repository;
 
 import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.ContactList;
@@ -10,9 +10,9 @@ import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.domain.port.out.ContactRepository;
 import com.mailboom.api.domain.port.out.UserRepository;
 import com.mailboom.api.infrastructure.common.exception.UserNotFoundException;
-import com.mailboom.api.infrastructure.persistence.jpa.entity.ContactEntity;
-import com.mailboom.api.infrastructure.persistence.jpa.mapper.ContactEntityMapper;
-import com.mailboom.api.infrastructure.persistence.jpa.repository.SpringDataContactRepository;
+import com.mailboom.api.infrastructure.contact.persistence.jpa.entity.ContactEntity;
+import com.mailboom.api.infrastructure.contact.persistence.jpa.mapper.ContactEntityMapper;
+import com.mailboom.api.infrastructure.contact.persistence.jpa.repository.SpringDataContactRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Repository;
 

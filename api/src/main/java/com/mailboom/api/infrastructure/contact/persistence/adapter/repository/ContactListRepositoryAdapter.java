@@ -1,18 +1,17 @@
-package com.mailboom.api.infrastructure.persistence.adapter;
+package com.mailboom.api.infrastructure.contact.persistence.adapter.repository;
 
 import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
 import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.port.out.ContactListRepository;
-import com.mailboom.api.infrastructure.persistence.jpa.entity.ContactListEntity;
-import com.mailboom.api.infrastructure.persistence.jpa.mapper.ContactListEntityMapper;
-import com.mailboom.api.infrastructure.persistence.jpa.repository.SpringDataContactListRepository;
+import com.mailboom.api.infrastructure.contact.persistence.jpa.entity.ContactListEntity;
+import com.mailboom.api.infrastructure.contact.persistence.jpa.mapper.ContactListEntityMapper;
+import com.mailboom.api.infrastructure.contact.persistence.jpa.repository.SpringDataContactListRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component

@@ -1,4 +1,4 @@
-package com.mailboom.api.infrastructure.persistence.jpa.mapper;
+package com.mailboom.api.infrastructure.user.persistence.jpa.mapper;
 
 import com.mailboom.api.domain.model.common.valueobjects.Email;
 import com.mailboom.api.domain.model.common.valueobjects.Name;
@@ -6,7 +6,7 @@ import com.mailboom.api.domain.model.user.User;
 import com.mailboom.api.domain.model.user.valueobjects.EmailCounter;
 import com.mailboom.api.domain.model.user.valueobjects.PasswordHash;
 import com.mailboom.api.domain.model.user.valueobjects.UserId;
-import com.mailboom.api.infrastructure.persistence.jpa.entity.UserEntity;
+import com.mailboom.api.infrastructure.user.persistence.jpa.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
