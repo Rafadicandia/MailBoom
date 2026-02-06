@@ -1,6 +1,7 @@
 package com.mailboom.api.infrastructure.persistence.adapter;
 
 import com.mailboom.api.domain.model.contact.ContactList;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.infrastructure.persistence.jpa.entity.ContactListEntity;
 import com.mailboom.api.infrastructure.persistence.jpa.mapper.ContactListEntityMapper;
@@ -38,5 +39,13 @@ public class ContactListRepositoryAdapter implements ContactListRepository {
         ContactListEntity savedEntity = jpaRepository.save(entity);
         return contactListEntityMapper.toDomain(savedEntity);
     }
+
+    @Override
+    public void deleteById(ContactListId id) {
+        jpaRepository.deleteById(id.value());
+
+    }
+
+
 
 }
