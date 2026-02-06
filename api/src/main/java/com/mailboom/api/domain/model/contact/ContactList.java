@@ -31,8 +31,8 @@ public class ContactList {
         return new ContactList(id, owner, name, totalContacts);
     }
 
-    public ContactList updateName(String newName) {
-        if (newName == null || newName.isBlank()) throw new ContactListMustHaveNameException("Name required");
-        return new ContactList(id, owner, new Name(newName), totalContacts);
+    public ContactList updateName(Name newName) {
+        if (newName == null || newName.value().isBlank()) throw new ContactListMustHaveNameException("Name required");
+        return new ContactList(this.id, this.owner, newName, this.totalContacts);
     }
 }
