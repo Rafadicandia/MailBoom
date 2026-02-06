@@ -3,6 +3,8 @@ package com.mailboom.api.infrastructure.controller;
 import com.mailboom.api.application.contact.port.in.*;
 import com.mailboom.api.application.contact.usecase.command.*;
 import com.mailboom.api.domain.model.contact.Contact;
+import com.mailboom.api.domain.model.contact.ContactList;
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.infrastructure.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +23,10 @@ public class ContactController {
     private final UpdateContactUseCase updateContactUseCase;
     private final GetContactUseCase getContactUseCase;
     private final DeleteContactListUseCase deleteContactListUseCase;
+    private final CreateContactListUseCase createContactListUseCase;
 
 
+//new contact
     @PostMapping("/new")
     public ResponseEntity<NewContactResponse> createContact(
             @RequestBody NewContactRequest request) {
@@ -43,6 +47,20 @@ public class ContactController {
                 newContact.getCustomFields(),
                 newContact.isSubscribed()
         ));
+    }
+
+    //new contactList
+    @PostMapping("/new/list")
+    public ResponseEntity<NewContactListResponse> createContactList(
+            @RequestBody NewContactListRequest request) {
+        CreateContactListCommand createContactListCommand = new CreateContactListCommand(
+                request.name(), UUID.fromString(request.ownerId()));
+
+        ContactList newContactList = createContactListUseCase.execute(createContactListCommand);
+        return ResponseEntity.ok(new NewContactListResponse(
+                newContactList.getId().toString(),
+                newContactList.getName().toString(),
+                newContactList.getOwner().toString()));
     }
 
     @PutMapping("/{id}/update")
