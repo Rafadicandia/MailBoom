@@ -1,6 +1,7 @@
 package com.mailboom.api.domain.port.out;
 
 import com.mailboom.api.domain.model.contact.ContactList;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
 
 import java.util.List;
 import java.util.Optional;
@@ -10,4 +11,5 @@ public interface ContactListRepository {
     Optional<ContactList> findById(UUID id);
     List<ContactList> findAllByUserId(UUID userId);
     ContactList save(ContactList contactList);
+    void deleteById(ContactListId id);
 }
