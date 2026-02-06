@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -24,6 +25,10 @@ public class ContactController {
     private final DeleteContactListUseCase deleteContactListUseCase;
     private final CreateContactListUseCase createContactListUseCase;
     private final UpdateContactListUseCase updateContactListUseCase;
+    private final GetContactListUseCase getContactListUseCase;
+    private final GetContactListFromUserUseCase getContactListsFromOwnerUseCase;
+
+
 
 
     //new contact
@@ -62,7 +67,7 @@ public class ContactController {
                 newContactList.getName().toString(),
                 newContactList.getOwner().toString()));
     }
-
+//Update Contact
     @PutMapping("/{id}/update")
     public ResponseEntity<UpdateContactResponse> updateContact(
             @PathVariable UUID id,
@@ -130,7 +135,7 @@ public class ContactController {
 
     }
 
-
+//Get contact
     @GetMapping("/{id}")
     public ResponseEntity<ContactDataResponse> getContact(@PathVariable UUID id) {
         GetContactCommand getContactCommand = new GetContactCommand(id.toString());
@@ -146,6 +151,35 @@ public class ContactController {
         ));
 
     }
+
+    //Get contactLit
+    @GetMapping("/{id}/list")
+    public ResponseEntity<ContactListDataResponse> getContactList(@PathVariable UUID id) {
+        GetContactListCommand getContactListCommand = new GetContactListCommand(id.toString());
+        ContactList contactList = getContactListUseCase.execute(getContactListCommand);
+        return ResponseEntity.ok(new ContactListDataResponse(
+                contactList.getId().toString(),
+                contactList.getName().toString(),
+                contactList.getOwner().toString(),
+                contactList.getTotalContacts()));
+    }
+
+    //get contactLists from owner
+    @GetMapping("/list/user/{id}")
+    public ResponseEntity<List<ContactListDataResponse>> getContactListsFromOwner(@PathVariable UUID id) {
+        GetContactListFromUserCommand getContactListsFromOwnerCommand = new GetContactListFromUserCommand(id.toString());
+        List<ContactList> contactLists = getContactListsFromOwnerUseCase.execute(getContactListsFromOwnerCommand);
+        return ResponseEntity.ok(contactLists.stream().map(
+                contactList -> new ContactListDataResponse(
+                        contactList.getId().toString(),
+                        contactList.getName().toString(),
+                        contactList.getOwner().toString(),
+                        contactList.getTotalContacts()
+                )).toList()
+        );
+
+    }
+
 
 
 }
