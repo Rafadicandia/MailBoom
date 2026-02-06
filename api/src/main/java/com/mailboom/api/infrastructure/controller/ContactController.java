@@ -1,13 +1,7 @@
 package com.mailboom.api.infrastructure.controller;
 
-import com.mailboom.api.application.contact.port.in.CreateContactUseCase;
-import com.mailboom.api.application.contact.port.in.DeleteContactUseCase;
-import com.mailboom.api.application.contact.port.in.GetContactUseCase;
-import com.mailboom.api.application.contact.port.in.UpdateContactUseCase;
-import com.mailboom.api.application.contact.usecase.command.CreateContactCommand;
-import com.mailboom.api.application.contact.usecase.command.DeleteContactCommand;
-import com.mailboom.api.application.contact.usecase.command.GetContactCommand;
-import com.mailboom.api.application.contact.usecase.command.UpdateContactCommand;
+import com.mailboom.api.application.contact.port.in.*;
+import com.mailboom.api.application.contact.usecase.command.*;
 import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.infrastructure.dto.*;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +20,7 @@ public class ContactController {
     private final DeleteContactUseCase deleteContactUseCase;
     private final UpdateContactUseCase updateContactUseCase;
     private final GetContactUseCase getContactUseCase;
+    private final DeleteContactListUseCase deleteContactListUseCase;
 
 
     @PostMapping("/new")
@@ -72,7 +67,7 @@ public class ContactController {
 
 
     }
-
+//Delete contact
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Void> deleteContact(@PathVariable UUID id) {
 
@@ -83,6 +78,17 @@ public class ContactController {
 
 
     }
+//Delete contact List
+    @DeleteMapping("/{id}/list/delete")
+    public ResponseEntity<Void> deleteContactList(@PathVariable UUID id) {
+
+        DeleteContactListCommand deleteContactListCommand = new DeleteContactListCommand(id.toString());
+        deleteContactListUseCase.execute(deleteContactListCommand);
+
+        return ResponseEntity.noContent().build();
+
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<ContactDataResponse> getContact(@PathVariable UUID id) {
