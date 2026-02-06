@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.UUID;
 
 public interface SpringDataContactListRepository extends JpaRepository<ContactListEntity, UUID> {
-    List<ContactListEntity> findAllByOwnerId(UUID ownerId);
+    List<ContactListEntity> findAllByUser_Id(UUID userId);
 }
