@@ -69,7 +69,7 @@ public class ContactController {
                 newContactList.getName().toString(),
                 newContactList.getOwner().toString()));
     }
-    
+
     //Update Contact
     @PutMapping("/{id}/update")
     @PreAuthorize("@userSecurity.isContactOwner(authentication, #id)")
@@ -94,7 +94,7 @@ public class ContactController {
 
 
     }
-    
+
     //updateContactList
     @PutMapping("/{id}/list/update")
     @PreAuthorize("@userSecurity.isListOwner(authentication, #id)")
@@ -114,9 +114,7 @@ public class ContactController {
                 updateContactList.getOwner().toString(),
                 updateContactList.getTotalContacts()));
 
-
     }
-
 
     //Delete contact
     @DeleteMapping("/{id}/delete")
@@ -127,7 +125,6 @@ public class ContactController {
         deleteContactUseCase.execute(deleteContactCommand);
 
         return ResponseEntity.noContent().build();
-
 
     }
 
