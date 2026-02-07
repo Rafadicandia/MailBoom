@@ -1,8 +1,6 @@
 package com.mailboom.api.domain.model.campaign.valueobjects;
 
 import com.mailboom.api.domain.exception.HtmlContentExtensionException;
-import org.jsoup.Jsoup;
-import org.jsoup.safety.Safelist;
 
 public record HtmlContent(String value) {
     private static final int MAX_LENGTH = 500_000;
@@ -18,7 +16,6 @@ public record HtmlContent(String value) {
             );
         }
 
-        value = Jsoup.clean(value, Safelist.relaxed());
     }
 
     public boolean containsPlaceholder(String key) {
