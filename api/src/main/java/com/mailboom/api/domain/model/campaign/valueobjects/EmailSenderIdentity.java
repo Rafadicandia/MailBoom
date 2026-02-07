@@ -18,4 +18,7 @@ public record EmailSenderIdentity(String clientName) {
     }
 
 
+    public String value() {
+        return format();
+    }
 }
