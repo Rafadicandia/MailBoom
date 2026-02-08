@@ -39,7 +39,9 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.HashMap;
+import java.util.UUID;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -130,7 +132,7 @@ class ContactControllerIT {
     void shouldCreateContactSuccessfully() throws Exception {
         NewContactRequest request = new NewContactRequest(testList.getId().value().toString(), "newcontact@example.com", "New Contact", new HashMap<>(), true);
 
-        mockMvc.perform(post("/contacts/new")
+        mockMvc.perform(post("/api/contacts/new")
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -141,7 +143,7 @@ class ContactControllerIT {
     @Test
     void shouldCreateContactListSuccessfully() throws Exception {
         NewContactListRequest newContactListRequest = new NewContactListRequest("New List", testUser.getId().value().toString());
-        mockMvc.perform(post("/contacts/new/list")
+        mockMvc.perform(post("/api/contacts/new/list")
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(newContactListRequest)))
@@ -171,7 +173,7 @@ class ContactControllerIT {
         );
 
         // When & Then
-        mockMvc.perform(put("/contacts/" + contact.getId().value() + "/update")
+        mockMvc.perform(put("/api/contacts/" + contact.getId().value() + "/update")
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -187,9 +189,9 @@ class ContactControllerIT {
         ContactList contactList = ContactList.create(testUser.getId(), new Name("Original Name"));
         contactListRepository.save(contactList);
 
-        UpdateContactListRequest request = new UpdateContactListRequest("Updated Name", testUser.getId().value().toString());
+        UpdateContactListRequest request = new UpdateContactListRequest("Updated Name", UUID.randomUUID().toString());
         // When & Then
-        mockMvc.perform(put("/contacts/" + contactList.getId().value() + "/list/update")
+        mockMvc.perform(put("/api/contacts/" + contactList.getId().value() + "/list/update")
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -211,7 +213,7 @@ class ContactControllerIT {
         contactRepository.save(contact);
 
         // When & Then
-        mockMvc.perform(delete("/contacts/" + contact.getId().value() + "/delete")
+        mockMvc.perform(delete("/api/contacts/" + contact.getId().value() + "/delete")
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isNoContent());
     }
@@ -223,7 +225,7 @@ class ContactControllerIT {
         contactListRepository.save(contactList);
 
         // When & Then
-        mockMvc.perform(delete("/contacts/" + contactList.getId().value() + "/list/delete")
+        mockMvc.perform(delete("/api/contacts/" + contactList.getId().value() + "/list/delete")
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isNoContent());
 
@@ -243,7 +245,7 @@ class ContactControllerIT {
         contactRepository.save(contact);
 
         // When & Then
-        mockMvc.perform(get("/contacts/" + contact.getId().value())
+        mockMvc.perform(get("/api/contacts/" + contact.getId().value())
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.email").value("get@example.com"))
@@ -256,7 +258,7 @@ class ContactControllerIT {
         ContactList contactList = ContactList.create(testUser.getId(), new Name("Get Me"));
         contactListRepository.save(contactList);
         // When & Then
-        mockMvc.perform(get("/contacts/" + contactList.getId().value() + "/list")
+        mockMvc.perform(get("/api/contacts/" + contactList.getId().value() + "/list")
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("Get Me"));
@@ -265,8 +267,25 @@ class ContactControllerIT {
     @Test
     void shouldGetContactListsFromOwnerSuccessfully() throws Exception {
         // Given
-        mockMvc.perform(get("/contacts/list/user/" + testUser.getId().value())
+        mockMvc.perform(get("/api/contacts/list/user/" + testUser.getId().value())
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void shouldGetContactsFromListSuccessfully() throws Exception {
+        // Given
+        Contact contact1 = Contact.create(ContactId.generate(), testList.getId(), new Email("contact1@example.com"), new Name("Contact One"), new HashMap<>(), true);
+        Contact contact2 = Contact.create(ContactId.generate(), testList.getId(), new Email("contact2@example.com"), new Name("Contact Two"), new HashMap<>(), true);
+        contactRepository.save(contact1);
+        contactRepository.save(contact2);
+
+        // When & Then
+        mockMvc.perform(get("/api/contacts/list/" + testList.getId().value() + "/contacts")
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)))
+                .andExpect(jsonPath("$[0].email").value("contact1@example.com"))
+                .andExpect(jsonPath("$[1].email").value("contact2@example.com"));
     }
 }
