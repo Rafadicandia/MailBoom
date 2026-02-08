@@ -50,25 +50,25 @@ public class Campaign {
         return new Campaign(id, owner, subject, htmlContent, sender, recipientList, status, createdAt, sentAt);
     }
 
-    public void update(Subject subject, HtmlContent htmlContent, ContactListId recipientList) {
+    public Campaign update(Subject subject, HtmlContent htmlContent, ContactListId recipientList) {
         if (this.status != CampaignStatus.DRAFT) {
             throw new IllegalStateException("You can only update a draft campaign.");
         }
-        new Campaign(this.id, this.owner, subject, htmlContent, this.senderIdentity, recipientList, this.status, this.createdAt, this.sentAt);
+        return new Campaign(this.id, this.owner, subject, htmlContent, this.senderIdentity, recipientList, this.status, this.createdAt, this.sentAt);
     }
 
-    public void markAsSending() {
+    public Campaign markAsSending() {
         if (this.status != CampaignStatus.DRAFT) {
             throw new IllegalStateException("Campaign is not in a draft state.");
         }
-        new Campaign(this.id, this.owner, this.subject, this.htmlContent, this.senderIdentity, this.recipientList, CampaignStatus.SENDING, this.createdAt, null);
+        return new Campaign(this.id, this.owner, this.subject, this.htmlContent, this.senderIdentity, this.recipientList, CampaignStatus.SENDING, this.createdAt, null);
     }
 
-    public void markAsSent() {
+    public Campaign markAsSent() {
         if (this.status != CampaignStatus.SENDING) {
             throw new IllegalStateException("Campaign is not in a sending state.");
         }
-        new Campaign(this.id, this.owner, this.subject, this.htmlContent, this.senderIdentity, this.recipientList, CampaignStatus.SENT, this.createdAt, Instant.now());
+        return new Campaign(this.id, this.owner, this.subject, this.htmlContent, this.senderIdentity, this.recipientList, CampaignStatus.SENT, this.createdAt, Instant.now());
     }
 
     public String getFullSenderName() {
