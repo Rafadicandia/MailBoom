@@ -1,33 +1,31 @@
 package com.mailboom.api.infrastructure.campaign.controller;
 
-import com.mailboom.api.application.campaign.port.in.CreateCampaignUseCase;
-import com.mailboom.api.application.campaign.port.in.DeleteCampaignUseCase;
-import com.mailboom.api.application.campaign.port.in.GetSentCampaignsFromUserUseCase;
-import com.mailboom.api.application.campaign.usecase.command.CreateCampaignCommand;
-import com.mailboom.api.application.campaign.usecase.command.DeleteCampaignCommand;
-import com.mailboom.api.application.campaign.usecase.command.GetSentCampaignsFromUserCommand;
+import com.mailboom.api.application.campaign.port.in.*;
+import com.mailboom.api.application.campaign.usecase.command.*;
 import com.mailboom.api.domain.model.campaign.Campaign;
 import com.mailboom.api.infrastructure.campaign.dto.CampaignDataResponse;
 import com.mailboom.api.infrastructure.campaign.dto.NewCampaignRequest;
 import com.mailboom.api.infrastructure.campaign.dto.NewCampaignResponse;
-import com.mailboom.api.infrastructure.security.UserPrincipal;
+import com.mailboom.api.infrastructure.campaign.dto.UpdateCampaignRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/campaigns")
+@RequestMapping("/api/campaigns")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 public class CampaignController {
     private final CreateCampaignUseCase createCampaignUseCase;
     private final GetSentCampaignsFromUserUseCase getSentCampaignsFromUserUseCase;
     private final DeleteCampaignUseCase deleteCampaignUseCase;
+    private final UpdateCampaignUseCase updateCampaignUseCase;
+    private final GetCampaignUseCase getCampaignUseCase;
+
 
     @PostMapping("/new")
     @PreAuthorize("@userSecurity.isOwner(authentication, #request.ownerId())")
@@ -66,7 +64,7 @@ public class CampaignController {
                                 campaign.getOwner().value().toString(),
                                 campaign.getSubject().value(),
                                 campaign.getHtmlContent().value(),
-                                campaign.getSenderIdentity().value(),
+                                campaign.getSenderIdentity().clientName(),
                                 campaign.getRecipientList().value().toString(),
                                 campaign.getStatus().name(),
                                 campaign.getCreatedAt().toString())).toList());
@@ -79,4 +77,51 @@ public class CampaignController {
         deleteCampaignUseCase.excecute(new DeleteCampaignCommand(id.toString()));
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}/update")
+    @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id)")
+    public ResponseEntity<CampaignDataResponse> updateCampaign(
+            @PathVariable UUID id,
+            @RequestBody UpdateCampaignRequest request) {
+        UpdateCampaignCommand updateCampaignCommand = new UpdateCampaignCommand(
+                request.ownerId(),
+                request.subject(),
+                request.htmlContent(),
+                request.sender(),
+                request.recipientListId()
+        );
+
+        Campaign updatedCampaign = updateCampaignUseCase.execute(updateCampaignCommand);
+        return ResponseEntity.ok(
+                new CampaignDataResponse(
+                        updatedCampaign.getId().value().toString(),
+                        updatedCampaign.getOwner().value().toString(),
+                        updatedCampaign.getSubject().value(),
+                        updatedCampaign.getHtmlContent().value(),
+                        updatedCampaign.getSenderIdentity().clientName(),
+                        updatedCampaign.getRecipientList().value().toString(),
+                        updatedCampaign.getStatus().name(),
+                        updatedCampaign.getCreatedAt().toString()
+                ));
+    }
+
+    @GetMapping("/{id}")
+    @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id)")
+    public ResponseEntity<CampaignDataResponse> getCampaign(@PathVariable UUID id) {
+        GetCampaignCommand getCampaignCommand = new GetCampaignCommand(id.toString());
+        Campaign campaign = getCampaignUseCase.excecute(getCampaignCommand);
+        return ResponseEntity.ok(
+                new CampaignDataResponse(
+                        campaign.getId().value().toString(),
+                        campaign.getOwner().toString(),
+                        campaign.getSubject().toString(),
+                        campaign.getHtmlContent().toString(),
+                        campaign.getSenderIdentity().clientName(),
+                        campaign.getRecipientList().toString(),
+                        campaign.getStatus().name(),
+                        campaign.getCreatedAt().toString()
+                ));
+    }
+
+
 }
