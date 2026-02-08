@@ -17,4 +17,5 @@ public interface ContactRepository {
     Contact save(Contact contact);
     void deleteById(ContactId id);
     void saveAll(List<Contact> contacts);
+
 }
