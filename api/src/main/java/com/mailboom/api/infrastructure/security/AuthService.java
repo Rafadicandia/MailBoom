@@ -36,7 +36,7 @@ public class AuthService {
         var jwtToken = jwtService.generateToken(userPrincipal);
         var refreshToken = jwtService.generateRefreshToken(userPrincipal);
         saveUserToken(savedUser, jwtToken);
-        return new TokenResponse(jwtToken, refreshToken);
+        return new TokenResponse(jwtToken, refreshToken, newUser.getId().toString());
     }
 
     public TokenResponse login(LoginRequest request) {
@@ -55,7 +55,7 @@ public class AuthService {
         var refreshToken = jwtService.generateRefreshToken(userPrincipal);
         revokeAllUserTokens(userEntity);
         saveUserToken(userEntity, jwtToken);
-        return new TokenResponse(jwtToken, refreshToken);
+        return new TokenResponse(jwtToken, refreshToken, user.getId().toString());
     }
 
     private void revokeAllUserTokens(UserEntity user) {
@@ -105,6 +105,6 @@ public class AuthService {
         final String accessToken = jwtService.generateToken(userPrincipal);
         revokeAllUserTokens(userEntity);
         saveUserToken(userEntity, accessToken);
-        return new TokenResponse(accessToken, refreshToken);
+        return new TokenResponse(accessToken, refreshToken, user.getId().toString());
     }
 }
