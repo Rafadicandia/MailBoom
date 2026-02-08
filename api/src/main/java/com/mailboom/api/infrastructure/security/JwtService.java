@@ -30,6 +30,10 @@ public class JwtService {
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
+    
+    public String extractUserId(String token) {
+        return extractClaim(token, claims -> claims.get("userId", String.class));
+    }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
@@ -53,6 +57,10 @@ public class JwtService {
             UserDetails userDetails,
             long expiration
     ) {
+        if (userDetails instanceof UserPrincipal userPrincipal) {
+            extraClaims.put("userId", userPrincipal.getUser().getId().value().toString());
+        }
+
         return Jwts
                 .builder()
                 .setClaims(extraClaims)
