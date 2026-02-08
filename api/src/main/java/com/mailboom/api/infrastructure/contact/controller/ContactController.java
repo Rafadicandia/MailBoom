@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/contacts")
+@RequestMapping("api/contacts")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 public class ContactController {
@@ -29,6 +29,8 @@ public class ContactController {
     private final UpdateContactListUseCase updateContactListUseCase;
     private final GetContactListUseCase getContactListUseCase;
     private final GetContactListFromUserUseCase getContactListsFromOwnerUseCase;
+    private final GetAllContactsFromListUseCase getAllContactsFromListUseCase;
+
 
 
     //new contact
@@ -40,7 +42,7 @@ public class ContactController {
                 request.contactListId(),
                 request.email(),
                 request.name(),
-                new HashMap<>(request.customFields()),
+                request.customFields(),
                 request.subscribed()
 
         );
@@ -80,7 +82,7 @@ public class ContactController {
                 id.toString(), // Corrected: Use the path variable ID
                 request.email(),
                 request.name(),
-                new HashMap<>(request.customFields()),
+                request.customFields(),
                 request.subscribed()
         );
         Contact updateContact = updateContactUseCase.execute(updateContactCommand);
@@ -183,6 +185,25 @@ public class ContactController {
                         contactList.getName().toString(),
                         contactList.getOwner().toString(),
                         contactList.getTotalContacts()
+                )).toList()
+        );
+
+    }
+
+    //get contacts from list
+    @GetMapping("/list/{listId}/contacts")
+    @PreAuthorize("@userSecurity.isListOwner(authentication, #listId)")
+    public ResponseEntity<List<ContactDataResponse>> getContactsFromList(@PathVariable UUID listId){
+        GetAllContactsFromListCommand getAllContactsFromListCommand = new GetAllContactsFromListCommand(listId.toString());
+        List<Contact> contacts = getAllContactsFromListUseCase.execute(getAllContactsFromListCommand);
+        return ResponseEntity.ok(contacts.stream().map(
+                contact -> new ContactDataResponse(
+                        contact.getId().toString(),
+                        contact.getListId().toString(),
+                        contact.getEmail().toString(),
+                        contact.getName().toString(),
+                        contact.getCustomFields(),
+                        contact.isSubscribed()
                 )).toList()
         );
 
