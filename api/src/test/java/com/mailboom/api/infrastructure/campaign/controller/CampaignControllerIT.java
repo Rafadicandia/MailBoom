@@ -1,6 +1,9 @@
 package com.mailboom.api.infrastructure.campaign.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mailboom.api.domain.model.campaign.Campaign;
+import com.mailboom.api.domain.model.campaign.valueobjects.HtmlContent;
+import com.mailboom.api.domain.model.campaign.valueobjects.Subject;
 import com.mailboom.api.domain.model.common.valueobjects.Email;
 import com.mailboom.api.domain.model.common.valueobjects.Name;
 import com.mailboom.api.domain.model.contact.ContactList;
@@ -8,6 +11,7 @@ import com.mailboom.api.domain.model.user.User;
 import com.mailboom.api.domain.model.user.valueobjects.EmailCounter;
 import com.mailboom.api.domain.model.user.valueobjects.PasswordHash;
 import com.mailboom.api.domain.model.user.valueobjects.UserId;
+import com.mailboom.api.domain.port.out.CampaignRepository;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.domain.port.out.UserRepository;
 import com.mailboom.api.infrastructure.campaign.dto.NewCampaignRequest;
@@ -32,7 +36,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -58,6 +62,8 @@ class CampaignControllerIT {
     private TokenRepository tokenRepository;
     @Autowired
     private ContactListRepository contactListRepository;
+    @Autowired
+    private CampaignRepository campaignRepository;
     @Autowired
     private JwtService jwtService;
     @Autowired
@@ -129,5 +135,45 @@ class CampaignControllerIT {
                 .andExpect(jsonPath("$.subject").value("Test Subject"))
                 .andExpect(jsonPath("$.ownerId").value(testUser.getId().value().toString()))
                 .andExpect(jsonPath("$.status").value("DRAFT"));
+    }
+
+    @Test
+    void shouldGetSentCampaignsFromUserSuccessfully() throws Exception {
+        // Given
+        Campaign campaign = Campaign.create(
+                testUser.getId(),
+                new Subject("Sent Campaign"),
+                new HtmlContent("<p>Content</p>"),
+                "sender@example.com",
+                testList.getId()
+        );
+        campaign = campaign.markAsSending();
+        campaign = campaign.markAsSent();
+        campaignRepository.save(campaign);
+
+        // When & Then
+        mockMvc.perform(get("/campaigns/user/" + testUser.getId().value())
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].subject").value("Sent Campaign"))
+                .andExpect(jsonPath("$[0].status").value("SENT"));
+    }
+
+    @Test
+    void shouldDeleteCampaignSuccessfully() throws Exception {
+        // Given
+        Campaign campaign = Campaign.create(
+                testUser.getId(),
+                new Subject("To Delete"),
+                new HtmlContent("<p>Delete me</p>"),
+                "sender@example.com",
+                testList.getId()
+        );
+        campaignRepository.save(campaign);
+
+        // When & Then
+        mockMvc.perform(delete("/campaigns/" + campaign.getId().value() + "/delete")
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isNoContent());
     }
 }
