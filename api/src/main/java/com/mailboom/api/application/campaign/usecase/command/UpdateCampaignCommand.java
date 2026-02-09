@@ -7,9 +7,4 @@ public record UpdateCampaignCommand(
         String sender,
         String recipientListId
 ) {
-    public UpdateCampaignCommand {
-        if (id == null || id.isBlank()) {
-            throw new IllegalArgumentException("Campaign ID is required");
-        }
-    }
 }
