@@ -84,7 +84,7 @@ public class CampaignController {
             @PathVariable UUID id,
             @RequestBody UpdateCampaignRequest request) {
         UpdateCampaignCommand updateCampaignCommand = new UpdateCampaignCommand(
-                request.ownerId(),
+                id.toString(),
                 request.subject(),
                 request.htmlContent(),
                 request.sender(),
@@ -113,11 +113,11 @@ public class CampaignController {
         return ResponseEntity.ok(
                 new CampaignDataResponse(
                         campaign.getId().value().toString(),
-                        campaign.getOwner().toString(),
-                        campaign.getSubject().toString(),
-                        campaign.getHtmlContent().toString(),
+                        campaign.getOwner().value().toString(),
+                        campaign.getSubject().value(),
+                        campaign.getHtmlContent().value(),
                         campaign.getSenderIdentity().clientName(),
-                        campaign.getRecipientList().toString(),
+                        campaign.getRecipientList().value().toString(),
                         campaign.getStatus().name(),
                         campaign.getCreatedAt().toString()
                 ));
