@@ -19,6 +19,6 @@ public class GetCampaignUseCaseImpl implements GetCampaignUseCase {
             throw new IllegalArgumentException("Campaign ID is required");
         }
         CampaignId campaignId = CampaignId.fromString(command.id());
-        return campaignRepository.findById(campaignId);
+        return campaignRepository.findById(campaignId).orElseThrow(() -> new RuntimeException("Campaign not found"));
     }
 }
