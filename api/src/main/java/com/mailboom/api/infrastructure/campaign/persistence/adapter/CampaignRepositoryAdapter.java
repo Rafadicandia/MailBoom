@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Repository
@@ -33,10 +34,9 @@ public class CampaignRepositoryAdapter implements CampaignRepository {
     }
 
     @Override
-    public Campaign findById(CampaignId id) {
+    public Optional<Campaign> findById(CampaignId id) {
         return springDataCampaignRepository.findById(id.value())
-                .map(campaignEntityMapper::toDomain)
-                .orElse(null);
+                .map(campaignEntityMapper::toDomain);
     }
 
     @Override
