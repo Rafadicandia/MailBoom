@@ -8,6 +8,7 @@ import com.mailboom.api.domain.model.campaign.valueobjects.HtmlContent;
 import com.mailboom.api.domain.model.campaign.valueobjects.Subject;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
 import com.mailboom.api.domain.port.out.CampaignRepository;
+import com.mailboom.api.infrastructure.common.exception.CampaignNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,9 +25,15 @@ public class UpdateCampaignUseCaseImpl implements UpdateCampaignUseCase {
 
         CampaignId campaignId = CampaignId.fromString(command.id());
 
-        Campaign updatedCampaign = campaignRepository.findById(campaignId);
+        Campaign existingCampaign = campaignRepository.findById(campaignId)
+                .orElseThrow(() -> new CampaignNotFoundException("Campaign with id " + command.id() + " not found."));
 
-        return updatedCampaign.update(new Subject(command.subject()), new HtmlContent(command.htmlContent()), new ContactListId(UUID.fromString(command.recipientListId())));
+        Campaign updatedCampaign = existingCampaign.update(
+                new Subject(command.subject()),
+                new HtmlContent(command.htmlContent()),
+                new ContactListId(UUID.fromString(command.recipientListId()))
+        );
 
+        return campaignRepository.save(updatedCampaign);
     }
 }
