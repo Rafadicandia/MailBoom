@@ -15,6 +15,7 @@ import com.mailboom.api.domain.port.out.CampaignRepository;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.domain.port.out.UserRepository;
 import com.mailboom.api.infrastructure.campaign.dto.NewCampaignRequest;
+import com.mailboom.api.infrastructure.campaign.dto.UpdateCampaignRequest;
 import com.mailboom.api.infrastructure.security.JwtService;
 import com.mailboom.api.infrastructure.user.persistence.jpa.entity.TokenEntity;
 import com.mailboom.api.infrastructure.user.persistence.jpa.entity.UserEntity;
@@ -127,7 +128,7 @@ class CampaignControllerIT {
                 testList.getId().value().toString()
         );
 
-        mockMvc.perform(post("/campaigns/new")
+        mockMvc.perform(post("/api/campaigns/new")
                         .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
@@ -152,7 +153,7 @@ class CampaignControllerIT {
         campaignRepository.save(campaign);
 
         // When & Then
-        mockMvc.perform(get("/campaigns/user/" + testUser.getId().value())
+        mockMvc.perform(get("/api/campaigns/user/" + testUser.getId().value())
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].subject").value("Sent Campaign"))
@@ -172,8 +173,58 @@ class CampaignControllerIT {
         campaignRepository.save(campaign);
 
         // When & Then
-        mockMvc.perform(delete("/campaigns/" + campaign.getId().value() + "/delete")
+        mockMvc.perform(delete("/api/campaigns/" + campaign.getId().value() + "/delete")
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void shouldUpdateCampaignSuccessfully() throws Exception {
+        // Given
+        Campaign campaign = Campaign.create(
+                testUser.getId(),
+                new Subject("Original Subject"),
+                new HtmlContent("<p>Original</p>"),
+                "sender@example.com",
+                testList.getId()
+        );
+        campaignRepository.save(campaign);
+
+        UpdateCampaignRequest request = new UpdateCampaignRequest(
+                testUser.getId().value().toString(),
+                "Updated Subject",
+                "<h1>Updated</h1>",
+                "updated@example.com",
+                testList.getId().value().toString()
+        );
+
+        // When & Then
+        mockMvc.perform(put("/api/campaigns/" + campaign.getId().value() + "/update")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.subject").value("Updated Subject"))
+                .andExpect(jsonPath("$.htmlContent").value("<h1>Updated</h1>"));
+    }
+
+    @Test
+    void shouldGetCampaignSuccessfully() throws Exception {
+        // Given
+        Campaign campaign = Campaign.create(
+                testUser.getId(),
+                new Subject("Test Campaign"),
+                new HtmlContent("<h1>Test</h1>"),
+                "sender@example.com",
+                testList.getId()
+        );
+        campaignRepository.save(campaign);
+
+        // When & Then
+        mockMvc.perform(get("/api/campaigns/" + campaign.getId().value())
+                        .header("Authorization", "Bearer " + jwtToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.subject").value("Test Campaign"))
+                .andExpect(jsonPath("$.id").value(campaign.getId().value().toString()));
     }
 }
