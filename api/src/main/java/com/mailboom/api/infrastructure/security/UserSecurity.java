@@ -86,20 +86,20 @@ public class UserSecurity {
             UUID campaignIdUuid = UUID.fromString(campaignIdStr);
             CampaignId campaignId = new CampaignId(campaignIdUuid);
             
-            var campaign = campaignRepository.findById(campaignId);
-            if (campaign == null) {
-                logger.warn("Campaign {} not found", campaignIdStr);
-                return false;
-            }
-
-            String ownerId = campaign.getOwner().value().toString();
-            String userId = getUserId(authentication);
-            boolean isOwner = ownerId.equals(userId);
-            
-            if (!isOwner) {
-                logger.warn("User {} is not owner of campaign {}. Owner is {}", userId, campaignIdStr, ownerId);
-            }
-            return isOwner;
+            return campaignRepository.findById(campaignId)
+                    .map(campaign -> {
+                        String ownerId = campaign.getOwner().value().toString();
+                        String userId = getUserId(authentication);
+                        boolean isOwner = ownerId.equals(userId);
+                        if (!isOwner) {
+                            logger.warn("User {} is not owner of campaign {}. Owner is {}", userId, campaignIdStr, ownerId);
+                        }
+                        return isOwner;
+                    })
+                    .orElseGet(() -> {
+                        logger.warn("Campaign {} not found", campaignIdStr);
+                        return false;
+                    });
         } catch (Exception e) {
             logger.error("Error checking campaign ownership", e);
             return false;
