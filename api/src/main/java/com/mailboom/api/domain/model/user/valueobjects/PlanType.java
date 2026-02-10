@@ -19,8 +19,7 @@ public enum PlanType {
     }
 
     public boolean isExpired() {
-        // In a real implementation, this would check against a subscription expiration date
-        // For now, we'll assume plans don't expire unless they're marked as expired
+        //future implementation
         return false;
     }
 
