@@ -10,23 +10,32 @@ application:
       refresh-token:
         expiration: 604800000 # 7 days
 
+aws:
+  region: ${AWS_REGION:us-east-1}
+
+mailboom:
+  system:
+    email: info@mailboom.email
+  domain: mailboom.email
+
 spring:
   datasource:
     url: jdbc:postgresql://db:5432/${POSTGRES_DB:mydatabase}
     username: ${POSTGRES_USER:myuser}
     password: ${POSTGRES_PASSWORD:mypassword}
-
   jpa:
     hibernate:
       ddl-auto: update
-
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
+
+        jdbc.batch_size: 500
+        order_inserts: true
     show-sql: false
 
 logging:
   level:
     org.springframework.security: DEBUG
     org.springframework.web: DEBUG
-    com.mailboom.api.infrastructure.security: DEBUG
+    com.mailboom.api: DEBUG
