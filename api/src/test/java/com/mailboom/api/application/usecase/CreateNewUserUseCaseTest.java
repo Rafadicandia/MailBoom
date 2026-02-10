@@ -44,7 +44,7 @@ class CreateNewUserUseCaseTest {
         assertEquals(PlanType.FREE, result.getPlan());
         assertNotNull(result.getId());
         assertNotNull(result.getPassword().value());
-        assertEquals(0, result.getEmailsSentThisMonth().amountOfEmails());
+        assertEquals(0, result.getEmailCounter().amountOfEmails());
 
         verify(userRepository, times(1)).existsByEmail(email);
         verify(userRepository, times(1)).save(any(User.class));
