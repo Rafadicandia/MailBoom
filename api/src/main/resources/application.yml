@@ -11,7 +11,7 @@ application:
         expiration: 604800000 # 7 days
 
 aws:
-  region: ${AWS_REGION:us-east-1}
+  region: ${AWS_REGION:eu-north-1}
 
 mailboom:
   system:
