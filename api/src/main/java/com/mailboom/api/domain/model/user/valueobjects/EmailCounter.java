@@ -12,11 +12,7 @@ public record EmailCounter(int amountOfEmails) {
         return new EmailCounter(0);
     }
 
-    public EmailCounter increment() {
-        return new EmailCounter(amountOfEmails + 1);
-    }
-
-    public EmailCounter add(int quantity) {
+    public EmailCounter increment(int quantity) {
         return new EmailCounter(amountOfEmails + quantity);
     }
 
