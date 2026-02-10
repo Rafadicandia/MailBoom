@@ -3,10 +3,7 @@ package com.mailboom.api.infrastructure.campaign.controller;
 import com.mailboom.api.application.campaign.port.in.*;
 import com.mailboom.api.application.campaign.usecase.command.*;
 import com.mailboom.api.domain.model.campaign.Campaign;
-import com.mailboom.api.infrastructure.campaign.dto.CampaignDataResponse;
-import com.mailboom.api.infrastructure.campaign.dto.NewCampaignRequest;
-import com.mailboom.api.infrastructure.campaign.dto.NewCampaignResponse;
-import com.mailboom.api.infrastructure.campaign.dto.UpdateCampaignRequest;
+import com.mailboom.api.infrastructure.campaign.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,6 +22,7 @@ public class CampaignController {
     private final DeleteCampaignUseCase deleteCampaignUseCase;
     private final UpdateCampaignUseCase updateCampaignUseCase;
     private final GetCampaignUseCase getCampaignUseCase;
+    private final SendCampaignUseCase sendCampaignUseCase;
 
 
     @PostMapping("/new")
@@ -121,6 +119,14 @@ public class CampaignController {
                         campaign.getStatus().name(),
                         campaign.getCreatedAt().toString()
                 ));
+    }
+
+    @PostMapping ("/{id}/send")
+    @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id)")
+    public ResponseEntity<Void> sendCampaign(@PathVariable UUID id, @RequestBody SendCampaignRequest request) {
+        SendCampaignCommand sendCampaignCommand = new SendCampaignCommand(id.toString(), request.ownerId());
+        sendCampaignUseCase.execute(sendCampaignCommand);
+        return ResponseEntity.noContent().build();
     }
 
 
