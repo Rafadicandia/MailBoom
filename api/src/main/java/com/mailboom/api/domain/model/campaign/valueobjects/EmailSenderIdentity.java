@@ -1,7 +1,7 @@
 package com.mailboom.api.domain.model.campaign.valueobjects;
 
 public record EmailSenderIdentity(String clientName) {
-    private static final String BRAND_SUFFIX = " via Mailboom";
+    private static final String BRAND_SUFFIX = "@mailboom.email";
 
     public EmailSenderIdentity {
         if (clientName == null || clientName.isBlank()) {
