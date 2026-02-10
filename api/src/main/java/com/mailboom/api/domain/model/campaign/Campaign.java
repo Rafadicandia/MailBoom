@@ -57,6 +57,11 @@ public class Campaign {
         return new Campaign(this.id, this.owner, subject, htmlContent, this.senderIdentity, recipientList, this.status, this.createdAt, this.sentAt);
     }
 
+    public Campaign markAsDraft() {
+        return new Campaign(this.id, this.owner, this.subject, this.htmlContent, this.senderIdentity, this.recipientList, CampaignStatus.DRAFT, this.createdAt, null);
+
+    }
+
     public Campaign markAsSending() {
         if (this.status != CampaignStatus.DRAFT) {
             throw new IllegalStateException("Campaign is not in a draft state.");
@@ -71,7 +76,14 @@ public class Campaign {
         return new Campaign(this.id, this.owner, this.subject, this.htmlContent, this.senderIdentity, this.recipientList, CampaignStatus.SENT, this.createdAt, Instant.now());
     }
 
+
     public String getFullSenderName() {
         return senderIdentity.format();
     }
+
+    public static boolean isReadyToSend(Campaign campaign) {
+        return campaign.getStatus() == CampaignStatus.DRAFT && campaign.getRecipientList() != null && campaign.getSenderIdentity() != null && campaign.getSubject() != null && campaign.getHtmlContent() != null;
+    }
+
+
 }
