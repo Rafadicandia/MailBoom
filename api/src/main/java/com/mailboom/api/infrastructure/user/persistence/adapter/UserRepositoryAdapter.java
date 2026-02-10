@@ -11,6 +11,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 @Primary
 @AllArgsConstructor
@@ -20,10 +22,10 @@ public class UserRepositoryAdapter implements UserRepository {
     private final UserEntityMapper userMapper;
 
     @Override
-    public User findById(UserId id) {
-        return jpaRepository.findById(id.value())
+    public Optional<User> findById(UserId id) {
+        return Optional.ofNullable(jpaRepository.findById(id.value())
                 .map(userMapper::toDomain)
-                .orElse(null);
+                .orElseThrow(() -> new EmailNotFoundException("User not found")));
     }
 
     @Override
@@ -52,28 +54,6 @@ public class UserRepositoryAdapter implements UserRepository {
     public void delete(UserId id) {
         jpaRepository.deleteById(id.value());
     }
-
-    @Override
-    public void incrementEmailsSent(UserId userId, int quantity) {
-        jpaRepository.findById(userId.value()).ifPresent(entity -> {
-            entity.setEmailsSentThisMonth(entity.getEmailsSentThisMonth() + quantity);
-            jpaRepository.save(entity);
-        });
     }
 
-    @Override
-    public boolean canUserSendEmails(UserId userId, int quantity) {
-        return jpaRepository.findById(userId.value())
-                .map(userMapper::toDomain)
-                .map(user -> user.canSendMoreEmails(quantity))
-                .orElse(false);
-    }
 
-    @Override
-    public void resetMonthlyEmails(UserId userId) {
-        jpaRepository.findById(userId.value()).ifPresent(entity -> {
-            entity.setEmailsSentThisMonth(0);
-            jpaRepository.save(entity);
-        });
-    }
-}
