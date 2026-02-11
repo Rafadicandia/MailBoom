@@ -39,6 +39,9 @@ public class SendCampaignUseCaseImpl implements SendCampaignUseCase {
         if (userRepository.findById(userId).isEmpty()) {
             throw new IllegalArgumentException("User not found");
         }
+        if(totalEmailsInList.isEmpty()){
+            throw new IllegalArgumentException("Contact list is empty");
+        }
         //validamos si es el dueno de la campana
         if (!campaign.getOwner().equals(userId)) {
             throw new IllegalArgumentException("You are not the owner of this campaign");
