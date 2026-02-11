@@ -10,15 +10,22 @@ application:
       refresh-token:
         expiration: 604800000 # 7 days
 
-aws:
-  region: ${AWS_REGION:eu-north-1}
-
 mailboom:
   system:
     email: info@mailboom.email
   domain: mailboom.email
 
 spring:
+  cloud:
+    aws:
+      credentials:
+        access-key: ${AWS_ACCESS_KEY} # Es mejor usar variables de entorno
+        secret-key: ${AWS_SECRET_KEY}
+      region:
+        static: us-east-1
+
+      stack:
+        auto: false
   datasource:
     url: jdbc:postgresql://db:5432/${POSTGRES_DB:mydatabase}
     username: ${POSTGRES_USER:myuser}
