@@ -30,9 +30,9 @@ public class CreateCampaignUseCaseImpl implements CreateCampaignUseCase {
     @Override
     public Campaign execute(CreateCampaignCommand command) {
         UserId userId = new UserId(UUID.fromString(command.ownerId()));
-        if (userRepository.findById(userId) == null) {
-            throw new IllegalArgumentException("User not found");
-        }
+        userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
         String content = validateContent(command.htmlContent());
         Campaign campaign = Campaign.create(
                 userId,
