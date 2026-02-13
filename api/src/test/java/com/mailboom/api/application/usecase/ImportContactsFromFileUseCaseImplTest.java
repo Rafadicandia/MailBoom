@@ -1,6 +1,7 @@
 package com.mailboom.api.application.usecase;
 
 import com.mailboom.api.application.contact.usecase.ImportContactsFromFileUseCaseImpl;
+import com.mailboom.api.application.contact.usecase.command.ImportContactsFromFileCommand;
 import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
@@ -61,13 +62,13 @@ class ImportContactsFromFileUseCaseImplTest {
         inputStream = new ByteArrayInputStream("test data".getBytes());
         contentType = "text/csv";
         
-        existingList = ContactList.create(ownerId, new Name("Existing List"));
+        existingList = ContactList.reCreate(listId, ownerId, new Name("Existing List"), 0);
     }
 
     @Test
     void shouldImportContactsSuccessfully() {
         // Given
-        when(listRepository.findById(new ContactListId(listId.value()))).thenReturn(Optional.of(existingList));
+        when(listRepository.findById(eq(listId))).thenReturn(Optional.of(existingList));
         when(parserFactory.getParser(contentType)).thenReturn(parser);
         
         doAnswer(invocation -> {
@@ -78,7 +79,13 @@ class ImportContactsFromFileUseCaseImplTest {
         }).when(parser).parse(eq(inputStream), any());
 
         // When
-        useCase.execute(listId, ownerId, inputStream, contentType);
+        ImportContactsFromFileCommand command = new ImportContactsFromFileCommand(
+                listId.value().toString(),
+                ownerId.value().toString(),
+                inputStream,
+                contentType
+        );
+        useCase.execute(command);
 
         // Then
         ArgumentCaptor<List<Contact>> captor = ArgumentCaptor.forClass(List.class);
@@ -93,7 +100,7 @@ class ImportContactsFromFileUseCaseImplTest {
     @Test
     void shouldProcessContactsInBatches() {
         // Given
-        when(listRepository.findById(new ContactListId(listId.value()))).thenReturn(Optional.of(existingList));
+        when(listRepository.findById(eq(listId))).thenReturn(Optional.of(existingList));
         when(parserFactory.getParser(contentType)).thenReturn(parser);
         
         doAnswer(invocation -> {
@@ -106,7 +113,13 @@ class ImportContactsFromFileUseCaseImplTest {
         }).when(parser).parse(eq(inputStream), any());
 
         // When
-        useCase.execute(listId, ownerId, inputStream, contentType);
+        ImportContactsFromFileCommand command = new ImportContactsFromFileCommand(
+                listId.value().toString(),
+                ownerId.value().toString(),
+                inputStream,
+                contentType
+        );
+        useCase.execute(command);
 
         // Then
         // Should be called twice: once for the first 1000, once for the remaining 5
@@ -116,11 +129,17 @@ class ImportContactsFromFileUseCaseImplTest {
     @Test
     void shouldThrowExceptionWhenListNotFound() {
         // Given
-        when(listRepository.findById(new ContactListId(listId.value()))).thenReturn(Optional.empty());
+        when(listRepository.findById(eq(listId))).thenReturn(Optional.empty());
 
         // When & Then
+        ImportContactsFromFileCommand command = new ImportContactsFromFileCommand(
+                listId.value().toString(),
+                ownerId.value().toString(),
+                inputStream,
+                contentType
+        );
         assertThrows(IllegalArgumentException.class, () -> {
-            useCase.execute(listId, ownerId, inputStream, contentType);
+            useCase.execute(command);
         });
     }
 
@@ -128,12 +147,18 @@ class ImportContactsFromFileUseCaseImplTest {
     void shouldThrowExceptionWhenOwnerDoesNotMatch() {
         // Given
         UserId anotherOwner = new UserId(UUID.randomUUID());
-        ContactList listWithDifferentOwner = ContactList.create(anotherOwner, new Name("Another List"));
-        when(listRepository.findById(new ContactListId(listId.value()))).thenReturn(Optional.of(listWithDifferentOwner));
+        ContactList listWithDifferentOwner = ContactList.reCreate(listId, anotherOwner, new Name("Another List"), 0);
+        when(listRepository.findById(eq(listId))).thenReturn(Optional.of(listWithDifferentOwner));
 
         // When & Then
+        ImportContactsFromFileCommand command = new ImportContactsFromFileCommand(
+                listId.value().toString(),
+                ownerId.value().toString(),
+                inputStream,
+                contentType
+        );
         assertThrows(IllegalArgumentException.class, () -> {
-            useCase.execute(listId, ownerId, inputStream, contentType);
+            useCase.execute(command);
         });
     }
 }
