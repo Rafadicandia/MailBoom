@@ -1,6 +1,7 @@
 package com.mailboom.api.application.contact.usecase;
 
 import com.mailboom.api.application.contact.port.in.ImportContactsFromFileUseCase;
+import com.mailboom.api.application.contact.usecase.command.ImportContactsFromFileCommand;
 import com.mailboom.api.domain.model.common.valueobjects.Email;
 import com.mailboom.api.domain.model.common.valueobjects.Name;
 import com.mailboom.api.domain.model.contact.Contact;
@@ -21,6 +22,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -32,29 +34,30 @@ public class ImportContactsFromFileUseCaseImpl implements ImportContactsFromFile
 
     @Override
     @Transactional
-    public void execute(ContactListId listId, UserId ownerId, InputStream fileStream, String contentType) {
-        Optional<ContactList> contactListOpt = contactListRepository.findById(new ContactListId(listId.value()));
+    public void execute(ImportContactsFromFileCommand command) {
+        ContactListId contactListId = new ContactListId(UUID.fromString(command.listId()));
+        Optional<ContactList> contactListOpt = contactListRepository.findById(contactListId);
 
-        if (contactListOpt.isEmpty() || !contactListOpt.get().getOwner().equals(ownerId)) {
+        if (contactListOpt.isEmpty() || !contactListOpt.get().getOwner().equals(UserId.fromString(command.ownerId()))) {
             throw new IllegalArgumentException("Contact List not found or you don't have permission to access it.");
         }
 
-        ContactFileParser parser = parserFactory.getParser(contentType);
+        ContactFileParser parser = parserFactory.getParser(command.contentType());
         if (parser == null) {
             throw new IllegalArgumentException("Unsupported file type");
         }
 
         List<ContactData> batch = new ArrayList<>();
-        parser.parse(fileStream, contactData -> {
+        parser.parse(command.fileStream(), contactData -> {
             batch.add(contactData);
             if (batch.size() >= 1000) {
-                saveBatch(batch, listId);
+                saveBatch(batch, contactListId);
                 batch.clear();
             }
         });
 
         if (!batch.isEmpty()) {
-            saveBatch(batch, listId);
+            saveBatch(batch, contactListId);
         }
     }
 
