@@ -4,6 +4,8 @@ import com.mailboom.api.application.campaign.port.in.*;
 import com.mailboom.api.application.campaign.usecase.command.*;
 import com.mailboom.api.domain.model.campaign.Campaign;
 import com.mailboom.api.infrastructure.campaign.dto.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -16,6 +18,7 @@ import java.util.UUID;
 @RequestMapping("/api/campaigns")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+@Tag(name = "Campaigns", description = "Operations related to campaigns")
 public class CampaignController {
     private final CreateCampaignUseCase createCampaignUseCase;
     private final GetSentCampaignsFromUserUseCase getSentCampaignsFromUserUseCase;
@@ -27,6 +30,7 @@ public class CampaignController {
 
     @PostMapping("/new")
     @PreAuthorize("@userSecurity.isOwner(authentication, #request.ownerId())")
+    @Operation(summary = "Create a new campaign")
     public ResponseEntity<NewCampaignResponse> createCampaign(@RequestBody NewCampaignRequest request) {
         CreateCampaignCommand createCampaignCommand = new CreateCampaignCommand(
                 request.ownerId(),
@@ -41,7 +45,7 @@ public class CampaignController {
                 newCampaign.getOwner().value().toString(),
                 newCampaign.getSubject().value(),
                 newCampaign.getHtmlContent().value(),
-                newCampaign.getSenderIdentity().clientName(),
+                newCampaign.getSenderIdentity().value(),
                 newCampaign.getRecipientList().value().toString(),
                 newCampaign.getStatus().name(),
                 newCampaign.getCreatedAt().toString()
@@ -51,6 +55,7 @@ public class CampaignController {
 
     @GetMapping("/user/{id}")
     @PreAuthorize("@userSecurity.isOwner(authentication, #id)")
+    @Operation(summary = "Get sent campaigns from user")
     public ResponseEntity<List<CampaignDataResponse>> getSentCampaignsFromUser(@PathVariable UUID id) {
         GetSentCampaignsFromUserCommand getSentCampaignsFromUserCommand = new GetSentCampaignsFromUserCommand(id.toString());
         List<Campaign> sentCampaigns = getSentCampaignsFromUserUseCase.execute(getSentCampaignsFromUserCommand);
@@ -70,6 +75,7 @@ public class CampaignController {
 
     @DeleteMapping("/{id}/delete")
     @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id)")
+    @Operation(summary = "Delete a campaign")
     public ResponseEntity<Void> deleteCampaign(@PathVariable UUID id) {
 
         deleteCampaignUseCase.excecute(new DeleteCampaignCommand(id.toString()));
@@ -78,6 +84,7 @@ public class CampaignController {
 
     @PutMapping("/{id}/update")
     @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id)")
+    @Operation(summary = "Update a campaign")
     public ResponseEntity<CampaignDataResponse> updateCampaign(
             @PathVariable UUID id,
             @RequestBody UpdateCampaignRequest request) {
@@ -96,7 +103,7 @@ public class CampaignController {
                         updatedCampaign.getOwner().value().toString(),
                         updatedCampaign.getSubject().value(),
                         updatedCampaign.getHtmlContent().value(),
-                        updatedCampaign.getSenderIdentity().clientName(),
+                        updatedCampaign.getSenderIdentity().value(),
                         updatedCampaign.getRecipientList().value().toString(),
                         updatedCampaign.getStatus().name(),
                         updatedCampaign.getCreatedAt().toString()
@@ -105,6 +112,7 @@ public class CampaignController {
 
     @GetMapping("/{id}")
     @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id)")
+    @Operation(summary = "Get a campaign")
     public ResponseEntity<CampaignDataResponse> getCampaign(@PathVariable UUID id) {
         GetCampaignCommand getCampaignCommand = new GetCampaignCommand(id.toString());
         Campaign campaign = getCampaignUseCase.excecute(getCampaignCommand);
@@ -123,6 +131,7 @@ public class CampaignController {
 
     @PostMapping ("/{id}/send")
     @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id)")
+    @Operation(summary = "Send a campaign")
     public ResponseEntity<Void> sendCampaign(@PathVariable UUID id, @RequestBody SendCampaignRequest request) {
         SendCampaignCommand sendCampaignCommand = new SendCampaignCommand(id.toString(), request.ownerId());
         sendCampaignUseCase.execute(sendCampaignCommand);
