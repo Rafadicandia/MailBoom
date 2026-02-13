@@ -8,8 +8,8 @@ import com.mailboom.api.domain.port.out.ContactRepository;
 import com.mailboom.api.domain.port.out.EmailSender;
 import com.mailboom.api.domain.port.out.UserRepository;
 import com.mailboom.api.infrastructure.common.exception.EmailSendingException;
-import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.sesv2.SesV2Client;
 import software.amazon.awssdk.services.sesv2.model.*;
@@ -19,14 +19,23 @@ import java.util.List;
 
 @Slf4j
 @Component
-@AllArgsConstructor
 public class AwsEmailSenderAdapter implements EmailSender {
     private final SesV2Client sesClient;
     private final ContactRepository contactRepository;
     private final UserRepository userRepository;
+    private final String identityArn;
 
     private static final int BATCH_SIZE = 50;
 
+    public AwsEmailSenderAdapter(SesV2Client sesClient,
+                                 ContactRepository contactRepository,
+                                 UserRepository userRepository,
+                                 @Value("${mailboom.domain.arn}") String identityArn) {
+        this.sesClient = sesClient;
+        this.contactRepository = contactRepository;
+        this.userRepository = userRepository;
+        this.identityArn = identityArn;
+    }
 
     @Override
     public void send(Campaign campaign) {
@@ -42,10 +51,6 @@ public class AwsEmailSenderAdapter implements EmailSender {
                         .build())
                 .build();
 
-        String identityArn = System.getenv("MAILBOOM_DOMAIN_ARN");
-
-
-
         for (int i = 0; i < totalEmailsInList.size(); i += BATCH_SIZE) {
             int endIndex = Math.min(i + BATCH_SIZE, totalEmailsInList.size());
             List<String> batch = totalEmailsInList.subList(i, endIndex);
@@ -55,12 +60,11 @@ public class AwsEmailSenderAdapter implements EmailSender {
 
             SendEmailRequest emailRequest =
                     SendEmailRequest.builder()
-                            .fromEmailAddress(campaign.getFullSenderName())
+                            .fromEmailAddress(campaign.getSenderIdentity().value())
                             .fromEmailAddressIdentityArn(identityArn)
                             .destination(destination)
                             .replyToAddresses(owner.getEmail().email())
                             .feedbackForwardingEmailAddress(owner.getEmail().email())
-                            .feedbackForwardingEmailAddressIdentityArn(identityArn)
                             .content(emailContent)
                             .build();
             try {
@@ -68,8 +72,8 @@ public class AwsEmailSenderAdapter implements EmailSender {
 
             } catch (SesV2Exception e) {
                 log.error("Error sending email batch for campaign {}: {}", campaign.getId().value(), e.getMessage());
-                throw new EmailSendingException("Error sending email batch for campaign " + campaign.getId().value());
+                throw new EmailSendingException("Error sending email batch for campaign " + campaign.getId().value() + e.getMessage());
             }
-         }
+        }
     }
 }
