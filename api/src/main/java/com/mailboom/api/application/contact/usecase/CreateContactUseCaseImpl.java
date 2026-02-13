@@ -18,8 +18,8 @@ public class CreateContactUseCaseImpl implements CreateContactUseCase {
 
     @Override
     public Contact execute(CreateContactCommand command) {
-        if (contactRepository.findByEmail(new Email(command.email())).isPresent()) {
-            throw new IllegalArgumentException("Contact with email " + command.email() + " already exists");
+        if (command.contactListId() == null) {
+            throw new IllegalArgumentException("Contact list ID cannot be null");
         }
         Contact newContact = Contact.create(
                 ContactId.generate(),
