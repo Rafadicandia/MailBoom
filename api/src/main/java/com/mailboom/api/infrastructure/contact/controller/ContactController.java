@@ -6,11 +6,13 @@ import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.infrastructure.contact.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.HashMap;
+import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +32,7 @@ public class ContactController {
     private final GetContactListUseCase getContactListUseCase;
     private final GetContactListFromUserUseCase getContactListsFromOwnerUseCase;
     private final GetAllContactsFromListUseCase getAllContactsFromListUseCase;
-
+    private final ImportContactsFromFileUseCase importContactsFromFileUseCase;
 
 
     //new contact
@@ -193,7 +195,7 @@ public class ContactController {
     //get contacts from list
     @GetMapping("/list/{listId}/contacts")
     @PreAuthorize("@userSecurity.isListOwner(authentication, #listId)")
-    public ResponseEntity<List<ContactDataResponse>> getContactsFromList(@PathVariable UUID listId){
+    public ResponseEntity<List<ContactDataResponse>> getContactsFromList(@PathVariable UUID listId) {
         GetAllContactsFromListCommand getAllContactsFromListCommand = new GetAllContactsFromListCommand(listId.toString());
         List<Contact> contacts = getAllContactsFromListUseCase.execute(getAllContactsFromListCommand);
         return ResponseEntity.ok(contacts.stream().map(
@@ -208,5 +210,33 @@ public class ContactController {
         );
 
     }
+
+    @PostMapping(value = "/import/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("@userSecurity.isListOwner(authentication, #listId)")
+    public ResponseEntity<List<ContactDataResponse>> importContactsFromFile(
+            @RequestParam("listId") String listId,
+            @RequestParam("ownerId") String ownerId,
+            @RequestParam("file") MultipartFile file) throws IOException {
+        ImportContactsFromFileCommand importContactsFromFileCommand = new ImportContactsFromFileCommand(
+                listId,
+                ownerId,
+                file.getInputStream(),
+                file.getContentType()
+        );
+        importContactsFromFileUseCase.execute(importContactsFromFileCommand);
+        GetAllContactsFromListCommand getAllContactsFromListCommand = new GetAllContactsFromListCommand(listId);
+        List<Contact> contacts = getAllContactsFromListUseCase.execute(getAllContactsFromListCommand);
+        return ResponseEntity.ok(contacts.stream().map(
+                contact -> new ContactDataResponse(
+                        contact.getId().toString(),
+                        contact.getListId().toString(),
+                        contact.getEmail().toString(),
+                        contact.getName().toString(),
+                        contact.getCustomFields(),
+                        contact.isSubscribed()
+                )).toList()
+        );
+    }
+
 
 }
