@@ -50,6 +50,7 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.Map;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -105,10 +106,11 @@ class CampaignControllerIT {
         registry.add("application.security.jwt.secret-key", () -> "404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970");
         registry.add("application.security.jwt.expiration", () -> 86400000);
         registry.add("application.security.jwt.refresh-token.expiration", () -> 604800000);
-        registry.add("spring.cloud.aws.region.static", localStack::getRegion);
+        registry.add("spring.cloud.aws.region", localStack::getRegion);
         registry.add("spring.cloud.aws.credentials.access-key", localStack::getAccessKey);
         registry.add("spring.cloud.aws.credentials.secret-key", localStack::getSecretKey);
         registry.add("spring.cloud.aws.ses.endpoint", () -> localStack.getEndpointOverride(LocalStackContainer.Service.SES).toString());
+        registry.add("mailboom.domain.arn", () -> "arn:aws:ses:us-east-1:123456789012:identity/example.com");
     }
 
     @BeforeEach
@@ -155,7 +157,7 @@ class CampaignControllerIT {
                 testUser.getId().value().toString(),
                 "Test Subject",
                 "<h1>Hello World</h1>",
-                "sender@example.com",
+                "sender",
                 testList.getId().value().toString()
         );
 
@@ -165,8 +167,11 @@ class CampaignControllerIT {
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.subject").value("Test Subject"))
+                .andExpect(jsonPath("$.htmlContent").value("<h1>Hello World</h1>"))
+                .andExpect(jsonPath("$.senderIdentity").value("sender@mailboom.email"))
                 .andExpect(jsonPath("$.ownerId").value(testUser.getId().value().toString()))
                 .andExpect(jsonPath("$.status").value("DRAFT"));
+
     }
 
     @Test
