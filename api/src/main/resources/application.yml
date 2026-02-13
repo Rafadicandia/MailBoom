@@ -18,11 +18,10 @@ mailboom:
 spring:
   cloud:
     aws:
+      region: ${AWS_REGION}
       credentials:
-        access-key: ${AWS_ACCESS_KEY} # Es mejor usar variables de entorno
-        secret-key: ${AWS_SECRET_KEY}
-      region:
-        static: us-east-1
+        access-key: ${AWS_ACCESS_KEY_ID}
+        secret-key: ${AWS_SECRET_ACCESS_KEY}
 
       stack:
         auto: false
