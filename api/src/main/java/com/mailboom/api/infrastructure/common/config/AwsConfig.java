@@ -1,5 +1,6 @@
 package com.mailboom.api.infrastructure.common.config;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,20 +15,30 @@ import java.net.URI;
 @Configuration
 public class AwsConfig {
 
-    @Value("${spring.cloud.aws.region.static}")
-    private String region;
+    private final String region;
+    private final String accessKey;
+    private final String secretKey;
+    private final String endpoint;
 
-    @Value("${spring.cloud.aws.credentials.access-key}")
-    private String accessKey;
-
-    @Value("${spring.cloud.aws.credentials.secret-key}")
-    private String secretKey;
-
-    @Value("${spring.cloud.aws.ses.endpoint:#{null}}")
-    private String endpoint;
-
+    public AwsConfig(
+            @Value("${spring.cloud.aws.region}") String region,
+            @Value("${spring.cloud.aws.credentials.access-key}") String accessKey,
+            @Value("${spring.cloud.aws.credentials.secret-key}") String secretKey,
+            @Value("${spring.cloud.aws.ses.endpoint:#{null}}") String endpoint
+    ) {
+        this.region = region;
+        this.accessKey = accessKey;
+        this.secretKey = secretKey;
+        this.endpoint = endpoint;
+    }
     @Bean
     public SesV2Client sesV2Client() {
+        if ("NOT_SET".equals(region) || "NOT_SET".equals(accessKey)) {
+            throw new IllegalStateException(
+                    "AWS SES Client failed to initialize: Check if 'spring.cloud.aws.region.static' " +
+                            "and credentials are set in your properties or environment variables."
+            );
+        }
         AwsCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(
             software.amazon.awssdk.auth.credentials.AwsBasicCredentials.create(accessKey, secretKey)
         );
