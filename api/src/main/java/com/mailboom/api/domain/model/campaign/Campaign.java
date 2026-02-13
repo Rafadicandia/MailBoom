@@ -38,7 +38,7 @@ public class Campaign {
                 owner,
                 subject,
                 htmlContent,
-                new EmailSenderIdentity(sender),
+                formatSenderIdentity(sender),
                 recipientList,
                 CampaignStatus.DRAFT,
                 Instant.now(),
@@ -76,13 +76,12 @@ public class Campaign {
         return new Campaign(this.id, this.owner, this.subject, this.htmlContent, this.senderIdentity, this.recipientList, CampaignStatus.SENT, this.createdAt, Instant.now());
     }
 
-
-    public String getFullSenderName() {
-        return senderIdentity.format();
-    }
-
     public static boolean isReadyToSend(Campaign campaign) {
         return campaign.getStatus() == CampaignStatus.DRAFT && campaign.getRecipientList() != null && campaign.getSenderIdentity() != null && campaign.getSubject() != null && campaign.getHtmlContent() != null;
+    }
+
+    public static EmailSenderIdentity formatSenderIdentity(String clientName) {
+        return new EmailSenderIdentity(clientName.trim().replace(" ", "") + MailBoomDomain.DOMAIN.domain);
     }
 
 
