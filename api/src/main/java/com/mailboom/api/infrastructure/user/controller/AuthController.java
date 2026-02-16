@@ -35,6 +35,18 @@ public class AuthController {
         return ResponseEntity.ok(token);
     }
 
+    @PostMapping("/register-admin")
+    public ResponseEntity<TokenResponse> registerAdmin(@RequestBody final NewUserRequest request){
+        final CreateUserCommand newUserCommand = new CreateUserCommand(
+                request.email(),
+                request.password(),
+                request.name()
+        );
+
+        final TokenResponse token = service.registerAdmin(newUserCommand);
+        return ResponseEntity.ok(token);
+    }
+
     @PostMapping("/refresh")
     public TokenResponse refreshToken(@RequestHeader (HttpHeaders.AUTHORIZATION) final String authHeader){
         return service.refreshToken(authHeader);
