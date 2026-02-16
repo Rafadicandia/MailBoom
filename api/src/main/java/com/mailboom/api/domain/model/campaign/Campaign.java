@@ -75,6 +75,12 @@ public class Campaign {
         }
         return new Campaign(this.id, this.owner, this.subject, this.htmlContent, this.senderIdentity, this.recipientList, CampaignStatus.SENT, this.createdAt, Instant.now());
     }
+    public Campaign markAsCancelled() {
+        if (this.status != CampaignStatus.SENDING) {
+            throw new IllegalStateException("Campaign is not in a sending state.");
+        }
+        return new Campaign(this.id, this.owner, this.subject, this.htmlContent, this.senderIdentity, this.recipientList, CampaignStatus.CANCELLED, this.createdAt, Instant.now());
+    }
 
     public static boolean isReadyToSend(Campaign campaign) {
         return campaign.getStatus() == CampaignStatus.DRAFT && campaign.getRecipientList() != null && campaign.getSenderIdentity() != null && campaign.getSubject() != null && campaign.getHtmlContent() != null;
