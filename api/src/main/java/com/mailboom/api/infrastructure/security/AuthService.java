@@ -1,5 +1,6 @@
 package com.mailboom.api.infrastructure.security;
 
+import com.mailboom.api.application.user.in.port.CreateUserAdminUseCase;
 import com.mailboom.api.application.user.in.port.CreateUserUseCase;
 import com.mailboom.api.application.user.usecase.command.CreateUserCommand;
 import com.mailboom.api.domain.model.user.User;
@@ -25,11 +26,28 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
     private final CreateUserUseCase createUserUseCase;
+    private final CreateUserAdminUseCase createUserAdminUseCase;
     private final UserEntityMapper mapper;
     private final SpringDataUserRepository userRepository;
 
     public TokenResponse register(CreateUserCommand command) {
         User newUser = createUserUseCase.execute(command);
+        UserEntity savedUser = mapper.toEntity(newUser);
+        UserPrincipal userPrincipal = new UserPrincipal(newUser);
+        
+        var jwtToken = jwtService.generateToken(userPrincipal);
+        var refreshToken = jwtService.generateRefreshToken(userPrincipal);
+        saveUserToken(savedUser, jwtToken);
+        return new TokenResponse(jwtToken, refreshToken, newUser.getId().toString());
+    }
+
+    public TokenResponse registerAdmin(CreateUserCommand command) {
+        // Only allow admin registration if there are no users in the system
+        if (userRepository.count() > 0) {
+            throw new IllegalStateException("Admin registration is only allowed when no users exist. Please use /api/auth/login and contact an existing admin.");
+        }
+        
+        User newUser = createUserAdminUseCase.execute(command);
         UserEntity savedUser = mapper.toEntity(newUser);
         UserPrincipal userPrincipal = new UserPrincipal(newUser);
         
