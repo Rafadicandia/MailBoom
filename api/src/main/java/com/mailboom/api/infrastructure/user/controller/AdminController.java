@@ -1,8 +1,6 @@
 package com.mailboom.api.infrastructure.user.controller;
 
-import com.mailboom.api.application.admin.in.port.GetAllCampaignsUseCase;
-import com.mailboom.api.application.admin.in.port.GetAllUsersUseCase;
-import com.mailboom.api.application.admin.in.port.GetCampaignDetailsUseCase;
+import com.mailboom.api.application.admin.in.port.*;
 import com.mailboom.api.application.admin.usecase.command.GetAllUsersCommand;
 import com.mailboom.api.application.campaign.usecase.command.GetCampaignCommand;
 import com.mailboom.api.application.contact.port.in.*;
@@ -18,6 +16,7 @@ import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.domain.model.user.User;
 import com.mailboom.api.infrastructure.campaign.dto.CampaignDataResponse;
+import com.mailboom.api.infrastructure.common.dto.GeneralMetricsDTO;
 import com.mailboom.api.infrastructure.contact.dto.*;
 import com.mailboom.api.infrastructure.user.dto.UpdateUserRequest;
 import com.mailboom.api.infrastructure.user.dto.UserResponse;
@@ -41,6 +40,9 @@ import java.util.UUID;
 @Tag(name = "Admin", description = "Admin operations for managing users, campaigns and contacts")
 public class AdminController {
 
+    //metrics
+    private final GetGeneralMetricsUseCase getAccountGeneralMetrics;
+
     // User use cases
     private final GetAllUsersUseCase getAllUsersUseCase;
     private final GetUserUseCase getUserUseCase;
@@ -62,6 +64,7 @@ public class AdminController {
     private final CreateContactUseCase createContactUseCase;
     private final UpdateContactUseCase updateContactUseCase;
     private final DeleteContactUseCase deleteContactUseCase;
+    private final GetAllContactListsUseCase getAllContactListsUseCase;
 
     // ========== USER ENDPOINTS ==========
 
@@ -71,6 +74,10 @@ public class AdminController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        // Validate pagination parameters
+        if (page < 0) page = 0;
+        if (size < 1) size = 10;
+        
         List<User> users = getAllUsersUseCase.execute(new GetAllUsersCommand(null));
 
         int start = Math.min((int) PageRequest.of(page, size).getOffset(), users.size());
@@ -123,6 +130,10 @@ public class AdminController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        // Validate pagination parameters
+        if (page < 0) page = 0;
+        if (size < 1) size = 10;
+        
         List<Campaign> campaigns = getAllCampaignsUseCase.execute();
 
         int start = Math.min((int) PageRequest.of(page, size).getOffset(), campaigns.size());
@@ -175,17 +186,12 @@ public class AdminController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String userId
     ) {
-        List<ContactList> contactLists;
+        // Validate pagination parameters
+        if (page < 0) page = 0;
+        if (size < 1) size = 10;
+        
+        List<ContactList> contactLists = getAllContactListsUseCase.execute();
 
-        if (userId != null && !userId.isBlank()) {
-            // Get contact lists from specific user
-            GetContactListFromUserCommand command = new GetContactListFromUserCommand(userId);
-            contactLists = getContactListsFromOwnerUseCase.execute(command);
-        } else {
-            // For admin, we need to get all contact lists - using repository directly
-            // For now, we'll return empty list as we don't have a "get all lists" use case
-            contactLists = List.of();
-        }
 
         int start = Math.min((int) PageRequest.of(page, size).getOffset(), contactLists.size());
         int end = Math.min((start + size), contactLists.size());
@@ -273,6 +279,10 @@ public class AdminController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
+        // Validate pagination parameters
+        if (page < 0) page = 0;
+        if (size < 1) size = 10;
+        
         GetAllContactsFromListCommand command = new GetAllContactsFromListCommand(listId);
         List<Contact> contacts = getAllContactsFromListUseCase.execute(command);
 
@@ -365,5 +375,9 @@ public class AdminController {
         DeleteContactCommand command = new DeleteContactCommand(id);
         deleteContactUseCase.execute(command);
         return ResponseEntity.noContent().build();
+    }
+    @GetMapping("/metrics")
+    public ResponseEntity<GeneralMetricsDTO> getSummary() {
+        return ResponseEntity.ok(getAccountGeneralMetrics.execute());
     }
 }
