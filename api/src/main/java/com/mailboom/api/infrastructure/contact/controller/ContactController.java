@@ -6,6 +6,9 @@ import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.infrastructure.contact.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -178,37 +181,61 @@ public class ContactController {
     //get contactLists from owner
     @GetMapping("/list/user/{id}")
     @PreAuthorize("@userSecurity.isOwner(authentication, #id)")
-    public ResponseEntity<List<ContactListDataResponse>> getContactListsFromOwner(@PathVariable UUID id) {
+    public ResponseEntity<Page<ContactListDataResponse>> getContactListsFromOwner(
+            @PathVariable UUID id,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        // Validate pagination parameters
+        if (page < 0) page = 0;
+        if (size < 1) size = 10;
+        
         GetContactListFromUserCommand getContactListsFromOwnerCommand = new GetContactListFromUserCommand(id.toString());
         List<ContactList> contactLists = getContactListsFromOwnerUseCase.execute(getContactListsFromOwnerCommand);
-        return ResponseEntity.ok(contactLists.stream().map(
-                contactList -> new ContactListDataResponse(
+
+        int start = Math.min((int) PageRequest.of(page, size).getOffset(), contactLists.size());
+        int end = Math.min((start + size), contactLists.size());
+
+        List<ContactListDataResponse> listResponses = contactLists.subList(start, end).stream()
+                .map(contactList -> new ContactListDataResponse(
                         contactList.getId().toString(),
                         contactList.getName().toString(),
                         contactList.getOwner().toString(),
                         contactList.getTotalContacts()
-                )).toList()
-        );
+                )).toList();
 
+        Page<ContactListDataResponse> pageResponse = new PageImpl<>(listResponses, PageRequest.of(page, size), contactLists.size());
+        return ResponseEntity.ok(pageResponse);
     }
 
     //get contacts from list
     @GetMapping("/list/{listId}/contacts")
     @PreAuthorize("@userSecurity.isListOwner(authentication, #listId)")
-    public ResponseEntity<List<ContactDataResponse>> getContactsFromList(@PathVariable UUID listId) {
+    public ResponseEntity<Page<ContactDataResponse>> getContactsFromList(
+            @PathVariable UUID listId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        // Validate pagination parameters
+        if (page < 0) page = 0;
+        if (size < 1) size = 10;
+        
         GetAllContactsFromListCommand getAllContactsFromListCommand = new GetAllContactsFromListCommand(listId.toString());
         List<Contact> contacts = getAllContactsFromListUseCase.execute(getAllContactsFromListCommand);
-        return ResponseEntity.ok(contacts.stream().map(
-                contact -> new ContactDataResponse(
+
+        int start = Math.min((int) PageRequest.of(page, size).getOffset(), contacts.size());
+        int end = Math.min((start + size), contacts.size());
+
+        List<ContactDataResponse> contactResponses = contacts.subList(start, end).stream()
+                .map(contact -> new ContactDataResponse(
                         contact.getId().toString(),
                         contact.getListId().toString(),
                         contact.getEmail().toString(),
                         contact.getName().toString(),
                         contact.getCustomFields(),
                         contact.isSubscribed()
-                )).toList()
-        );
+                )).toList();
 
+        Page<ContactDataResponse> pageResponse = new PageImpl<>(contactResponses, PageRequest.of(page, size), contacts.size());
+        return ResponseEntity.ok(pageResponse);
     }
 
     @PostMapping(value = "/import/file", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
