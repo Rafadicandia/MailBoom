@@ -16,5 +16,5 @@ public interface CampaignRepository {
 
     List<Campaign> findAllByOwnerId(UserId ownerId);
 
-
+    List<Campaign> findAll();
 }
