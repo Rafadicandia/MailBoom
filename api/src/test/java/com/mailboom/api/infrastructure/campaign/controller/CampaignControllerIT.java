@@ -181,7 +181,7 @@ class CampaignControllerIT {
                 testUser.getId(),
                 new Subject("Sent Campaign"),
                 new HtmlContent("<p>Content</p>"),
-                "sender@example.com",
+                "sender",
                 testList.getId()
         );
         campaign = campaign.markAsSending();
@@ -203,7 +203,7 @@ class CampaignControllerIT {
                 testUser.getId(),
                 new Subject("To Delete"),
                 new HtmlContent("<p>Delete me</p>"),
-                "sender@example.com",
+                "sender",
                 testList.getId()
         );
         campaignRepository.save(campaign);
@@ -221,7 +221,7 @@ class CampaignControllerIT {
                 testUser.getId(),
                 new Subject("Original Subject"),
                 new HtmlContent("<p>Original</p>"),
-                "sender@example.com",
+                "sender",
                 testList.getId()
         );
         campaignRepository.save(campaign);
@@ -251,7 +251,7 @@ class CampaignControllerIT {
                 testUser.getId(),
                 new Subject("Test Campaign"),
                 new HtmlContent("<h1>Test</h1>"),
-                "sender@example.com",
+                "sender",
                 testList.getId()
         );
         campaignRepository.save(campaign);
