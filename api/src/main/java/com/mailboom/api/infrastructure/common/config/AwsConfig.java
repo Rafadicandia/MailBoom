@@ -1,12 +1,13 @@
 package com.mailboom.api.infrastructure.common.config;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
+import software.amazon.awssdk.services.cloudwatch.CloudWatchAsyncClient;
 import software.amazon.awssdk.services.sesv2.SesV2Client;
 import software.amazon.awssdk.services.sesv2.SesV2ClientBuilder;
 
@@ -31,17 +32,28 @@ public class AwsConfig {
         this.secretKey = secretKey;
         this.endpoint = endpoint;
     }
+
     @Bean
-    public SesV2Client sesV2Client() {
-        if ("NOT_SET".equals(region) || "NOT_SET".equals(accessKey)) {
+    public AwsCredentialsProvider awsCredentialsProvider() {
+        if ("NOT_SET".equals(accessKey) || "NOT_SET".equals(secretKey)) {
             throw new IllegalStateException(
-                    "AWS SES Client failed to initialize: Check if 'spring.cloud.aws.region.static' " +
-                            "and credentials are set in your properties or environment variables."
+                    "AWS credentials not configured. Check 'spring.cloud.aws.credentials.access-key' " +
+                            "and 'spring.cloud.aws.credentials.secret-key' in your properties or environment variables."
             );
         }
-        AwsCredentialsProvider credentialsProvider = StaticCredentialsProvider.create(
-            software.amazon.awssdk.auth.credentials.AwsBasicCredentials.create(accessKey, secretKey)
+        return StaticCredentialsProvider.create(
+                AwsBasicCredentials.create(accessKey, secretKey)
         );
+    }
+
+    @Bean
+    public SesV2Client sesV2Client(AwsCredentialsProvider credentialsProvider) {
+        if ("NOT_SET".equals(region)) {
+            throw new IllegalStateException(
+                    "AWS SES Client failed to initialize: Check if 'spring.cloud.aws.region' " +
+                            "is set in your properties or environment variables."
+            );
+        }
 
         SesV2ClientBuilder builder = SesV2Client.builder()
                 .region(Region.of(region))
@@ -52,5 +64,20 @@ public class AwsConfig {
         }
 
         return builder.build();
+    }
+
+    @Bean
+    public CloudWatchAsyncClient cloudWatchAsyncClient(AwsCredentialsProvider credentialsProvider) {
+        if ("NOT_SET".equals(region)) {
+            throw new IllegalStateException(
+                    "AWS CloudWatch Client failed to initialize: Check if 'spring.cloud.aws.region' " +
+                            "is set in your properties or environment variables."
+            );
+        }
+
+        return CloudWatchAsyncClient.builder()
+                .region(Region.of(region))
+                .credentialsProvider(credentialsProvider)
+                .build();
     }
 }
