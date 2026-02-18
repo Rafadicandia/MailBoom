@@ -7,6 +7,7 @@ import com.mailboom.api.domain.model.user.User;
 import com.mailboom.api.domain.port.out.ContactRepository;
 import com.mailboom.api.domain.port.out.EmailSender;
 import com.mailboom.api.domain.port.out.UserRepository;
+import com.mailboom.api.infrastructure.common.dto.GeneralMetricsDTO;
 import com.mailboom.api.infrastructure.common.exception.EmailSendingException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +42,8 @@ public class AwsEmailSenderAdapter implements EmailSender {
     public void send(Campaign campaign) {
         User owner = userRepository.findById(campaign.getOwner()).orElseThrow(() -> new IllegalArgumentException("User not found"));
         List<Contact> recipientList = contactRepository.findAllByContactListId(campaign.getRecipientList());
-        List<String> totalEmailsInList = recipientList.stream().map(Contact::getEmail).map(Email::toString).toList();
+        List<Contact> subscribed = recipientList.stream().filter(Contact::isSubscribed).toList();
+        List<String> totalEmailsInList = subscribed.stream().map(Contact::getEmail).map(Email::toString).toList();
 
         EmailContent emailContent = EmailContent.builder().simple(Message.builder()
                         .subject(Content.builder().data(campaign.getSubject().value()).charset("UTF-8").build())
@@ -74,6 +76,10 @@ public class AwsEmailSenderAdapter implements EmailSender {
                 log.error("Error sending email batch for campaign {}: {}", campaign.getId().value(), e.getMessage());
                 throw new EmailSendingException("Error sending email batch for campaign " + campaign.getId().value() + e.getMessage());
             }
+
+
         }
     }
+
+
 }
