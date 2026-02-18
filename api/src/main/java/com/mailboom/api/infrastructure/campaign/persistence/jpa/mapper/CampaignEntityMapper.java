@@ -5,15 +5,19 @@ import com.mailboom.api.domain.model.campaign.valueobjects.*;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
 import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.infrastructure.campaign.persistence.jpa.entity.CampaignEntity;
+import com.mailboom.api.infrastructure.user.persistence.jpa.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component
 public class CampaignEntityMapper {
 
     public CampaignEntity toEntity(com.mailboom.api.domain.model.campaign.Campaign campaign) {
+        UserEntity owner = new UserEntity();
+        owner.setId(campaign.getOwner().value());
+        
         return CampaignEntity.builder()
                 .id(campaign.getId().value())
-                .ownerId(campaign.getOwner().value())
+                .owner(owner)
                 .subject(campaign.getSubject().value())
                 .htmlContent(campaign.getHtmlContent().value())
                 .senderIdentity(campaign.getSenderIdentity().value())
@@ -27,7 +31,7 @@ public class CampaignEntityMapper {
     public Campaign toDomain(com.mailboom.api.infrastructure.campaign.persistence.jpa.entity.CampaignEntity entity) {
         return Campaign.recreate(
                 new CampaignId(entity.getId()),
-                new UserId(entity.getOwnerId()),
+                new UserId(entity.getOwner().getId()),
                 new Subject(entity.getSubject()),
                 new HtmlContent(entity.getHtmlContent()),
                 new EmailSenderIdentity(entity.getSenderIdentity()),
