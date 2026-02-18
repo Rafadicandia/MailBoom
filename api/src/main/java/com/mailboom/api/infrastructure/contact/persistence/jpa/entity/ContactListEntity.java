@@ -7,6 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
 import java.util.UUID;
 
 @Builder
@@ -30,6 +31,6 @@ public class ContactListEntity {
     @Column(name = "total_contacts", nullable = false)
     private long totalContacts;
 
-
-
+    @OneToMany(mappedBy = "contactListId", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ContactEntity> contacts;
 }
