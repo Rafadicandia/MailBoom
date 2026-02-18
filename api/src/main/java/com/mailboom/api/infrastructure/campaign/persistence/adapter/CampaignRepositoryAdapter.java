@@ -45,4 +45,11 @@ public class CampaignRepositoryAdapter implements CampaignRepository {
                 .map(campaignEntityMapper::toDomain)
                 .collect(Collectors.toList());
     }
+
+    @Override
+    public List<Campaign> findAll() {
+        return springDataCampaignRepository.findAll().stream()
+                .map(campaignEntityMapper::toDomain)
+                .collect(Collectors.toList());
+    }
 }
