@@ -1,9 +1,7 @@
 package com.mailboom.api.infrastructure.campaign.persistence.jpa.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import com.mailboom.api.infrastructure.user.persistence.jpa.entity.UserEntity;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,8 +20,9 @@ public class CampaignEntity {
     @Id
     private UUID id;
 
-    @Column(name = "owner_id", nullable = false)
-    private UUID ownerId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner_id", nullable = false)
+    private UserEntity owner;
 
     @Column(nullable = false)
     private String subject;
