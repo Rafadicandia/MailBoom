@@ -1,91 +1,90 @@
+# 🚀 Mailboom - Email Marketing SaaS
 
-# 🚀 Mailboom - SaaS de Email Marketing
+**Mailboom** is a bulk email sending platform designed to be affordable, scalable, and professional. It allows small and medium-sized businesses to manage their audiences and send personalized campaigns backed by the Amazon Web Services (AWS) infrastructure.
 
-**Mailboom** es una plataforma de envío masivo de correos electrónicos diseñada para ser económica, escalable y profesional. Permite a pequeñas y medianas empresas gestionar sus audiencias y enviar campañas personalizadas con el respaldo de la infraestructura de Amazon Web Services (AWS).
+## 🛠️ Technologies
 
-## 🛠️ Tecnologías
+This project uses a modern and robust stack focused on scalability and performance:
 
-Este proyecto utiliza un stack moderno y robusto enfocado en la escalabilidad y el rendimiento:
-
-* **Backend:** Java 17+ con **Spring Boot 3**.
-* **Frontend:** **Angular** (v16+) con Angular Material.
-* **Base de Datos:** **PostgreSQL** (utilizando tipos JSONB para flexibilidad de contactos).
-* **Infraestructura de Envío:** **Amazon SES (Simple Email Service)**.
-* **Seguridad:** Spring Security + **JWT (JSON Web Tokens)**.
-* **Gestión de Tareas:** Spring Events (MVP) / Preparado para RabbitMQ (Escalabilidad).
+* **Backend:** Java 17+ with **Spring Boot 3**.
+* **Frontend:** **Angular** (v16+) with Angular Material.
+* **Database:** **PostgreSQL** (using JSONB types for contact flexibility).
+* **Sending Infrastructure:** **Amazon SES (Simple Email Service)**.
+* **Security:** Spring Security + **JWT (JSON Web Tokens)**.
+* **Task Management:** Spring Events (MVP) / Ready for RabbitMQ (Scalability).
 
 ---
 
-## 🏛️ Arquitectura y Estructura de Carpetas
+## 🏛️ Architecture and Folder Structure
 
-Aplicamos **Arquitectura Hexagonal (Puertos y Adaptadores)** y principios de **DDD (Domain-Driven Design)** para mantener el núcleo del negocio aislado de la tecnología.
+We apply **Hexagonal Architecture (Ports and Adapters)** and **DDD (Domain-Driven Design)** principles to keep the business core isolated from technology.
 
 ### Backend (Java)
 
 ```text
 src/main/java/com/mailboom
 │
-├── domain                  # Capa de Dominio (Sin dependencias externas)
-│   ├── model               # Entidades (User, Campaign) y Value Objects
+├── domain                  # Domain Layer (No external dependencies)
+│   ├── model               # Entities (User, Campaign) and Value Objects
 │   ├── ports               # Interfaces (UserRepository, EmailSender)
-│   └── exceptions          # Excepciones de negocio
+│   └── exceptions          # Business exceptions
 │
-├── application             # Capa de Aplicación (Orquestación)
-│   ├── usecases            # Casos de uso (ExecuteCampaign, ImportContacts)
-│   └── dto                 # Objetos de transferencia de datos
+├── application             # Application Layer (Orchestration)
+│   ├── usecases            # Use cases (ExecuteCampaign, ImportContacts)
+│   └── dto                 # Data Transfer Objects
 │
-├── infrastructure          # Capa de Infraestructura (Implementaciones)
-│   ├── adapters            # Implementación de Puertos (AWS, Postgres)
-│   ├── security            # Configuración de JWT y Auth
-│   └── config              # Beans de Spring y configuración general
+├── infrastructure          # Infrastructure Layer (Implementations)
+│   ├── adapters            # Port Implementations (AWS, Postgres)
+│   ├── security            # JWT and Auth Configuration
+│   └── config              # Spring Beans and general configuration
 │
-└── web                     # Capa de Entrada (Controladores API Rest)
-    └── controllers         # Endpoints para el frontend
+└── web                     # Entry Layer (REST API Controllers)
+    └── controllers         # Endpoints for the frontend
 
 ```
 
 ---
 
-## ✨ Funcionalidades (MVP - 3 Semanas)
+## ✨ Features (MVP - 3 Weeks)
 
-### 👤 Gestión de Usuarios
+### 👤 User Management
 
-* Registro y autenticación mediante JWT.
-* Control de planes de suscripción (Límites de envío por franjas).
+* Registration and authentication via JWT.
+* Subscription plan control (Sending limits by tiers).
 
-### 👥 Gestión de Contactos
+### 👥 Contact Management
 
-* CRUD completo de contactos.
-* **Carga Masiva:** Importación de lotes de contactos mediante JSON/Batch.
-* **Campos Personalizados:** Flexibilidad total mediante almacenamiento JSONB.
+* Complete CRUD of contacts.
+* **Bulk Upload:** Import batches of contacts via JSON/Batch.
+* **Custom Fields:** Total flexibility via JSONB storage.
 
-### 📧 Campañas de Email
+### 📧 Email Campaigns
 
-* Creación de campañas con asunto y contenido HTML.
-* **Branding Inteligente:** Envíos en nombre del cliente "a través de Mailboom".
-* Configuración de `Reply-To` para que el cliente reciba respuestas directas.
-* Envío masivo integrado con AWS SES.
+* Creation of campaigns with subject and HTML content.
+* **Smart Branding:** Sending on behalf of the client "via Mailboom".
+* `Reply-To` configuration so the client receives direct replies.
+* Bulk sending integrated with AWS SES.
 
-### 📊 Panel de Administración
+### 📊 Admin Panel
 
-* Métricas globales de uso de la plataforma.
-* Control de reputación y monitoreo de envíos por usuario.
+* Global platform usage metrics.
+* Reputation control and sending monitoring per user.
 
 ---
 
-## 🚀 Instalación y Requisitos
+## 🚀 Installation and Requirements
 
-### Requisitos Previos
+### Prerequisites
 
-* Java 17 o superior.
+* Java 17 or higher.
 * Node.js & Angular CLI.
 * PostgreSQL 14+.
-* Cuenta de AWS con acceso a SES.
+* AWS account with SES access.
 
-### Configuración Rápida
+### Quick Setup
 
-1. Clonar el repositorio.
-2. Configurar las variables de entorno en `application.yml`:
+1. Clone the repository.
+2. Configure environment variables in `application.yml`:
 ```yaml
 spring:
   datasource:
@@ -100,15 +99,13 @@ aws:
 ```
 
 
-3. Ejecutar el backend: `./mvnw spring-boot:run`
-4. Ejecutar el frontend: `ng serve`
+3. Run the backend: `./mvnw spring-boot:run`
+4. Run the frontend: `ng serve`
 
 ---
 
-## 📈 Roadmap de Escalabilidad
+## 📈 Scalability Roadmap
 
-* [ ] Integración de colas de mensajería (Amazon SQS / RabbitMQ).
-* [ ] Tracking de eventos (Open rate & Click rate) mediante Webhooks.
-* [ ] Editor de plantillas Drag & Drop.
-
----
+* [ ] Message queue integration (Amazon SQS / RabbitMQ).
+* [ ] Event tracking (Open rate & Click rate) via Webhooks.
+* [ ] Drag & Drop template editor.
