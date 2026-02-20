@@ -38,13 +38,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
-        
+
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             logger.debug("No Bearer token found in request to {}", request.getRequestURI());
             filterChain.doFilter(request, response);
             return;
         }
-        
+
         jwt = authHeader.substring(7);
         try {
             userEmail = jwtService.extractUsername(jwt);
@@ -57,11 +57,11 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            
+
             var isTokenValid = tokenRepository.findByToken(jwt)
                     .map(t -> !t.isExpired() && !t.isRevoked())
                     .orElse(false);
-            
+
             logger.debug("Token validation - Valid in DB: {}, Valid Signature: {}", isTokenValid, jwtService.isTokenValid(jwt, userDetails));
 
             if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
