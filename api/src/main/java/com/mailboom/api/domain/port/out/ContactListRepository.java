@@ -13,4 +13,6 @@ public interface ContactListRepository {
     List<ContactList> findAllByUserId(UserId userId);
     ContactList save(ContactList contactList);
     void deleteById(ContactListId id);
+
+    List<ContactList> findAll();
 }
