@@ -10,7 +10,9 @@ import com.mailboom.api.infrastructure.user.persistence.jpa.repository.SpringDat
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,10 +24,10 @@ public class UserRepositoryAdapter implements UserRepository {
     private final UserEntityMapper userMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public Optional<User> findById(UserId id) {
-        return Optional.ofNullable(jpaRepository.findById(id.value())
-                .map(userMapper::toDomain)
-                .orElseThrow(() -> new EmailNotFoundException("User not found")));
+        return jpaRepository.findById(id.value())
+                .map(userMapper::toDomain);
     }
 
     @Override
@@ -41,19 +43,26 @@ public class UserRepositoryAdapter implements UserRepository {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public User findByEmail(String email) {
-        if (!jpaRepository.existsByEmail(email)) {
-            throw new EmailNotFoundException("Email not found");
-        }
         return jpaRepository.findByEmail(email)
                 .map(userMapper::toDomain)
-                .orElse(null);
+                .orElseThrow(() -> new EmailNotFoundException("Email not found"));
     }
 
     @Override
     public void delete(UserId id) {
         jpaRepository.deleteById(id.value());
     }
+
+
+    @Override
+    public List<User> findAllUsers() {
+        return jpaRepository.findAll().stream().map(userMapper::toDomain).toList();
     }
 
-
+    @Override
+    public long count() {
+        return jpaRepository.count();
+    }
+}
