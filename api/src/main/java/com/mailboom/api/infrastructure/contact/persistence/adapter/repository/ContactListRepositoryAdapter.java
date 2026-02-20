@@ -46,6 +46,11 @@ public class ContactListRepositoryAdapter implements ContactListRepository {
 
     }
 
+    @Override
+    public List<ContactList> findAll() {
+        return jpaRepository.findAll().stream().map(contactListEntityMapper::toDomain).collect(Collectors.toList());
+    }
+
 
 
 }
