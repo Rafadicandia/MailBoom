@@ -1,8 +1,8 @@
 package com.mailboom.api.domain.model.contact;
 
 import com.mailboom.api.domain.exception.ContactListMustHaveNameException;
-import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
 import com.mailboom.api.domain.model.common.valueobjects.Name;
+import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
 import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import lombok.Getter;
 
@@ -19,14 +19,15 @@ public class ContactList {
         this.name = name;
         this.totalContacts = 0;
     }
+
     //We use this one for a new list
-    public static ContactList create(UserId owner, Name name){
+    public static ContactList create(UserId owner, Name name) {
         if (name == null || name.toString().isBlank()) throw new ContactListMustHaveNameException("Name required");
         return new ContactList(ContactListId.generate(), owner, name, 0);
     }
 
     // We use this one for recreating the domain object
-    public static ContactList reCreate(ContactListId id, UserId owner, Name name, long totalContacts){
+    public static ContactList reCreate(ContactListId id, UserId owner, Name name, long totalContacts) {
         if (name == null || name.toString().isBlank()) throw new ContactListMustHaveNameException("Name required");
         return new ContactList(id, owner, name, totalContacts);
     }
@@ -34,5 +35,11 @@ public class ContactList {
     public ContactList updateName(Name newName) {
         if (newName == null || newName.value().isBlank()) throw new ContactListMustHaveNameException("Name required");
         return new ContactList(this.id, this.owner, newName, this.totalContacts);
+    }
+
+    public ContactList updateTotalContacts(long newTotalContacts) {
+        if (newTotalContacts < 0) throw new IllegalArgumentException("Total contacts cannot be negative");
+
+        return new ContactList(this.id, this.owner, this.name, newTotalContacts);
     }
 }
