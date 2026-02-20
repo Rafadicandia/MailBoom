@@ -17,7 +17,7 @@ public class ContactList {
         this.id = id;
         this.owner = owner;
         this.name = name;
-        this.totalContacts = 0;
+        this.totalContacts = totalContacts;
     }
 
     //We use this one for a new list
