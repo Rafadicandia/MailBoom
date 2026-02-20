@@ -65,6 +65,13 @@ public class ImportContactsFromFileUseCaseImpl implements ImportContactsFromFile
         List<Contact> contacts = data.stream()
                 .map(d -> Contact.create(ContactId.generate(), listId, new Email(d.email()), new Name(d.name()), d.attributes(), true))
                 .toList();
-        contactRepository.saveAll(contacts);
+        try{
+            contactRepository.saveAll(contacts);
+            System.out.println("Contacts imported successfully");
+            contactListRepository.save(contactListRepository.findById(listId).orElseThrow().updateTotalContacts(contacts.size()));
+            System.out.println("Contact List updated successfully");
+        } catch (RuntimeException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
