@@ -2,6 +2,8 @@ package com.mailboom.api.infrastructure.user.persistence.jpa.entity;
 
 import com.mailboom.api.domain.model.user.valueobjects.PlanType;
 import com.mailboom.api.domain.model.user.valueobjects.Role;
+import com.mailboom.api.infrastructure.campaign.persistence.jpa.entity.CampaignEntity;
+import com.mailboom.api.infrastructure.contact.persistence.jpa.entity.ContactListEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +44,12 @@ public class UserEntity {
     @Column(nullable = false)
     private Role role;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<TokenEntity> tokens;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ContactListEntity> contactLists;
+
+    @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<CampaignEntity> campaigns;
 }
