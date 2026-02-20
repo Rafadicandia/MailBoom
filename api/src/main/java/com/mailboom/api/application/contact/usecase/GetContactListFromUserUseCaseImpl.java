@@ -23,9 +23,8 @@ public class GetContactListFromUserUseCaseImpl implements GetContactListFromUser
     @Override
     public List<ContactList> execute(GetContactListFromUserCommand command) {
         UserId userId = new UserId(UUID.fromString(command.ownerId()));
-        if (userRepository.findById(userId) == null) {
-            throw new UserNotFoundException("User not found");
-        }
+        userRepository.findById(userId)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
         return contactListRepository.findAllByUserId(userId);
     }
