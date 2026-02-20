@@ -10,6 +10,7 @@ import org.springframework.stereotype.Component;
 public class FileParserFactoryImpl implements FileParserFactory {
 
     private final CsvContactFileParser csvParser;
+    private final ExcelContactFileParser excelParser;
 
     @Override
     public ContactFileParser getParser(String contentType) {
@@ -17,8 +18,10 @@ public class FileParserFactoryImpl implements FileParserFactory {
              throw new IllegalArgumentException("Content type cannot be null");
         }
         
-        if (contentType.contains("text/csv") || contentType.contains("application/vnd.ms-excel")) { // Basic check
+        if (contentType.contains("text/csv") || contentType.contains("application/vnd.ms-excel")) {
             return csvParser;
+        } else if (contentType.contains("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")) {
+            return excelParser;
         }
         
         throw new IllegalArgumentException("Unsupported content type: " + contentType);
