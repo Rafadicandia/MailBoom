@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface SpringDataCampaignRepository extends JpaRepository<CampaignEntity, UUID> {
     List<CampaignEntity> findAllByOwnerId(UUID ownerId);
+    List<CampaignEntity> findAll();
 }
