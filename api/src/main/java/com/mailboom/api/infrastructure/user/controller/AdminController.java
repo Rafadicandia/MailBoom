@@ -2,6 +2,8 @@ package com.mailboom.api.infrastructure.user.controller;
 
 import com.mailboom.api.application.admin.in.port.*;
 import com.mailboom.api.application.admin.usecase.command.GetAllUsersCommand;
+import com.mailboom.api.application.campaign.port.in.DeleteCampaignUseCase;
+import com.mailboom.api.application.campaign.usecase.command.DeleteCampaignCommand;
 import com.mailboom.api.application.campaign.usecase.command.GetCampaignCommand;
 import com.mailboom.api.application.contact.port.in.*;
 import com.mailboom.api.application.contact.usecase.command.*;
@@ -52,6 +54,7 @@ public class AdminController {
     // Campaign use cases
     private final GetAllCampaignsUseCase getAllCampaignsUseCase;
     private final GetCampaignDetailsUseCase getCampaignDetailsUseCase;
+    private final DeleteCampaignUseCase deleteCampaignUseCase;
 
     // Contact use cases
     private final GetContactListUseCase getContactListUseCase;
@@ -74,7 +77,6 @@ public class AdminController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        // Validate pagination parameters
         if (page < 0) page = 0;
         if (size < 1) size = 10;
         
@@ -130,7 +132,6 @@ public class AdminController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        // Validate pagination parameters
         if (page < 0) page = 0;
         if (size < 1) size = 10;
         
@@ -177,6 +178,13 @@ public class AdminController {
         ));
     }
 
+    @DeleteMapping("/campaigns/{id}")
+    @Operation(summary = "Delete campaign", description = "Delete a campaign by its ID")
+    public ResponseEntity<Void> deleteCampaign(@PathVariable String id) {
+        deleteCampaignUseCase.excecute(new DeleteCampaignCommand(id));
+        return ResponseEntity.noContent().build();
+    }
+
     // ========== CONTACT LIST ENDPOINTS ==========
 
     @GetMapping("/contacts/lists")
@@ -186,7 +194,6 @@ public class AdminController {
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(required = false) String userId
     ) {
-        // Validate pagination parameters
         if (page < 0) page = 0;
         if (size < 1) size = 10;
         
@@ -279,7 +286,6 @@ public class AdminController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size
     ) {
-        // Validate pagination parameters
         if (page < 0) page = 0;
         if (size < 1) size = 10;
         
