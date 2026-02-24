@@ -36,7 +36,7 @@ public class User {
         return new User(id, email, name, password, plan, emailsSentThisMonth, role, contactLists);
     }
 
-    // Sobrecarga para crear usuarios normales por defecto
+
     public static User create(UserId id, Email email, Name name, PasswordHash password, EmailCounter emailsSentThisMonth) {
         return new User(id, email, name, password, PlanType.FREE, emailsSentThisMonth, Role.USER, new HashSet<>());
     }
@@ -55,12 +55,12 @@ public class User {
         return emailCounter.isWithinLimit(limit, quantity);
     }
 
-    // method for future implementations
+
     public boolean isPlanExpired() {
         return plan.isExpired();
     }
 
-    //method for future implementations
+
     public User resetAvailableEmails() {
         return new User(id, email, name, password, plan, EmailCounter.zero(), role, contactLists);
     }
