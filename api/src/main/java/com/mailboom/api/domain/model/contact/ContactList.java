@@ -26,7 +26,7 @@ public class ContactList {
         return new ContactList(ContactListId.generate(), owner, name, 0);
     }
 
-    // We use this one for recreating the domain object
+
     public static ContactList reCreate(ContactListId id, UserId owner, Name name, long totalContacts) {
         if (name == null || name.toString().isBlank()) throw new ContactListMustHaveNameException("Name required");
         return new ContactList(id, owner, name, totalContacts);
