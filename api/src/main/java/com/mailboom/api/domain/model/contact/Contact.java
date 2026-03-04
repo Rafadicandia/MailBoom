@@ -4,6 +4,7 @@ import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
 import com.mailboom.api.domain.model.common.valueobjects.Email;
 import com.mailboom.api.domain.model.common.valueobjects.Name;
+import com.mailboom.api.domain.model.common.valueobjects.Phone;
 import lombok.Getter;
 
 import java.util.Map;
@@ -13,7 +14,7 @@ public class Contact {
 
     private final ContactId id;
     private final ContactListId listId;
-    private final  Email email;
+    private final Email email;
     private final Name name;
     private final Map<String, Object> customFields;
     private final boolean subscribed;

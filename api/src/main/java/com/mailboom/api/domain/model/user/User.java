@@ -2,6 +2,7 @@ package com.mailboom.api.domain.model.user;
 
 import com.mailboom.api.domain.model.common.valueobjects.Email;
 import com.mailboom.api.domain.model.common.valueobjects.Name;
+import com.mailboom.api.domain.model.common.valueobjects.Phone;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
 import com.mailboom.api.domain.model.user.valueobjects.*;
 import lombok.Getter;

@@ -21,5 +21,6 @@ public record CreateContactCommand(
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Name is required");
         }
+
     }
 }
