@@ -4,5 +4,5 @@ import com.mailboom.api.application.whatsapp.usecase.command.CreateTemplateComma
 import com.mailboom.api.domain.model.whatsapp.Template;
 
 public interface CreateTemplateUseCase {
-    Template createTemplate(CreateTemplateCommand command);
+    Template execute(CreateTemplateCommand command);
 }
