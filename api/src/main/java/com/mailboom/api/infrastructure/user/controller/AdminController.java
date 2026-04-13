@@ -337,6 +337,7 @@ public class AdminController {
                 request.contactListId(),
                 request.email(),
                 request.name(),
+                request.phone(),
                 request.customFields(),
                 request.subscribed()
         );
@@ -361,6 +362,7 @@ public class AdminController {
                 id,
                 request.email(),
                 request.name(),
+                request.phone(),
                 request.customFields(),
                 request.subscribed()
         );
