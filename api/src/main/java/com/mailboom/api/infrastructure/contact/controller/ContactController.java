@@ -47,6 +47,7 @@ public class ContactController {
                 request.contactListId(),
                 request.email(),
                 request.name(),
+                request.phone(),
                 request.customFields(),
                 request.subscribed()
 
@@ -87,6 +88,7 @@ public class ContactController {
                 id.toString(), // Corrected: Use the path variable ID
                 request.email(),
                 request.name(),
+                request.phone(),
                 request.customFields(),
                 request.subscribed()
         );
