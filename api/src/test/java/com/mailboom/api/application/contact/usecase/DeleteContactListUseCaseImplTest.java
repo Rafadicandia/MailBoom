@@ -1,6 +1,7 @@
 package com.mailboom.api.application.contact.usecase;
 
 import com.mailboom.api.application.contact.usecase.command.DeleteContactListCommand;
+import com.mailboom.api.domain.model.common.valueobjects.Phone;
 import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
@@ -42,7 +43,7 @@ class DeleteContactListUseCaseImplTest {
         var userId = UserId.generate();
         var command = new DeleteContactListCommand(contactListId.toString());
         var contactList = ContactList.reCreate(contactListId, userId, new Name("Test List"), 1);
-        var contact = Contact.create(ContactId.generate(), contactListId, new Email("test@test.com"), new Name("Test"), null, true);
+        var contact = Contact.create(ContactId.generate(), contactListId, new Email("test@test.com"), new Name("Test"), new Phone("12345678"),null, true);
 
         when(contactRepository.findAllByContactListId(contactListId)).thenReturn(List.of(contact));
 
