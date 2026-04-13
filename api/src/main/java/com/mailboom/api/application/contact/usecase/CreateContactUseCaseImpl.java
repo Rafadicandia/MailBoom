@@ -37,6 +37,7 @@ public class CreateContactUseCaseImpl implements CreateContactUseCase {
                 contactListId,
                 new Email(command.email()),
                 new Name(command.name()),
+                new Phone(command.phone()),
                 command.customFields(),
                 command.subscribed()
         );
