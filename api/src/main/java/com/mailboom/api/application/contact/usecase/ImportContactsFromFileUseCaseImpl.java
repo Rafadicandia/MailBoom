@@ -4,6 +4,7 @@ import com.mailboom.api.application.contact.port.in.ImportContactsFromFileUseCas
 import com.mailboom.api.application.contact.usecase.command.ImportContactsFromFileCommand;
 import com.mailboom.api.domain.model.common.valueobjects.Email;
 import com.mailboom.api.domain.model.common.valueobjects.Name;
+import com.mailboom.api.domain.model.common.valueobjects.Phone;
 import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
@@ -63,7 +64,7 @@ public class ImportContactsFromFileUseCaseImpl implements ImportContactsFromFile
 
     private void saveBatch(List<ContactData> data, ContactListId listId) {
         List<Contact> contacts = data.stream()
-                .map(d -> Contact.create(ContactId.generate(), listId, new Email(d.email()), new Name(d.name()), d.attributes(), true))
+                .map(d -> Contact.create(ContactId.generate(), listId, new Email(d.email()), new Name(d.name()), new Phone(d.phone()),d.attributes(), true))
                 .toList();
         try{
             contactRepository.saveAll(contacts);
