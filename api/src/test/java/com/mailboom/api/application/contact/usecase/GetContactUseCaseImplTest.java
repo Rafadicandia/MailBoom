@@ -1,6 +1,7 @@
 package com.mailboom.api.application.contact.usecase;
 
 import com.mailboom.api.application.contact.usecase.command.GetContactCommand;
+import com.mailboom.api.domain.model.common.valueobjects.Phone;
 import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
@@ -37,7 +38,7 @@ class GetContactUseCaseImplTest {
         var contactId = ContactId.generate();
         var contactListId = ContactListId.generate();
         var command = new GetContactCommand(contactId.toString());
-        var contact = Contact.create(contactId, contactListId, new Email("test@test.com"), new Name("Test"), null, true);
+        var contact = Contact.create(contactId, contactListId, new Email("test@test.com"), new Name("Test"), new Phone("123456789"),null, true);
 
         when(contactRepository.findById(contactId)).thenReturn(Optional.of(contact));
 
