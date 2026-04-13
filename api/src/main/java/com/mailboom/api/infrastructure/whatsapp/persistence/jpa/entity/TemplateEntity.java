@@ -2,6 +2,7 @@ package com.mailboom.api.infrastructure.whatsapp.persistence.jpa.entity;
 
 
 import com.mailboom.api.domain.model.whatsapp.valueobjects.TemplateStatus;
+import com.mailboom.api.infrastructure.user.persistence.jpa.entity.UserEntity;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -27,7 +28,7 @@ public class TemplateEntity {
     @Column(nullable = false)
     private String name;
 
-    @Enumerated(EnumType.STRING)
+    @Column(name = "category")
     private String category;
 
     @Column(nullable = false)
@@ -37,15 +38,15 @@ public class TemplateEntity {
     @Column(name = "components", columnDefinition = "jsonb")
     private Map<String, Object> components;
 
-    @Enumerated(EnumType.STRING)
+    @Column(name = "language")
     private String language;
 
-    @Enumerated(EnumType.STRING)
-    private TemplateStatus status;
+    @Column(name = "status")
+    private String status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private UUID ownerId;
+    private UserEntity ownerId;
 
 }
 
