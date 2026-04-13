@@ -1,6 +1,7 @@
 package com.mailboom.api.application.contact.usecase;
 
 import com.mailboom.api.application.contact.usecase.command.CreateContactCommand;
+import com.mailboom.api.domain.model.common.valueobjects.Phone;
 import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
@@ -54,19 +55,20 @@ class CreateContactUseCaseImplTest {
                 contactListId.toString(),
                 "test@test.com",
                 "Test",
+                "123456789",
                 null,
                 true
         );
 
-        var newContact = Contact.create(ContactId.generate(), contactListId, new Email(command.email()), new Name(command.name()), command.customFields(), command.subscribed());
+        var newContact = Contact.create(ContactId.generate(), contactListId, new Email(command.email()), new Name(command.name()), new Phone(command.phone()), command.customFields(), command.subscribed());
 
         // Mock findAllByContactListId to return 5 existing contacts
         List<Contact> existingContacts = List.of(
-            Contact.create(ContactId.generate(), contactListId, new Email("test1@test.com"), new Name("Test1"), null, true),
-            Contact.create(ContactId.generate(), contactListId, new Email("test2@test.com"), new Name("Test2"), null, true),
-            Contact.create(ContactId.generate(), contactListId, new Email("test3@test.com"), new Name("Test3"), null, true),
-            Contact.create(ContactId.generate(), contactListId, new Email("test4@test.com"), new Name("Test4"), null, true),
-            Contact.create(ContactId.generate(), contactListId, new Email("test5@test.com"), new Name("Test5"), null, true)
+            Contact.create(ContactId.generate(), contactListId, new Email("test1@test.com"), new Name("Test1"), new Phone("123456789"), null, true),
+            Contact.create(ContactId.generate(), contactListId, new Email("test2@test.com"), new Name("Test2"), new Phone("123456789"),null, true),
+            Contact.create(ContactId.generate(), contactListId, new Email("test3@test.com"), new Name("Test3"), new Phone("123456789"),null, true),
+            Contact.create(ContactId.generate(), contactListId, new Email("test4@test.com"), new Name("Test4"), new Phone("123456789"),null, true),
+            Contact.create(ContactId.generate(), contactListId, new Email("test5@test.com"), new Name("Test5"), new Phone("123456789"),null, true)
         );
 
         when(contactListRepository.findById(contactListId)).thenReturn(Optional.of(existingContactList));
