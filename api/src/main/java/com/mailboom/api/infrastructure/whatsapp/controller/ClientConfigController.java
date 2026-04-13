@@ -4,6 +4,7 @@ import com.mailboom.api.application.whatsapp.port.in.DeleteClientConfigUseCase;
 import com.mailboom.api.application.whatsapp.port.in.GetClientConfigUseCase;
 import com.mailboom.api.application.whatsapp.port.in.SaveClientConfigUseCase;
 import com.mailboom.api.application.whatsapp.usecase.command.SaveClientConfigCommand;
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.model.whatsapp.ClientConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +31,13 @@ public class ClientConfigController {
     @GetMapping("/{clientId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ClientConfig> getConfig(@PathVariable UUID clientId) {
-        return ResponseEntity.ok(getUseCase.get(clientId));
+        return ResponseEntity.ok(getUseCase.get(new UserId(clientId)));
     }
 
     @DeleteMapping("/{clientId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteConfig(@PathVariable UUID clientId) {
-        deleteUseCase.delete(clientId);
+        deleteUseCase.delete(new UserId(clientId));
         return ResponseEntity.noContent().build();
     }
 }
