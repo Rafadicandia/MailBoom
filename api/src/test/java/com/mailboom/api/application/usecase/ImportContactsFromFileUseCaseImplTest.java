@@ -73,8 +73,8 @@ class ImportContactsFromFileUseCaseImplTest {
         
         doAnswer(invocation -> {
             Consumer<ContactData> consumer = invocation.getArgument(1);
-            consumer.accept(new ContactData("test1@example.com", "Test 1", new HashMap<>()));
-            consumer.accept(new ContactData("test2@example.com", "Test 2", new HashMap<>()));
+            consumer.accept(new ContactData("test1@example.com", "Test 1", "123456789", new HashMap<>()));
+            consumer.accept(new ContactData("test2@example.com", "Test 2","987654321", new HashMap<>()));
             return null;
         }).when(parser).parse(eq(inputStream), any());
 
@@ -107,7 +107,7 @@ class ImportContactsFromFileUseCaseImplTest {
             Consumer<ContactData> consumer = invocation.getArgument(1);
             // Simulate 1005 contacts to trigger batch processing (1000 + 5)
             for (int i = 0; i < 1005; i++) {
-                consumer.accept(new ContactData("user" + i + "@example.com", "User " + i, new HashMap<>()));
+                consumer.accept(new ContactData("user" + i + "@example.com", "User " + i, "123456789", new HashMap<>()));
             }
             return null;
         }).when(parser).parse(eq(inputStream), any());
