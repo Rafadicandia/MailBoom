@@ -1,7 +1,9 @@
 package com.mailboom.api.infrastructure.whatsapp.persistence.jpa.mapper;
 
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.model.whatsapp.Template;
 import com.mailboom.api.domain.model.whatsapp.valueobjects.*;
+import com.mailboom.api.infrastructure.user.persistence.jpa.entity.UserEntity;
 import com.mailboom.api.infrastructure.whatsapp.persistence.jpa.entity.TemplateEntity;
 import org.springframework.stereotype.Component;
 
@@ -28,12 +30,17 @@ public class TemplateEntityMapper {
                 ParameterFormat.valueOf(entity.getParameterFormat()),
                 components,
                 Languajes.fromCode(entity.getLanguage()),
-                entity.getStatus(),
-                entity.getOwnerId()
+                entity.getStatus() == null ? null : TemplateStatus.valueOf(entity.getStatus()),
+                new UserId(entity.getOwnerId().getId())
         );
     }
 
     public TemplateEntity toEntity(Template domain) {
+        // Map the components from the domain list to a map for the entity
+        UserEntity userEntity = new UserEntity();
+        userEntity.setId(domain.getOwnerId().value());
+
+
         return new TemplateEntity(
                 domain.getId(),
                 domain.getName(),
@@ -41,8 +48,8 @@ public class TemplateEntityMapper {
                 domain.getParameterFormat().name(),
                 mapComponentsToEntity(domain.getComponents()),
                 domain.getLanguage().getCode(),
-                domain.getStatus(),
-                domain.getOwnerId()
+                domain.getStatus().toString(),
+                userEntity
         );
     }
 
