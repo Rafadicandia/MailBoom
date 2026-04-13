@@ -52,4 +52,6 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "owner", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<CampaignEntity> campaigns;
+
+
 }
