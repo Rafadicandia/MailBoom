@@ -1,5 +1,6 @@
 package com.mailboom.api.infrastructure.whatsapp.persistence.adapter;
 
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.model.whatsapp.ClientConfig;
 import com.mailboom.api.domain.model.whatsapp.valueobjects.AccessToken;
 import com.mailboom.api.domain.port.out.ClientConfigRepository;
@@ -19,7 +20,7 @@ public class ClientConfigRepositoryAdapter implements ClientConfigRepository {
     @Override
     public ClientConfig save(ClientConfig clientConfig) {
         ClientConfigEntity entity = new ClientConfigEntity(
-            clientConfig.getClientId(),
+            clientConfig.getClientId().value(),
             clientConfig.getWabaId(),
             clientConfig.getPhoneNumberId(),
             clientConfig.getAccessToken().value()
@@ -29,10 +30,10 @@ public class ClientConfigRepositoryAdapter implements ClientConfigRepository {
     }
 
     @Override
-    public Optional<ClientConfig> findById(UUID clientId) {
-        return jpaRepository.findById(clientId)
+    public Optional<ClientConfig> findById(UserId clientId) {
+        return jpaRepository.findById(clientId.value())
             .map(entity -> new ClientConfig(
-                entity.getClientId(),
+                new UserId(entity.getClientId()),
                 entity.getWabaId(),
                 entity.getPhoneNumberId(),
                 new AccessToken(entity.getAccessToken())
@@ -40,7 +41,7 @@ public class ClientConfigRepositoryAdapter implements ClientConfigRepository {
     }
 
     @Override
-    public void deleteById(UUID clientId) {
-        jpaRepository.deleteById(clientId);
+    public void deleteById(UserId clientId) {
+        jpaRepository.deleteById(clientId.value());
     }
 }
