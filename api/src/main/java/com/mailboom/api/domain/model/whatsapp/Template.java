@@ -1,5 +1,6 @@
 package com.mailboom.api.domain.model.whatsapp;
 
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.model.whatsapp.valueobjects.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,9 +18,9 @@ public class Template {
     private final Languajes language;
     @Setter
     private TemplateStatus status;
-    private final UUID ownerId;
+    private final UserId ownerId;
 
-    public Template(UUID id, String name, Category category, ParameterFormat parameterFormat, List<TemplateComponent> components, Languajes language, TemplateStatus status, UUID ownerId) {
+    public Template(UUID id, String name, Category category, ParameterFormat parameterFormat, List<TemplateComponent> components, Languajes language, TemplateStatus status, UserId ownerId) {
         this.id = id;
         this.name = name;
         this.category = category;
@@ -29,6 +30,5 @@ public class Template {
         this.status = status;
         this.ownerId = ownerId;
     }
-
 
 }
