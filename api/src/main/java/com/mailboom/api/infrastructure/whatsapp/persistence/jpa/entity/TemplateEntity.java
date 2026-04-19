@@ -1,6 +1,7 @@
 package com.mailboom.api.infrastructure.whatsapp.persistence.jpa.entity;
 
 
+import com.mailboom.api.domain.model.whatsapp.Template;
 import com.mailboom.api.domain.model.whatsapp.valueobjects.TemplateStatus;
 import com.mailboom.api.infrastructure.user.persistence.jpa.entity.UserEntity;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
@@ -12,6 +13,7 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Type;
 
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
