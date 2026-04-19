@@ -27,18 +27,16 @@ jobs:
           CONTEXT=$(jq -Rs . < readme_snippet.txt)
           COMMITS=$(jq -Rs . < commits.txt)
 
-          # Usamos jq para construir el JSON perfecto
           JSON_DATA=$(jq -n \
             --arg ctx "$CONTEXT" \
             --arg cmt "$COMMITS" \
-            '{contents: [{parts: [{text: ("Escribe un post breve para LinkedIn en español basado en esto. Contexto: " + $ctx + " Cambios: " + $cmt)}]}]}')
+            '{contents: [{parts: [{text: ("Eres un experto en LinkedIn. Proyecto: " + $ctx + " Cambios: " + $cmt + " Escribe un post breve y profesional en español.")}]}]}')
 
-          # LLAMADA A v1beta (La que sí funciona con flash)
-          RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$GEMINI_KEY" \
+          # USAMOS TU MODELO REAL: gemini-2.5-flash
+          RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$GEMINI_KEY" \
             -H 'Content-Type: application/json' \
             -d "$JSON_DATA")
 
-          # Extraemos el texto o capturamos el error
           RESULT=$(echo $RESPONSE | jq -r '.candidates[0].content.parts[0].text // empty')
 
           if [ -z "$RESULT" ]; then
