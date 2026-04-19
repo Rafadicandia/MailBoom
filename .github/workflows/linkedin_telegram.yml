@@ -68,3 +68,6 @@ jobs:
             
             ${{ env.FINAL_POST }}
           format: markdown
+          env:
+          TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
+          TELEGRAM_TO: ${{ secrets.TELEGRAM_TO }}
