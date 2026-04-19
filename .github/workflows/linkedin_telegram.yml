@@ -62,8 +62,9 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          format: markdown
+          # Cambiamos a HTML porque es mucho más difícil que se rompa
+          format: html 
           message: |
-            📝 *Borrador para LinkedIn*
+            <b>📝 Borrador para LinkedIn</b>
             
             ${{ env.FINAL_POST }}
