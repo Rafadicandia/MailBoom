@@ -41,18 +41,24 @@ jobs:
       - name: Generar Post con Gemini
         if: env.SKIP != 'true'
         run: |
-          RESPONSE=$(curl https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${{ secrets.GEMINI_API_KEY }} \
+          RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
             -H 'Content-Type: application/json' \
-            -X POST \
             -d '{
               "contents": [{
                 "parts":[{
-                  "text": "Contexto del proyecto: ${{ env.APP_CONTEXT }}. Commits del día: ${{ env.DAILY_COMMITS }}. Escribe un post para LinkedIn en español. No menciones códigos técnicos irrelevantes, enfócate en el valor funcional. Usa un tono profesional y cercano."
+                  "text": "Eres un desarrollador profesional. Contexto del proyecto: ${{ env.APP_CONTEXT }}. Commits del día: ${{ env.DAILY_COMMITS }}. Escribe un post para LinkedIn en español, profesional y breve. No uses código técnico pesado."
                 }]
               }]
             }')
           
-          RESULT=$(echo $RESPONSE | jq -r '.candidates[0].content.parts[0].text')
+          # Extraemos el texto con una ruta más segura
+          RESULT=$(echo $RESPONSE | jq -r '.candidates[0].content.parts[0].text // "Error al generar contenido"')
+          
+          # Si el resultado es null o vacío, guardamos un mensaje de aviso
+          if [ "$RESULT" == "null" ] || [ -z "$RESULT" ]; then
+            RESULT="La IA no pudo generar el post. Revisa los logs de GitHub."
+          fi
+
           echo "FINAL_POST<<EOF" >> $GITHUB_ENV
           echo "$RESULT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
