@@ -14,15 +14,10 @@ jobs:
           fetch-depth: 0
 
       - name: Preparar Datos
-        id: data
         run: |
-          # Guardamos el contenido en archivos temporales para evitar errores de terminal
           head -n 50 README.md > readme_snippet.txt
           git log --since="24 hours ago" --pretty=format:"- %s" > commits.txt
-
-          if [ ! -s commits.txt ]; then
-            echo "SKIP=true" >> $GITHUB_ENV
-          fi
+          if [ ! -s commits.txt ]; then echo "SKIP=true" >> $GITHUB_ENV; fi
 
       - name: Generar Post con Gemini
         if: env.SKIP != 'true'
@@ -32,20 +27,22 @@ jobs:
           CONTEXT=$(jq -Rs . < readme_snippet.txt)
           COMMITS=$(jq -Rs . < commits.txt)
 
+          # Usamos jq para construir el JSON perfecto
           JSON_DATA=$(jq -n \
             --arg ctx "$CONTEXT" \
             --arg cmt "$COMMITS" \
-            '{contents: [{parts: [{text: ("Proyecto: " + $ctx + " Cambios: " + $cmt + " Escribe un post para LinkedIn en español. No uses negritas ni cursivas de markdown.")}]}]}')
+            '{contents: [{parts: [{text: ("Escribe un post breve para LinkedIn en español basado en esto. Contexto: " + $ctx + " Cambios: " + $cmt)}]}]}')
 
-          # Volvemos a v1beta que acepta el modelo Flash sin problemas
+          # LLAMADA A v1beta (La que sí funciona con flash)
           RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$GEMINI_KEY" \
             -H 'Content-Type: application/json' \
             -d "$JSON_DATA")
 
+          # Extraemos el texto o capturamos el error
           RESULT=$(echo $RESPONSE | jq -r '.candidates[0].content.parts[0].text // empty')
 
           if [ -z "$RESULT" ]; then
-            RESULT="Error de la API de Google: $(echo $RESPONSE | jq -c .)"
+            RESULT="Error de la API: $(echo $RESPONSE | jq -c .)"
           fi
           
           echo "FINAL_POST<<EOF" >> $GITHUB_ENV
@@ -58,9 +55,8 @@ jobs:
         with:
           to: ${{ secrets.TELEGRAM_TO }}
           token: ${{ secrets.TELEGRAM_TOKEN }}
-          # Cambiamos a HTML porque es mucho más difícil que se rompa
-          format: html 
+          format: html
           message: |
             <b>📝 Borrador para LinkedIn</b>
-            
+
             ${{ env.FINAL_POST }}
