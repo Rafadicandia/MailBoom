@@ -40,7 +40,7 @@ public class CreateTemplateUseCaseImpl implements CreateTemplateUseCase {
             ParameterFormat.valueOf(command.parameterFormat()),
             command.components(),
             Languajes.fromCode(command.language()),
-            TemplateStatus.PENDING, 
+            TemplateStatus.APPROVED,
             userId
         );
 
