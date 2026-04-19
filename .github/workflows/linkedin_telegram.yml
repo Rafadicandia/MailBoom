@@ -1,0 +1,67 @@
+name: LinkedIn Bot via Telegram
+on:
+  schedule:
+    - cron: '0 21 * * *' # 9 PM UTC
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Preparar Contexto y Commits
+        id: collect_data
+        run: |
+          # 1. Leer el README (limitamos a 100 líneas para no saturar)
+          README_CONTENT=$(head -n 100 README.md || echo "No hay README disponible")
+          
+          # 2. Detectar rama actual y obtener commits de las últimas 24h
+          # Usamos github.ref_name para que sea la rama donde se ejecuta el action
+          COMMITS=$(git log --since="24 hours ago" --pretty=format:"- %s")
+
+          if [ -z "$COMMITS" ]; then
+            echo "SKIP=true" >> $GITHUB_ENV
+          else
+            echo "APP_CONTEXT<<EOF" >> $GITHUB_ENV
+            echo "$README_CONTENT" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+            
+            echo "DAILY_COMMITS<<EOF" >> $GITHUB_ENV
+            echo "$COMMITS" >> $GITHUB_ENV
+            echo "EOF" >> $GITHUB_ENV
+          fi
+
+      - name: Generar Post con Gemini
+        if: env.SKIP != 'true'
+        run: |
+          RESPONSE=$(curl https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${{ secrets.GEMINI_API_KEY }} \
+            -H 'Content-Type: application/json' \
+            -X POST \
+            -d '{
+              "contents": [{
+                "parts":[{
+                  "text": "Contexto del proyecto: ${{ env.APP_CONTEXT }}. Commits del día: ${{ env.DAILY_COMMITS }}. Escribe un post para LinkedIn en español. No menciones códigos técnicos irrelevantes, enfócate en el valor funcional. Usa un tono profesional y cercano."
+                }]
+              }]
+            }')
+          
+          RESULT=$(echo $RESPONSE | jq -r '.candidates[0].content.parts[0].text')
+          echo "FINAL_POST<<EOF" >> $GITHUB_ENV
+          echo "$RESULT" >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
+
+      - name: Enviar a Telegram
+        if: env.SKIP != 'true'
+        uses: appleboy/telegram-action@master
+        with:
+          to: ${{ secrets.TELEGRAM_TO }}
+          token: ${{ secrets.TELEGRAM_TOKEN }}
+          message: |
+            📝 *Borrador para LinkedIn*
+            
+            ${{ env.FINAL_POST }}
+          format: markdown
