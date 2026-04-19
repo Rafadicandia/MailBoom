@@ -19,44 +19,40 @@ jobs:
       - name: Preparar Contexto y Commits
         id: collect_data
         run: |
-          # 1. Leer el README (limitamos a 100 líneas para no saturar)
-          README_CONTENT=$(head -n 100 README.md || echo "No hay README disponible")
+          # Leemos el README y lo convertimos en un formato seguro para JSON
+          README_RAW=$(head -n 50 README.md || echo "No hay README")
           
-          # 2. Detectar rama actual y obtener commits de las últimas 24h
-          # Usamos github.ref_name para que sea la rama donde se ejecuta el action
-          COMMITS=$(git log --since="24 hours ago" --pretty=format:"- %s")
+          # TRUCO: Usamos jq para que limpie comillas y caracteres raros
+          APP_CONTEXT=$(echo "$README_RAW" | jq -aRs .)
+          
+          # Hacemos lo mismo con los commits
+          COMMITS_RAW=$(git log --since="24 hours ago" --pretty=format:"- %s")
 
-          if [ -z "$COMMITS" ]; then
+          if [ -z "$COMMITS_RAW" ]; then
             echo "SKIP=true" >> $GITHUB_ENV
           else
-            echo "APP_CONTEXT<<EOF" >> $GITHUB_ENV
-            echo "$README_CONTENT" >> $GITHUB_ENV
-            echo "EOF" >> $GITHUB_ENV
-            
-            echo "DAILY_COMMITS<<EOF" >> $GITHUB_ENV
-            echo "$COMMITS" >> $GITHUB_ENV
-            echo "EOF" >> $GITHUB_ENV
+            COMMITS_SAFE=$(echo "$COMMITS_RAW" | jq -aRs .)
+            echo "APP_CONTEXT=$APP_CONTEXT" >> $GITHUB_ENV
+            echo "DAILY_COMMITS=$COMMITS_SAFE" >> $GITHUB_ENV
           fi
 
       - name: Generar Post con Gemini
         if: env.SKIP != 'true'
         run: |
-          # Usamos gemini-1.5-flash que es el estándar actual en 2026
+          # Ahora enviamos las variables directamente, que ya vienen con sus propias comillas seguras
           RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
             -H 'Content-Type: application/json' \
-            -d '{
-              "contents": [{
-                "parts":[{
-                  "text": "Eres un desarrollador. Proyecto: ${{ env.APP_CONTEXT }}. Commits: ${{ env.DAILY_COMMITS }}. Escribe un post corto para LinkedIn en español."
+            -d "{
+              \"contents\": [{
+                \"parts\":[{
+                  \"text\": \"Eres un desarrollador. Contexto: ${{ env.APP_CONTEXT }}. Commits: ${{ env.DAILY_COMMITS }}. Escribe un post para LinkedIn en español.\"
                 }]
               }]
-            }')
+            }")
           
-          # Esto imprimirá la respuesta en el log de GitHub por si vuelve a fallar
           echo "Respuesta de la API: $RESPONSE"
           
-          RESULT=$(echo $RESPONSE | jq -r '.candidates[0].content.parts[0].text // "Error: La IA no devolvió texto"' | tr -d '\r')
-          
+          RESULT=$(echo $RESPONSE | jq -r '.candidates[0].content.parts[0].text // "Error: La IA no devolvió texto"')
           echo "FINAL_POST<<EOF" >> $GITHUB_ENV
           echo "$RESULT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
