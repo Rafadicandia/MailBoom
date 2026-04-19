@@ -31,14 +31,16 @@ spring:
     username: ${POSTGRES_USER:myuser}
     password: ${POSTGRES_PASSWORD:mypassword}
   jpa:
-      ddl-auto: update
+    ddl-auto: update
+    show-sql: true
+    generate-ddl: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
         jdbc.batch_size: 500
         order_inserts: true
-    show-sql: false
+        order_updates: true
+
 
 logging:
   level:
