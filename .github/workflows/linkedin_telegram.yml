@@ -27,11 +27,22 @@ jobs:
           CONTEXT=$(jq -Rs . < readme_snippet.txt)
           COMMITS=$(jq -Rs . < commits.txt)
 
+          # Construimos un JSON con un prompt mucho más profesional y técnico
           JSON_DATA=$(jq -n \
             --arg ctx "$CONTEXT" \
             --arg cmt "$COMMITS" \
-            '{contents: [{parts: [{text: ("Eres un experto en LinkedIn. Proyecto: " + $ctx + " Cambios: " + $cmt + " Escribe un post breve y profesional en español.")}]}]}')
+            '{contents: [{parts: [{text: ("Actúa como un Ingeniero de Software Senior. Escribe un post para LinkedIn en español que NO sea promocional, sino técnico y educativo.
 
+            REGLAS:
+            1. Enfócate en la arquitectura (Hexagonal/DDD) y principios SOLID.
+            2. Explica el beneficio técnico de los cambios realizados hoy: " + $cmt + ".
+            3. Usa el contexto del proyecto (" + $ctx + ") solo como base técnica.
+            4. No uses frases de ventas como '\''¡Prueba nuestra herramienta!'\''.
+            5. Habla sobre escalabilidad, robustez del backend y desacoplamiento.
+            6. Estilo: Profesional, sobrio, aporta valor a otros desarrolladores.
+            
+            Escribe ÚNICAMENTE el cuerpo del post.")}]}]}')
+            
           # USAMOS TU MODELO REAL: gemini-2.5-flash
           RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=$GEMINI_KEY" \
             -H 'Content-Type: application/json' \
