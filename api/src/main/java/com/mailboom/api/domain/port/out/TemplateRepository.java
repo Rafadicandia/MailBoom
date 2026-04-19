@@ -7,4 +7,5 @@ import java.util.UUID;
 public interface TemplateRepository {
     Template save(Template template);
     Optional<Template> findById(UUID id);
+    Optional<Template> findByName(String name);
 }
