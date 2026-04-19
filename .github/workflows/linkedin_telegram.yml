@@ -1,62 +1,54 @@
 name: LinkedIn Bot via Telegram
 on:
   schedule:
-    - cron: '0 21 * * *' # 9 PM UTC
+    - cron: '0 21 * * *'
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      # Esto elimina la advertencia y fuerza el uso de la versión más moderna
-      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
     steps:
       - name: Checkout del código
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      - name: Preparar Contexto y Commits
-        id: collect_data
+      - name: Preparar Datos
+        id: data
         run: |
-          # Leemos el README y lo convertimos en un formato seguro para JSON
-          README_RAW=$(head -n 50 README.md || echo "No hay README")
-          
-          # TRUCO: Usamos jq para que limpie comillas y caracteres raros
-          APP_CONTEXT=$(echo "$README_RAW" | jq -aRs .)
-          
-          # Hacemos lo mismo con los commits
-          COMMITS_RAW=$(git log --since="24 hours ago" --pretty=format:"- %s")
+          # Guardamos el contenido en archivos temporales para evitar errores de terminal
+          head -n 50 README.md > readme_snippet.txt
+          git log --since="24 hours ago" --pretty=format:"- %s" > commits.txt
 
-          if [ -z "$COMMITS_RAW" ]; then
+          if [ ! -s commits.txt ]; then
             echo "SKIP=true" >> $GITHUB_ENV
-          else
-            COMMITS_SAFE=$(echo "$COMMITS_RAW" | jq -aRs .)
-            echo "APP_CONTEXT=$APP_CONTEXT" >> $GITHUB_ENV
-            echo "DAILY_COMMITS=$COMMITS_SAFE" >> $GITHUB_ENV
           fi
 
       - name: Generar Post con Gemini
         if: env.SKIP != 'true'
+        env:
+          GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          # Ahora enviamos las variables directamente, que ya vienen con sus propias comillas seguras
-          RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
+          # Leemos los archivos y los escapamos correctamente para JSON usando jq
+          CONTEXT=$(jq -Rs . < readme_snippet.txt)
+          COMMITS=$(jq -Rs . < commits.txt)
+
+          # Construimos el JSON de forma segura
+          JSON_DATA=$(jq -n \
+            --arg ctx "$CONTEXT" \
+            --arg cmt "$COMMITS" \
+            '{contents: [{parts: [{text: ("Eres desarrollador profesional. Proyecto: " + $ctx + " Cambios de hoy: " + $cmt + " Escribe un post para LinkedIn en español, profesional y motivador.")}]}]}')
+
+          RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$GEMINI_KEY" \
             -H 'Content-Type: application/json' \
-            -d "{
-              \"contents\": [{
-                \"parts\":[{
-                  \"text\": \"Eres un desarrollador. Contexto: ${{ env.APP_CONTEXT }}. Commits: ${{ env.DAILY_COMMITS }}. Escribe un post para LinkedIn en español.\"
-                }]
-              }]
-            }")
-          
-          echo "Respuesta de la API: $RESPONSE"
-          
+            -d "$JSON_DATA")
+
           RESULT=$(echo $RESPONSE | jq -r '.candidates[0].content.parts[0].text // "Error: La IA no devolvió texto"')
+          
           echo "FINAL_POST<<EOF" >> $GITHUB_ENV
           echo "$RESULT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-          
+
       - name: Enviar a Telegram
         if: env.SKIP != 'true'
         uses: appleboy/telegram-action@master
