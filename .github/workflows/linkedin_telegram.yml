@@ -29,25 +29,21 @@ jobs:
         env:
           GEMINI_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          # Leemos los archivos y los escapamos
           CONTEXT=$(jq -Rs . < readme_snippet.txt)
           COMMITS=$(jq -Rs . < commits.txt)
 
-          # Construimos el JSON
           JSON_DATA=$(jq -n \
             --arg ctx "$CONTEXT" \
             --arg cmt "$COMMITS" \
-            '{contents: [{parts: [{text: ("Proyecto: " + $ctx + " Cambios: " + $cmt + " Escribe un post para LinkedIn en español.")}]}]}')
+            '{contents: [{parts: [{text: ("Proyecto: " + $ctx + " Cambios: " + $cmt + " Escribe un post para LinkedIn en español. No uses negritas ni cursivas de markdown.")}]}]}')
 
-          # Petición a la v1 (más estable)
-          RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent?key=$GEMINI_KEY" \
+          # Volvemos a v1beta que acepta el modelo Flash sin problemas
+          RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=$GEMINI_KEY" \
             -H 'Content-Type: application/json' \
             -d "$JSON_DATA")
 
-          # Intentamos extraer el texto
           RESULT=$(echo $RESPONSE | jq -r '.candidates[0].content.parts[0].text // empty')
 
-          # Si RESULT está vacío, capturamos el error de la API para Telegram
           if [ -z "$RESULT" ]; then
             RESULT="Error de la API de Google: $(echo $RESPONSE | jq -c .)"
           fi
