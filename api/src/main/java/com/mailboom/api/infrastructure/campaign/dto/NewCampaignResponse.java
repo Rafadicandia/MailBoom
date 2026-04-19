@@ -1,13 +1,15 @@
 package com.mailboom.api.infrastructure.campaign.dto;
 
+import jakarta.validation.constraints.NotNull;
+
 public record NewCampaignResponse(
-        String id,
-        String ownerId,
-        String subject,
-        String htmlContent,
-        String senderIdentity,
-        String recipientListId,
-        String status,
-        String createdAt
+        @NotNull String id,
+        @NotNull String ownerId,
+        @NotNull String subject,
+        @NotNull String htmlContent,
+        @NotNull String senderIdentity,
+        @NotNull String recipientListId,
+        @NotNull String status,
+        @NotNull String createdAt
 ) {
 }

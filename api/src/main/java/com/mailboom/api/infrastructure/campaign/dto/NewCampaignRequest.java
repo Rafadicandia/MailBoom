@@ -1,6 +1,7 @@
 package com.mailboom.api.infrastructure.campaign.dto;
 
-import org.antlr.v4.runtime.misc.NotNull;
+
+import jakarta.validation.constraints.NotNull;
 
 public record NewCampaignRequest(
         @NotNull String ownerId,

@@ -6,6 +6,7 @@ public record CreateContactCommand(
         String contactListId,
         String email,
         String name,
+        String phone,
         Map<String, Object>customFields,
         boolean subscribed
 
@@ -21,5 +22,7 @@ public record CreateContactCommand(
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Name is required");
         }
+
     }
+
 }

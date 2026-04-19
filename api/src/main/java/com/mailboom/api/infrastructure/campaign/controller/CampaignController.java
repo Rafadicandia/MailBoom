@@ -54,7 +54,7 @@ public class CampaignController {
     }
 
     @GetMapping("/user/{id}")
-    @PreAuthorize("@userSecurity.isOwner(authentication, #id)")
+    @PreAuthorize("@userSecurity.isOwner(authentication, #id.toString())")
     @Operation(summary = "Get sent campaigns from user")
     public ResponseEntity<List<CampaignDataResponse>> getSentCampaignsFromUser(@PathVariable UUID id) {
         GetSentCampaignsFromUserCommand getSentCampaignsFromUserCommand = new GetSentCampaignsFromUserCommand(id.toString());
@@ -74,7 +74,7 @@ public class CampaignController {
     }
 
     @DeleteMapping("/{id}/delete")
-    @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id)")
+    @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id.toString())")
     @Operation(summary = "Delete a campaign")
     public ResponseEntity<Void> deleteCampaign(@PathVariable UUID id) {
 
@@ -83,7 +83,7 @@ public class CampaignController {
     }
 
     @PutMapping("/{id}/update")
-    @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id)")
+    @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id.toString())")
     @Operation(summary = "Update a campaign")
     public ResponseEntity<CampaignDataResponse> updateCampaign(
             @PathVariable UUID id,
@@ -111,7 +111,7 @@ public class CampaignController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id)")
+    @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id.toString())")
     @Operation(summary = "Get a campaign")
     public ResponseEntity<CampaignDataResponse> getCampaign(@PathVariable UUID id) {
         GetCampaignCommand getCampaignCommand = new GetCampaignCommand(id.toString());
@@ -130,7 +130,7 @@ public class CampaignController {
     }
 
     @PostMapping ("/{id}/send")
-    @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id)")
+    @PreAuthorize("@userSecurity.isCampaignOwner(authentication, #id.toString())")
     @Operation(summary = "Send a campaign")
     public ResponseEntity<Void> sendCampaign(@PathVariable UUID id, @RequestBody SendCampaignRequest request) {
         SendCampaignCommand sendCampaignCommand = new SendCampaignCommand(id.toString(), request.ownerId());

@@ -6,6 +6,7 @@ public record UpdateContactCommand(
         String id,
         String email,
         String name,
+        String phone,
         Map<String, Object> customFields,
         boolean subscribed
 

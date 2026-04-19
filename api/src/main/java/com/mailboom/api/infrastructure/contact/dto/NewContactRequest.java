@@ -7,6 +7,7 @@ public record NewContactRequest(
         String contactListId,
         String email,
         String name,
+        String phone,
         Map<String, Object> customFields,
         boolean subscribed
 ) {
@@ -18,4 +19,5 @@ public record NewContactRequest(
             customFields = Map.of();
         }
     }
+
 }

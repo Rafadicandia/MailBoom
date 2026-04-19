@@ -1,5 +1,6 @@
 package com.mailboom.api.infrastructure.contact.persistence.jpa.mapper;
 
+import com.mailboom.api.domain.model.common.valueobjects.Phone;
 import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
@@ -31,6 +32,7 @@ public class ContactEntityMapper {
                 new ContactListId(entity.getContactListId().getId()),
                 new Email(entity.getEmail()),
                 new Name(entity.getName()),
+                new Phone(entity.getPhone()),
                 entity.getCustomFields(),
                 entity.isSubscribed()
         );

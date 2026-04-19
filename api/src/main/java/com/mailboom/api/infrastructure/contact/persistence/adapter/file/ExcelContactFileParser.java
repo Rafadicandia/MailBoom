@@ -39,6 +39,8 @@ public class ExcelContactFileParser implements ContactFileParser {
                 throw new IllegalArgumentException("Excel file must have an 'email' column");
             }
             Integer nameIndex = headerMap.get("name");
+            Integer phoneIndex = headerMap.get("phone");
+
 
             // Read data rows
             while (rowIterator.hasNext()) {
@@ -49,18 +51,26 @@ public class ExcelContactFileParser implements ContactFileParser {
                     String email = getCellValueAsString(emailCell).trim();
                     if (isValidEmail(email)) {
                         String name = DEFAULT_NAME;
+                        String phone = null;
                         if (nameIndex != null) {
                             Cell nameCell = row.getCell(nameIndex);
                             if (nameCell != null) {
                                 String extractedName = getCellValueAsString(nameCell).trim();
                                 if (!extractedName.isEmpty()) {
                                     name = extractedName;
+                                    if (phoneIndex != null) {
+                                        Cell phoneCell = row.getCell(phoneIndex);
+                                        if (phoneCell != null) {
+                                            phone = getCellValueAsString(phoneCell).trim();
+
+                                        }
+                                    }
                                 }
                             }
                         }
-                        
+
                         Map<String, Object> customFields = new HashMap<>();
-                        consumer.accept(new ContactData(email, name, customFields));
+                        consumer.accept(new ContactData(email, name, phone, customFields));
                     }
                 }
             }

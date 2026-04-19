@@ -6,6 +6,7 @@ import com.mailboom.api.domain.model.campaign.valueobjects.HtmlContent;
 import com.mailboom.api.domain.model.campaign.valueobjects.Subject;
 import com.mailboom.api.domain.model.common.valueobjects.Email;
 import com.mailboom.api.domain.model.common.valueobjects.Name;
+import com.mailboom.api.domain.model.common.valueobjects.Phone;
 import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
@@ -272,6 +273,7 @@ class CampaignControllerIT {
                 testList.getId(),
                 new Email("rdicandia@gmail.com"),
                 new Name("Recipient"),
+                new Phone("123456789"),
                 Map.of(),
                 true
         );

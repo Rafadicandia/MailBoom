@@ -35,18 +35,18 @@ public class SendCampaignUseCaseImpl implements SendCampaignUseCase {
         User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         List<Contact> totalEmailsInList = contactRepository.findAllByContactListId(campaign.getRecipientList());
 
-        //validamos si el usuario existe
+
         if (userRepository.findById(userId).isEmpty()) {
             throw new IllegalArgumentException("User not found");
         }
         if(totalEmailsInList.isEmpty()){
             throw new IllegalArgumentException("Contact list is empty");
         }
-        //validamos si es el dueno de la campana
+
         if (!campaign.getOwner().equals(userId)) {
             throw new IllegalArgumentException("You are not the owner of this campaign");
         }
-        //validamos sipuede enviar mas mailsporque esa dentro de los limites
+
         if (!user.canSendMoreEmails(totalEmailsInList.size())) {
             throw new ContactListSizeExceedsLimitException("The current plan does not allow sending more emails than: " + user.getPlan().getEmailLimit() + ". Your list size has: " + totalEmailsInList.size() + " emails");
 

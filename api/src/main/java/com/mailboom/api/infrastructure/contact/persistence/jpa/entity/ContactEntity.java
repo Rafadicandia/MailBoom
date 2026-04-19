@@ -32,6 +32,9 @@ public class ContactEntity {
     @Column(nullable = false)
     private String name;
 
+    @Column(nullable = true)
+    private String phone;
+
     @Type(JsonType.class)
     @Column(name = "custom_fields", columnDefinition = "jsonb")
     private Map<String, Object> customFields;

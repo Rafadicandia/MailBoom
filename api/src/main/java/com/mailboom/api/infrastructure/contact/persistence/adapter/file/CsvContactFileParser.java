@@ -1,7 +1,7 @@
 package com.mailboom.api.infrastructure.contact.persistence.adapter.file;
 
-import com.mailboom.api.infrastructure.contact.dto.ContactData;
 import com.mailboom.api.domain.port.out.ContactFileParser;
+import com.mailboom.api.infrastructure.contact.dto.ContactData;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -34,8 +34,9 @@ public class CsvContactFileParser implements ContactFileParser {
             if (emailIndex == -1) {
                 throw new IllegalArgumentException("CSV file must have an 'email' column");
             }
-            
+
             int nameIndex = findColumnIndex(headers, "name");
+            int phoneIndex = findColumnIndex(headers, "phone");
 
             reader.lines().forEach(line -> {
                 String[] parts = line.split(SEPARATOR);
@@ -43,16 +44,22 @@ public class CsvContactFileParser implements ContactFileParser {
                     String email = parts[emailIndex].trim();
                     if (isValidEmail(email)) {
                         String name = DEFAULT_NAME;
-                        
+
+                        String phone = null;
                         if (nameIndex != -1 && parts.length > nameIndex) {
                             String extractedName = parts[nameIndex].trim();
                             if (!extractedName.isEmpty()) {
                                 name = extractedName;
                             }
+                            if (phoneIndex != -1 && parts.length > phoneIndex) {
+                                phone = parts[phoneIndex].trim();
+
+
+                            }
                         }
-                        
                         Map<String, Object> customFields = new HashMap<>();
-                        consumer.accept(new ContactData(email, name, customFields));
+                        consumer.accept(new ContactData(email, name, phone, customFields));
+
                     }
                 }
             });

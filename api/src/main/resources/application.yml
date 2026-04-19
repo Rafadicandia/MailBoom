@@ -4,6 +4,7 @@ server:
 application:
   name: mailboom-api
   security:
+    encryption-key: ${ENCRYPTION_KEY}
     jwt:
       secret-key: ${JWT_SECRET_KEY}
       expiration: 86400000 # 24 hours
@@ -26,22 +27,33 @@ spring:
       stack:
         auto: false
   datasource:
-    url: jdbc:postgresql://db:5432/${POSTGRES_DB:mydatabase}
+    url: jdbc:postgresql://mailboom-db:5432/${POSTGRES_DB:mydatabase}
     username: ${POSTGRES_USER:myuser}
     password: ${POSTGRES_PASSWORD:mypassword}
   jpa:
-    hibernate:
-      ddl-auto: update
+    ddl-auto: update
+    show-sql: true
+    generate-ddl: true
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-
         jdbc.batch_size: 500
         order_inserts: true
-    show-sql: false
+        order_updates: true
+
 
 logging:
   level:
     org.springframework.security: DEBUG
     org.springframework.web: DEBUG
     com.mailboom.api: DEBUG
+
+whatsapp:
+  phone-number-id: ${WHATSAPP_PHONE_NUMBER_ID}
+  access-token: ${WHATSAPP_ACCESS_TOKEN}
+  connection-timeout: 10000
+  read-timeout: 30000
+  business-account-id: ${WHATSAPP_BUSINESS_ACCOUNT_ID}
+
+  api:
+    url: https://graph.facebook.com/v18.0

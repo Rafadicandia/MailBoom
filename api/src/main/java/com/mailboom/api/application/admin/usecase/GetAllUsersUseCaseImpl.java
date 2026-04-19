@@ -16,8 +16,7 @@ public class GetAllUsersUseCaseImpl implements GetAllUsersUseCase {
 
     @Override
     public List<User> execute(GetAllUsersCommand command) {
-        // The admin role check is done at the controller level with @PreAuthorize("hasRole('ADMIN')")
-        // So we can directly return all users
+
         return userRepository.findAllUsers();
     }
 }
