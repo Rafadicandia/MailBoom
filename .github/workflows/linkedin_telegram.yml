@@ -41,28 +41,26 @@ jobs:
       - name: Generar Post con Gemini
         if: env.SKIP != 'true'
         run: |
+          # Usamos gemini-1.5-flash que es el estándar actual en 2026
           RESPONSE=$(curl -s -X POST "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${{ secrets.GEMINI_API_KEY }}" \
             -H 'Content-Type: application/json' \
             -d '{
               "contents": [{
                 "parts":[{
-                  "text": "Eres un desarrollador profesional. Contexto del proyecto: ${{ env.APP_CONTEXT }}. Commits del día: ${{ env.DAILY_COMMITS }}. Escribe un post para LinkedIn en español, profesional y breve. No uses código técnico pesado."
+                  "text": "Eres un desarrollador. Proyecto: ${{ env.APP_CONTEXT }}. Commits: ${{ env.DAILY_COMMITS }}. Escribe un post corto para LinkedIn en español."
                 }]
               }]
             }')
           
-          # Extraemos el texto con una ruta más segura
-          RESULT=$(echo $RESPONSE | jq -r '.candidates[0].content.parts[0].text // "Error al generar contenido"')
+          # Esto imprimirá la respuesta en el log de GitHub por si vuelve a fallar
+          echo "Respuesta de la API: $RESPONSE"
           
-          # Si el resultado es null o vacío, guardamos un mensaje de aviso
-          if [ "$RESULT" == "null" ] || [ -z "$RESULT" ]; then
-            RESULT="La IA no pudo generar el post. Revisa los logs de GitHub."
-          fi
-
+          RESULT=$(echo $RESPONSE | jq -r '.candidates[0].content.parts[0].text // "Error: La IA no devolvió texto"' | tr -d '\r')
+          
           echo "FINAL_POST<<EOF" >> $GITHUB_ENV
           echo "$RESULT" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
-
+          
       - name: Enviar a Telegram
         if: env.SKIP != 'true'
         uses: appleboy/telegram-action@master
