@@ -24,6 +24,7 @@ public class ClientConfigEntity {
     @Column(nullable = false)
     private String phoneNumberId;
     
-    @Convert(converter = EncryptionConverter.class)
+    //@Convert(converter = EncryptionConverter.class)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String accessToken;
 }
