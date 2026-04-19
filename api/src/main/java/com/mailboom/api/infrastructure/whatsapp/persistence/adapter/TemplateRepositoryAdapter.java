@@ -12,12 +12,12 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Component
-public class TemplateRepositoryImpl implements TemplateRepository {
+public class TemplateRepositoryAdapter implements TemplateRepository {
 
     private final JpaTemplateRepository jpaTemplateRepository;
     private final TemplateEntityMapper mapper;
 
-    public TemplateRepositoryImpl(JpaTemplateRepository jpaTemplateRepository, TemplateEntityMapper mapper) {
+    public TemplateRepositoryAdapter(JpaTemplateRepository jpaTemplateRepository, TemplateEntityMapper mapper) {
         this.jpaTemplateRepository = jpaTemplateRepository;
         this.mapper = mapper;
     }
@@ -33,4 +33,11 @@ public class TemplateRepositoryImpl implements TemplateRepository {
     public Optional<Template> findById(UUID id) {
         return jpaTemplateRepository.findById(id).map(mapper::toDomain);
     }
+
+    @Override
+    public Optional<Template> findByName(String name) {
+        return jpaTemplateRepository.findAll().stream().filter(entity -> entity.getName().equals(name)).findFirst().map(mapper::toDomain);
+    }
+
+
 }
