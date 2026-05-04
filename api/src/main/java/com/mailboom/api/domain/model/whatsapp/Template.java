@@ -11,6 +11,7 @@ import java.util.UUID;
 @Getter
 public class Template {
     private final UUID id;
+    //private final String idMeta;
     private final String name;
     private final Category category;
     private final ParameterFormat parameterFormat;
@@ -22,6 +23,7 @@ public class Template {
 
     public Template(UUID id, String name, Category category, ParameterFormat parameterFormat, List<TemplateComponent> components, Languajes language, TemplateStatus status, UserId ownerId) {
         this.id = id;
+        //this.idMeta = idMeta;
         this.name = name;
         this.category = category;
         this.parameterFormat = parameterFormat;
@@ -29,6 +31,14 @@ public class Template {
         this.language = language;
         this.status = status;
         this.ownerId = ownerId;
+    }
+
+    public static Template create(UUID id, String name, Category category, ParameterFormat parameterFormat, List<TemplateComponent> components, Languajes language, TemplateStatus status, UserId ownerId){
+        return new Template(id, name, category, parameterFormat, components, language, status, ownerId);
+    }
+
+    public void updateStatusApproved(){
+        this.setStatus(TemplateStatus.APPROVED);
     }
 
 }

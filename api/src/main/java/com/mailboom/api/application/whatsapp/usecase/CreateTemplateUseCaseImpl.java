@@ -33,14 +33,14 @@ public class CreateTemplateUseCaseImpl implements CreateTemplateUseCase {
         ClientConfig config = clientConfigRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("Configuration not found for user: " + userId.value()));
 
-        Template template = new Template(
+        Template template = Template.create(
             UUID.randomUUID(),
             command.name(),
             Category.valueOf(command.category()),
             ParameterFormat.valueOf(command.parameterFormat()),
             command.components(),
             Languajes.fromCode(command.language()),
-            TemplateStatus.APPROVED,
+            TemplateStatus.PENDING,
             userId
         );
 
