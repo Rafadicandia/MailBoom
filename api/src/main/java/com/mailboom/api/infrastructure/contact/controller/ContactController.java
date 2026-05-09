@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,6 +26,8 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
 public class ContactController {
+
+    private static final Logger log = LoggerFactory.getLogger(ContactController.class);
 
     private final CreateContactUseCase createContactUseCase;
     private final DeleteContactUseCase deleteContactUseCase;
@@ -43,6 +47,7 @@ public class ContactController {
     @PreAuthorize("@userSecurity.isListOwner(authentication, #request.contactListId())")
     public ResponseEntity<NewContactResponse> createContact(
             @RequestBody NewContactRequest request) {
+        log.debug("Received NewContactRequest with phone: {}", request.phone()); // Add this line
         CreateContactCommand createContactCommand = new CreateContactCommand(
                 request.contactListId(),
                 request.email(),
@@ -58,6 +63,7 @@ public class ContactController {
                 newContact.getListId().toString(),
                 newContact.getEmail().toString(),
                 newContact.getName().toString(),
+                newContact.getPhone().toString(),
                 newContact.getCustomFields(),
                 newContact.isSubscribed()
         ));
@@ -161,6 +167,7 @@ public class ContactController {
                 contact.getListId().toString(),
                 contact.getEmail().toString(),
                 contact.getName().toString(),
+                contact.getPhone().toString(), // Added phone
                 contact.getCustomFields(),
                 contact.isSubscribed()
         ));
@@ -232,6 +239,7 @@ public class ContactController {
                         contact.getListId().toString(),
                         contact.getEmail().toString(),
                         contact.getName().toString(),
+                        contact.getPhone().toString(), // Added phone
                         contact.getCustomFields(),
                         contact.isSubscribed()
                 )).toList();
@@ -261,6 +269,7 @@ public class ContactController {
                         contact.getListId().toString(),
                         contact.getEmail().toString(),
                         contact.getName().toString(),
+                        contact.getPhone().toString(), // Added phone
                         contact.getCustomFields(),
                         contact.isSubscribed()
                 )).toList()
