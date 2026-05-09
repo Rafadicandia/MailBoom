@@ -21,6 +21,7 @@ public class ContactEntityMapper {
                 .contactListId(listEntity)
                 .email(contact.getEmail().toString())
                 .name(contact.getName().value())
+                .phone(contact.getPhone().toString())
                 .customFields(contact.getCustomFields())
                 .subscribed(contact.isSubscribed())
                 .build();
