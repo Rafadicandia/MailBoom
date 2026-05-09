@@ -7,6 +7,7 @@ public record ContactDataResponse(
         String contactListId,
         String email,
         String name,
+        String phone, // Added phone field
         Map<String, Object> customFields,
         boolean subscribed
 ) {
