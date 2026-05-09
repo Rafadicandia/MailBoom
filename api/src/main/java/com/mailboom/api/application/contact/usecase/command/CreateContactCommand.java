@@ -22,6 +22,9 @@ public record CreateContactCommand(
         if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("Name is required");
         }
+        if (phone == null || phone.isBlank()) {
+            throw new IllegalArgumentException("Phone is required in command");
+        }
 
     }
 
