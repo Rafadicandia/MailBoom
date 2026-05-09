@@ -32,7 +32,7 @@ public class ContactEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = true)
+    @Column(nullable = false)
     private String phone;
 
     @Type(JsonType.class)
