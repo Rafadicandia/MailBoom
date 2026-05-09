@@ -80,7 +80,7 @@ public class WhatsAppGatewayService implements WhatsAppGateway {
         if (parameters != null && !parameters.isEmpty()) {
             List<Map<String, String>> parameterList = parameters.stream()
                     .map(param -> Map.of("type", "text", "text", param))
-                    .toList().reversed();
+                    .toList();
 
             templateData = Map.of(
                     "name", template.getName(),
