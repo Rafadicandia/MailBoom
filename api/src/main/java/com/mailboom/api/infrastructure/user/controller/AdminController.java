@@ -301,6 +301,7 @@ public class AdminController {
                         contact.getListId().toString(),
                         contact.getEmail().toString(),
                         contact.getName().toString(),
+                        contact.getPhone().toString(),
                         contact.getCustomFields(),
                         contact.isSubscribed()
                 ))
@@ -325,6 +326,7 @@ public class AdminController {
                 contact.getListId().toString(),
                 contact.getEmail().toString(),
                 contact.getName().toString(),
+                contact.getPhone().toString(),
                 contact.getCustomFields(),
                 contact.isSubscribed()
         ));
@@ -347,6 +349,7 @@ public class AdminController {
                 newContact.getListId().toString(),
                 newContact.getEmail().toString(),
                 newContact.getName().toString(),
+                newContact.getPhone().toString(),
                 newContact.getCustomFields(),
                 newContact.isSubscribed()
         ));
