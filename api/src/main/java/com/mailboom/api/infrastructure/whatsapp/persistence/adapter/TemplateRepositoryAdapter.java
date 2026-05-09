@@ -1,6 +1,7 @@
 package com.mailboom.api.infrastructure.whatsapp.persistence.adapter;
 
 
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.model.whatsapp.Template;
 import com.mailboom.api.domain.port.out.TemplateRepository;
 import com.mailboom.api.infrastructure.whatsapp.persistence.jpa.entity.TemplateEntity;
@@ -8,6 +9,7 @@ import com.mailboom.api.infrastructure.whatsapp.persistence.jpa.mapper.TemplateE
 import com.mailboom.api.infrastructure.whatsapp.persistence.jpa.repository.JpaTemplateRepository;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,6 +39,10 @@ public class TemplateRepositoryAdapter implements TemplateRepository {
     @Override
     public Optional<Template> findByName(String name) {
         return jpaTemplateRepository.findAll().stream().filter(entity -> entity.getName().equals(name)).findFirst().map(mapper::toDomain);
+    }
+    @Override
+    public List<Template> findAllByOwnerId(UserId ownerId) {
+        return jpaTemplateRepository.findAll().stream().filter(entity -> entity.getOwnerId().getId().equals(ownerId.value())).map(mapper::toDomain).toList();
     }
 
 
