@@ -15,6 +15,7 @@ public record NewContactRequest(
         Objects.requireNonNull(contactListId, "contactListId cannot be null");
         Objects.requireNonNull(email, "email cannot be null");
         Objects.requireNonNull(name, "name cannot be null");
+        Objects.requireNonNull(phone, "phone cannot be null");
         if (customFields == null) {
             customFields = Map.of();
         }
