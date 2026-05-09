@@ -7,6 +7,7 @@ public record NewContactResponse(
         String contactListId,
         String email,
         String name,
+        String phone,
         Map<String, Object> customFields,
         boolean subscribed
 
