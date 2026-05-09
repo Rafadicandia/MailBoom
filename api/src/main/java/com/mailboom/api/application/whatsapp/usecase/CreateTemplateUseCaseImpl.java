@@ -40,12 +40,12 @@ public class CreateTemplateUseCaseImpl implements CreateTemplateUseCase {
             ParameterFormat.valueOf(command.parameterFormat()),
             command.components(),
             Languajes.fromCode(command.language()),
-            TemplateStatus.PENDING,
+            TemplateStatus.APPROVED,
             userId
         );
 
         Template savedTemplate = templateRepository.save(template);
-        whatsAppGateway.sendTemplateForReview(savedTemplate, config);
+        //whatsAppGateway.sendTemplateForReview(savedTemplate, config);
         return savedTemplate;
     }
 }
