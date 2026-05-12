@@ -16,7 +16,7 @@ jobs:
       - name: Preparar Datos
         run: |
           head -n 50 README.md > readme_snippet.txt
-          git log --since="24 hours ago" --pretty=format:"- %s" > commits.txt
+          git log --since="100 hours ago" --pretty=format:"- %s" > commits.txt
           if [ ! -s commits.txt ]; then echo "SKIP=true" >> $GITHUB_ENV; fi
 
       - name: Generar Post con Gemini
