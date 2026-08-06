@@ -45,7 +45,7 @@ public class CreateTemplateUseCaseImpl implements CreateTemplateUseCase {
         );
 
         Template savedTemplate = templateRepository.save(template);
-        //whatsAppGateway.sendTemplateForReview(savedTemplate, config);
+        whatsAppGateway.sendTemplateForReview(savedTemplate, config);
         return savedTemplate;
     }
 }
