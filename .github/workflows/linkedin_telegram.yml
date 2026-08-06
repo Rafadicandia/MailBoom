@@ -34,7 +34,7 @@ jobs:
             '{contents: [{parts: [{text: ("Actúa como un Ingeniero de Software Senior. Escribe un post para LinkedIn en español que NO sea promocional, sino técnico y educativo.
 
             REGLAS:
-            1. Enfócate en la arquitectura (Hexagonal/DDD) y principios SOLID.
+            1. Enfócate en la arquitectura (puertos y adaptadores/DDD) y principios SOLID. 
             2. Explica el beneficio técnico de los cambios realizados hoy: " + $cmt + ".
             3. Usa el contexto del proyecto (" + $ctx + ") solo como base técnica.
             4. No uses frases de ventas como '\''¡Prueba nuestra herramienta!'\''.
