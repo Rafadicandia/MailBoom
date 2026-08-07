@@ -9,6 +9,7 @@ import com.mailboom.api.domain.model.whatsapp.valueobjects.*;
 import com.mailboom.api.domain.port.out.ClientConfigRepository;
 import com.mailboom.api.domain.port.out.TemplateRepository;
 import com.mailboom.api.domain.port.out.WhatsAppGateway;
+import com.mailboom.api.infrastructure.whatsapp.dto.MetaTemplateResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -66,8 +67,10 @@ class CreateTemplateUseCaseImplTest {
     @Test
     void execute_shouldSaveTemplateAndSendToReview_whenConfigExists() {
         // Given
+        MetaTemplateResponse metaResponse = new MetaTemplateResponse("meta-id-123", "PENDING", "MARKETING");
         when(clientConfigRepository.findById(any(UserId.class))).thenReturn(Optional.of(config));
         when(templateRepository.save(any(Template.class))).thenAnswer(invocation -> invocation.getArgument(0));
+        when(whatsAppGateway.sendTemplateForReview(any(Template.class), eq(config))).thenReturn(metaResponse);
 
         // When
         Template result = createTemplateUseCase.execute(command);
@@ -78,10 +81,11 @@ class CreateTemplateUseCaseImplTest {
         assertEquals(Category.MARKETING, result.getCategory());
         assertEquals(TemplateStatus.PENDING, result.getStatus());
         assertEquals(new UserId(userId), result.getOwnerId());
+        assertEquals("meta-id-123", result.getIdMeta());
 
         verify(clientConfigRepository).findById(new UserId(userId));
-        verify(templateRepository).save(any(Template.class));
-        verify(whatsAppGateway).sendTemplateForReview(eq(result), eq(config));
+        verify(templateRepository, times(2)).save(any(Template.class));
+        verify(whatsAppGateway).sendTemplateForReview(any(Template.class), eq(config));
     }
 
     @Test

@@ -55,7 +55,34 @@ public class TemplateEntityMapper {
 
     private List<TemplateComponent> mapComponentsToDomain(Map<String, Object> componentsMap) {
         List<TemplateComponent> components = new ArrayList<>();
-        if (componentsMap != null) {
+        if (componentsMap != null && componentsMap.containsKey("components")) {
+            // New format: components is a list of objects
+            List<Map<String, Object>> componentsList = (List<Map<String, Object>>) componentsMap.get("components");
+            if (componentsList != null) {
+                for (Map<String, Object> componentMap : componentsList) {
+                    ComponentType type = ComponentType.valueOf((String) componentMap.get("type"));
+                    String text = (String) componentMap.get("text");
+                    Object example = componentMap.get("example");
+                    
+                    List<Button> buttons = null;
+                    if (componentMap.containsKey("buttons")) {
+                        List<Map<String, Object>> buttonsList = (List<Map<String, Object>>) componentMap.get("buttons");
+                        if (buttonsList != null) {
+                            buttons = new ArrayList<>();
+                            for (Map<String, Object> buttonMap : buttonsList) {
+                                String buttonType = (String) buttonMap.get("type");
+                                String buttonText = (String) buttonMap.get("text");
+                                String buttonUrl = (String) buttonMap.get("url");
+                                buttons.add(new Button(buttonType, buttonText, buttonUrl));
+                            }
+                        }
+                    }
+                    
+                    components.add(new TemplateComponent(type, text, example, buttons));
+                }
+            }
+        } else if (componentsMap != null) {
+            // Backward compatibility: old format was Map<String, String> with type as key and text as value
             for (Map.Entry<String, Object> entry : componentsMap.entrySet()) {
                 try {
                     ComponentType type = ComponentType.valueOf(entry.getKey());
@@ -70,12 +97,35 @@ public class TemplateEntityMapper {
     }
 
     private Map<String, Object> mapComponentsToEntity(List<TemplateComponent> components) {
-        Map<String, Object> map = new HashMap<>();
+        List<Map<String, Object>> componentsList = new ArrayList<>();
         if (components != null) {
             for (TemplateComponent component : components) {
-                map.put(component.type().name(), component.text());
+                Map<String, Object> componentMap = new HashMap<>();
+                componentMap.put("type", component.type().name());
+                if (component.text() != null) {
+                    componentMap.put("text", component.text());
+                }
+                if (component.example() != null) {
+                    componentMap.put("example", component.example());
+                }
+                if (component.buttons() != null && !component.buttons().isEmpty()) {
+                    List<Map<String, Object>> buttonsList = new ArrayList<>();
+                    for (Button button : component.buttons()) {
+                        Map<String, Object> buttonMap = new HashMap<>();
+                        buttonMap.put("type", button.type());
+                        buttonMap.put("text", button.text());
+                        if (button.url() != null) {
+                            buttonMap.put("url", button.url());
+                        }
+                        buttonsList.add(buttonMap);
+                    }
+                    componentMap.put("buttons", buttonsList);
+                }
+                componentsList.add(componentMap);
             }
         }
-        return map;
+        Map<String, Object> result = new HashMap<>();
+        result.put("components", componentsList);
+        return result;
     }
 }
