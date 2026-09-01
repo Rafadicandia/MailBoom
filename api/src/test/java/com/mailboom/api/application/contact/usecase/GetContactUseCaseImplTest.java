@@ -15,7 +15,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
-import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -38,7 +37,7 @@ class GetContactUseCaseImplTest {
         var contactId = ContactId.generate();
         var contactListId = ContactListId.generate();
         var command = new GetContactCommand(contactId.toString());
-        var contact = Contact.create(contactId, contactListId, new Email("test@test.com"), new Name("Test"), new Phone("123456789"),null, true);
+        var contact = Contact.create(contactId, contactListId, new Email("test@test.com"), new Name("Test"), new Phone("+1234567890"),null, true);
 
         when(contactRepository.findById(contactId)).thenReturn(Optional.of(contact));
 

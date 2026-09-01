@@ -32,7 +32,7 @@ class GetAllContactsFromListUseCaseImplTest {
         // Given
         var contactListId = ContactListId.generate();
         var command = new GetAllContactsFromListCommand(contactListId.toString());
-        var contact = Contact.create(ContactId.generate(), contactListId, new Email("test@test.com"), new Name("Test"), new Phone("123456789"), null, true);
+        var contact = Contact.create(ContactId.generate(), contactListId, new Email("test@test.com"), new Name("Test"), new Phone("+1234567890"), null, true);
 
         when(contactRepository.findAllByContactListId(contactListId)).thenReturn(List.of(contact));
 

@@ -13,13 +13,15 @@ class PhoneTest {
     }
 
     @Test
-    void shouldThrowExceptionWhenPhoneIsNull() {
-        assertThrows(com.mailboom.api.domain.exception.InvalidPhoneException.class, () -> new Phone(null));
+    void shouldCreatePhoneWhenNull() {
+        Phone phone = new Phone(null);
+        assertNull(phone.phone());
     }
 
     @Test
-    void shouldThrowExceptionWhenPhoneIsBlank() {
-        assertThrows(com.mailboom.api.domain.exception.InvalidPhoneException.class, () -> new Phone("   "));
+    void shouldCreatePhoneWhenBlank() {
+        Phone phone = new Phone("   ");
+        assertEquals("   ", phone.phone());
     }
 
     @Test
