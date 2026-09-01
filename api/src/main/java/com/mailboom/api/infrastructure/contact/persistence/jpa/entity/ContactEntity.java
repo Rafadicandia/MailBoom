@@ -26,13 +26,13 @@ public class ContactEntity {
     @JoinColumn(name = "contact_list_id", nullable = false)
     private ContactListEntity contactListId;
 
-    @Column(nullable = false)
+    @Column
     private String email;
 
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column
     private String phone;
 
     @Type(JsonType.class)
