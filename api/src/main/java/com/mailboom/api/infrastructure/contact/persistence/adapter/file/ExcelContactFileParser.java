@@ -47,32 +47,52 @@ public class ExcelContactFileParser implements ContactFileParser {
                 Row row = rowIterator.next();
                 Cell emailCell = row.getCell(emailIndex);
                 
-                if (emailCell != null) {
-                    String email = getCellValueAsString(emailCell).trim();
-                    if (isValidEmail(email)) {
-                        String name = DEFAULT_NAME;
-                        String phone = null;
-                        if (nameIndex != null) {
-                            Cell nameCell = row.getCell(nameIndex);
-                            if (nameCell != null) {
-                                String extractedName = getCellValueAsString(nameCell).trim();
-                                if (!extractedName.isEmpty()) {
-                                    name = extractedName;
-                                    if (phoneIndex != null) {
-                                        Cell phoneCell = row.getCell(phoneIndex);
-                                        if (phoneCell != null) {
-                                            phone = getCellValueAsString(phoneCell).trim();
+                String email = emailCell != null ? getCellValueAsString(emailCell).trim() : null;
+                // If email is present but invalid (no @), leave it empty
+                if (email != null && !email.isEmpty() && !isValidEmail(email)) {
+                    email = null;
+                }
 
-                                        }
-                                    }
-                                }
-                            }
+                String name = DEFAULT_NAME;
+                String phone = null;
+
+                if (nameIndex != null) {
+                    Cell nameCell = row.getCell(nameIndex);
+                    if (nameCell != null) {
+                        String extractedName = getCellValueAsString(nameCell).trim();
+                        if (!extractedName.isEmpty()) {
+                            name = extractedName;
                         }
-
-                        Map<String, Object> customFields = new HashMap<>();
-                        consumer.accept(new ContactData(email, name, phone, customFields));
                     }
                 }
+
+                if (phoneIndex != null) {
+                    Cell phoneCell = row.getCell(phoneIndex);
+                    if (phoneCell != null) {
+                        phone = getCellValueAsString(phoneCell).trim();
+                        if (phone.isEmpty()) {
+                            phone = null;
+                        }
+                    }
+                }
+
+                Map<String, Object> customFields = new HashMap<>();
+                for (Map.Entry<String, Integer> entry : headerMap.entrySet()) {
+                    int colIndex = entry.getValue();
+                    if (colIndex == emailIndex
+                            || (nameIndex != null && colIndex == nameIndex)
+                            || (phoneIndex != null && colIndex == phoneIndex)) {
+                        continue;
+                    }
+                    Cell cell = row.getCell(colIndex);
+                    if (cell != null) {
+                        String value = getCellValueAsString(cell).trim();
+                        if (!value.isEmpty()) {
+                            customFields.put(entry.getKey(), value);
+                        }
+                    }
+                }
+                consumer.accept(new ContactData(email, name, phone, customFields));
             }
 
         } catch (Exception e) {
@@ -109,6 +129,6 @@ public class ExcelContactFileParser implements ContactFileParser {
     }
 
     private boolean isValidEmail(String email) {
-        return email != null && !email.isEmpty() && email.contains("@");
+        return email.contains("@");
     }
 }
