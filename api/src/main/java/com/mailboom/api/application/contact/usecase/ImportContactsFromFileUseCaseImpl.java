@@ -9,22 +9,23 @@ import com.mailboom.api.domain.model.contact.Contact;
 import com.mailboom.api.domain.model.contact.ContactList;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactId;
 import com.mailboom.api.domain.model.contact.valueobjects.ContactListId;
+import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.domain.port.out.ContactFileParser;
 import com.mailboom.api.domain.port.out.ContactListRepository;
 import com.mailboom.api.domain.port.out.ContactRepository;
 import com.mailboom.api.domain.port.out.FileParserFactory;
-import com.mailboom.api.domain.model.user.valueobjects.UserId;
 import com.mailboom.api.infrastructure.contact.dto.ContactData;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class ImportContactsFromFileUseCaseImpl implements ImportContactsFromFileUseCase {
@@ -64,13 +65,15 @@ public class ImportContactsFromFileUseCaseImpl implements ImportContactsFromFile
 
     private void saveBatch(List<ContactData> data, ContactListId listId) {
         List<Contact> contacts = data.stream()
-                .map(d -> Contact.create(ContactId.generate(), listId, new Email(d.email()), new Name(d.name()), new Phone(d.phone()),d.attributes(), true))
+                .map(d -> Contact.create(ContactId.generate(), listId, new Email(d.email()), new Name(d.name()), new Phone(d.phone()), d.attributes(), true))
                 .toList();
-        try{
+        try {
             contactRepository.saveAll(contacts);
-            System.out.println("Contacts imported successfully");
-            contactListRepository.save(contactListRepository.findById(listId).orElseThrow().updateTotalContacts(contacts.size()));
-            System.out.println("Contact List updated successfully");
+            log.info("Total contacts to be saved from CSV: {}", contacts.size());
+            log.info("Contacts imported successfully");
+            ContactList currentList = contactListRepository.findById(listId).orElseThrow();
+            contactListRepository.save(currentList.updateTotalContacts(currentList.getTotalContacts() + contacts.size()));
+            log.info("Contact List updated successfully");
         } catch (RuntimeException e) {
             throw new RuntimeException(e);
         }
