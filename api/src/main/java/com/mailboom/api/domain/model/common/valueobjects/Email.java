@@ -1,6 +1,7 @@
 package com.mailboom.api.domain.model.common.valueobjects;
 
 import com.mailboom.api.domain.exception.InvalidEmailException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
@@ -23,7 +24,7 @@ public record Email(String email) {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return email;
     }
 }
