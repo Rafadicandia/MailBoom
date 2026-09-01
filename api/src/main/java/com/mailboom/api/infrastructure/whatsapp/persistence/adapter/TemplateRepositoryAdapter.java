@@ -45,5 +45,10 @@ public class TemplateRepositoryAdapter implements TemplateRepository {
         return jpaTemplateRepository.findAll().stream().filter(entity -> entity.getOwnerId().getId().equals(ownerId.value())).map(mapper::toDomain).toList();
     }
 
+    @Override
+    public void delete(UUID id){
+        jpaTemplateRepository.deleteById(id);
+    }
+
 
 }
