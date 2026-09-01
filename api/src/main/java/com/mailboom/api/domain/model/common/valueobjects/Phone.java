@@ -11,10 +11,7 @@ public record Phone(String phone) {
     );
 
     public Phone {
-        if (phone == null || phone.isBlank()) {
-            throw new InvalidPhoneException("Phone cannot be null or empty");
-        }
-        if (!E164_PATTERN.matcher(phone).matches()) {
+        if (phone != null && !phone.isBlank() && !E164_PATTERN.matcher(phone).matches()) {
             throw new InvalidPhoneException("Invalid phone format. Must be E.164 format (e.g., +34600000000)");
         }
     }
