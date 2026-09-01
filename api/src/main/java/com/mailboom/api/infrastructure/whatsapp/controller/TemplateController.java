@@ -1,9 +1,12 @@
 package com.mailboom.api.infrastructure.whatsapp.controller;
 
+
 import com.mailboom.api.application.whatsapp.port.in.CreateTemplateUseCase;
+import com.mailboom.api.application.whatsapp.port.in.DeleteTemplateUseCase;
 import com.mailboom.api.application.whatsapp.port.in.GetAllTemplatesFromUserUseCase;
 import com.mailboom.api.application.whatsapp.port.in.GetTemplateByNameUseCase;
 import com.mailboom.api.application.whatsapp.usecase.command.CreateTemplateCommand;
+import com.mailboom.api.application.whatsapp.usecase.command.DeleteTemplateCommand;
 import com.mailboom.api.application.whatsapp.usecase.command.GetAllTemplatesFromUserCommand;
 import com.mailboom.api.application.whatsapp.usecase.command.GetTemplateByNameCommand;
 import com.mailboom.api.domain.model.whatsapp.Template;
@@ -30,6 +33,7 @@ public class TemplateController {
     private final CreateTemplateUseCase createTemplateUseCase;
     private final GetTemplateByNameUseCase getTemplateUseCase;
     private final GetAllTemplatesFromUserUseCase getAllTemplatesFromUserUseCase;
+    private final DeleteTemplateUseCase deleteTemplateUseCase;
 
     @PostMapping("/templates/new")
     @PreAuthorize("@userSecurity.isOwner(authentication, #request.ownerId())")
@@ -96,6 +100,15 @@ public class TemplateController {
                 ).toList()
 
         );
+    }
+
+    @DeleteMapping("/{id}/delete")
+    @Operation(summary = "Delete template by id")
+    @PreAuthorize("@userSecurity.isOwner(authentication, #userId)")
+    public ResponseEntity<Void> deleteTemplate(@PathVariable UUID id) {
+
+        deleteTemplateUseCase.delete(new DeleteTemplateCommand(id));
+        return ResponseEntity.noContent().build();
     }
 
 }
