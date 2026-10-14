@@ -4,9 +4,11 @@ import com.mailboom.api.application.whatsapp.port.in.DeleteTemplateUseCase;
 import com.mailboom.api.application.whatsapp.usecase.command.DeleteTemplateCommand;
 import com.mailboom.api.domain.port.out.TemplateRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
+@Service
 @AllArgsConstructor
 public class DeleteTemplateUseCaseImpl implements DeleteTemplateUseCase {
     private final TemplateRepository templateRepository;
