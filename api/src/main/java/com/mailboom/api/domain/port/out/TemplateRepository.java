@@ -12,4 +12,5 @@ public interface TemplateRepository {
     Optional<Template> findById(UUID id);
     Optional<Template> findByName(String name);
     List<Template> findAllByOwnerId(UserId ownerId);
+    void delete(UUID id);
 }

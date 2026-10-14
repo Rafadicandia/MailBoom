@@ -27,9 +27,9 @@ class ExcelContactFileParserTest {
 
             // Header row
             Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Nombre");
-            headerRow.createCell(1).setCellValue("Email");
-            headerRow.createCell(2).setCellValue("Telefono");
+            headerRow.createCell(0).setCellValue("name");
+            headerRow.createCell(1).setCellValue("email");
+            headerRow.createCell(2).setCellValue("phone");
 
             // Data rows
             Row row1 = sheet.createRow(1);
@@ -69,8 +69,8 @@ class ExcelContactFileParserTest {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Contacts");
             Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Email");
-            headerRow.createCell(1).setCellValue("Telefono"); // No name column
+            headerRow.createCell(0).setCellValue("email");
+            headerRow.createCell(1).setCellValue("phone"); // No name column
 
             Row row1 = sheet.createRow(1);
             row1.createCell(0).setCellValue("user@example.com");
@@ -94,8 +94,8 @@ class ExcelContactFileParserTest {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Contacts");
             Row headerRow = sheet.createRow(0);
-            headerRow.createCell(0).setCellValue("Nombre");
-            headerRow.createCell(1).setCellValue("Telefono"); // No email column
+            headerRow.createCell(0).setCellValue("name");
+            headerRow.createCell(1).setCellValue("phone"); // No email column
 
             ByteArrayOutputStream out = new ByteArrayOutputStream();
             workbook.write(out);

@@ -131,7 +131,7 @@ class ContactControllerIT {
 
     @Test
     void shouldCreateContactSuccessfully() throws Exception {
-        NewContactRequest request = new NewContactRequest(testList.getId().value().toString(), "newcontact@example.com", "New Contact","123456789", new HashMap<>(), true);
+        NewContactRequest request = new NewContactRequest(testList.getId().value().toString(), "newcontact@example.com", "New Contact","+1234567890", new HashMap<>(), true);
 
         mockMvc.perform(post("/api/contacts/new")
                         .header("Authorization", "Bearer " + jwtToken)
@@ -159,7 +159,7 @@ class ContactControllerIT {
                 testList.getId(),
                 new Email("update@example.com"),
                 new Name("Original Name"),
-                new Phone("123456789"),
+                new Phone("+1234567890"),
                 new HashMap<>(),
                 true
         );
@@ -170,7 +170,7 @@ class ContactControllerIT {
                 testList.getId().value().toString(),
                 "updated@example.com",
                 "Updated Name",
-                "123456789",
+                "+1234567890",
                 new HashMap<>(),
                 false
         );
@@ -210,7 +210,7 @@ class ContactControllerIT {
                 testList.getId(),
                 new Email("delete@example.com"),
                 new Name("Delete Me"),
-                new Phone("123456789"),
+                new Phone("+1234567890"),
                 new HashMap<>(),
                 true
         );
@@ -243,7 +243,7 @@ class ContactControllerIT {
                 testList.getId(),
                 new Email("get@example.com"),
                 new Name("Get Me"),
-                new Phone("123456789"),
+                new Phone("+1234567890"),
                 new HashMap<>(),
                 true
         );
@@ -280,8 +280,8 @@ class ContactControllerIT {
     @Test
     void shouldGetContactsFromListSuccessfully() throws Exception {
         // Given
-        Contact contact1 = Contact.create(ContactId.generate(), testList.getId(), new Email("contact1@example.com"), new Name("Contact One"), new Phone("123456789"), new HashMap<>(), true);
-        Contact contact2 = Contact.create(ContactId.generate(), testList.getId(), new Email("contact2@example.com"), new Name("Contact Two"), new Phone("987654321"), new HashMap<>(), true);
+        Contact contact1 = Contact.create(ContactId.generate(), testList.getId(), new Email("contact1@example.com"), new Name("Contact One"), new Phone("+1234567890"), new HashMap<>(), true);
+        Contact contact2 = Contact.create(ContactId.generate(), testList.getId(), new Email("contact2@example.com"), new Name("Contact Two"), new Phone("+9876543210"), new HashMap<>(), true);
         contactRepository.save(contact1);
         contactRepository.save(contact2);
 

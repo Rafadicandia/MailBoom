@@ -19,9 +19,9 @@ public class ContactEntityMapper {
         return ContactEntity.builder()
                 .id(contact.getId().value())
                 .contactListId(listEntity)
-                .email(contact.getEmail().toString())
+                .email(contact.getEmail() != null ? contact.getEmail().toString() : null)
                 .name(contact.getName().value())
-                .phone(contact.getPhone().toString())
+                .phone(contact.getPhone() != null ? contact.getPhone().toString() : null)
                 .customFields(contact.getCustomFields())
                 .subscribed(contact.isSubscribed())
                 .build();

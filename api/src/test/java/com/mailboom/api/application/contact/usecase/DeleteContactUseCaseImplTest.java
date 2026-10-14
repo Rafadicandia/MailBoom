@@ -24,7 +24,6 @@ import java.util.NoSuchElementException;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -51,7 +50,7 @@ class DeleteContactUseCaseImplTest {
         var command = new DeleteContactCommand(contactId.toString());
 
         var contactList = ContactList.reCreate(contactListId, userId, new Name("Test List"), 10);
-        var contact = Contact.create(contactId, contactListId, new Email("test@test.com"), new Name("Test"), new Phone("123456789"),null, true);
+        var contact = Contact.create(contactId, contactListId, new Email("test@test.com"), new Name("Test"), new Phone("+1234567890"),null, true);
 
         when(contactRepository.findById(contactId)).thenReturn(Optional.of(contact));
         when(contactListRepository.findById(contactListId)).thenReturn(Optional.of(contactList));

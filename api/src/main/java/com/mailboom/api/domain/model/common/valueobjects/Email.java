@@ -1,23 +1,22 @@
 package com.mailboom.api.domain.model.common.valueobjects;
 
-import com.mailboom.api.domain.exception.EmailCannotBeNullException;
 import com.mailboom.api.domain.exception.InvalidEmailException;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Pattern;
 
 public record Email(String email) {
 
     private static final Pattern EMAIL_PATTERN = Pattern.compile(
-            "^[a-zA-Z0-9_!#$%&’*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$"
+            "^[a-zA-Z0-9_!#$%&'+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$"
     );
 
-    public Email {
-        if (email == null || email.isBlank()) {
-            throw new EmailCannotBeNullException("Email cannot be null or empty");
+    public Email(String email) {
+        String normalizedEmail = email != null ? email : "";
+        if (!normalizedEmail.isBlank() && !EMAIL_PATTERN.matcher(normalizedEmail).matches()) {
+            throw new InvalidEmailException("Invalid email format: " + normalizedEmail);
         }
-        if (!EMAIL_PATTERN.matcher(email).matches()) {
-            throw new InvalidEmailException("Invalid email format: " + email);
-        }
+        this.email = normalizedEmail;
     }
 
     public static Email fromString(String email) {
@@ -25,7 +24,7 @@ public record Email(String email) {
     }
 
     @Override
-    public String toString() {
+    public @NotNull String toString() {
         return email;
     }
 }

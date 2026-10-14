@@ -69,7 +69,7 @@ class AwsEmailSenderAdapterTest {
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
 
         ContactListId contactListId = ContactListId.generate();
-        Contact contact = Contact.create(ContactId.generate(), contactListId, new Email("recipient@example.com"), new Name("Recipient"), new Phone("123456789"), Collections.emptyMap(), true);
+        Contact contact = Contact.create(ContactId.generate(), contactListId, new Email("recipient@example.com"), new Name("Recipient"), new Phone("+1234567890"), Collections.emptyMap(), true);
         when(contactRepository.findAllByContactListId(contactListId)).thenReturn(List.of(contact));
 
         // EmailSenderIdentity solo toma el nombre del cliente y le añade @mailboom.email
@@ -106,7 +106,7 @@ class AwsEmailSenderAdapterTest {
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
 
         ContactListId contactListId = ContactListId.generate();
-        Contact contact = Contact.create(ContactId.generate(), contactListId, new Email("recipient@example.com"), new Name("Recipient"), new Phone("123456789"), Collections.emptyMap(), true);
+        Contact contact = Contact.create(ContactId.generate(), contactListId, new Email("recipient@example.com"), new Name("Recipient"), new Phone("+1234567890"), Collections.emptyMap(), true);
         when(contactRepository.findAllByContactListId(contactListId)).thenReturn(List.of(contact));
 
         EmailSenderIdentity senderIdentity = new EmailSenderIdentity("TestSender");
@@ -147,7 +147,7 @@ class AwsEmailSenderAdapterTest {
         List<Contact> contacts = new ArrayList<>();
         // Create 55 contacts to test batching (batch size is 50)
         for (int i = 0; i < 55; i++) {
-            contacts.add(Contact.create(ContactId.generate(), contactListId, new Email("recipient" + i + "@example.com"), new Name("Recipient " + i),new Phone("123456789"), Collections.emptyMap(), true));
+            contacts.add(Contact.create(ContactId.generate(), contactListId, new Email("recipient" + i + "@example.com"), new Name("Recipient " + i),new Phone("+1234567890"), Collections.emptyMap(), true));
         }
         when(contactRepository.findAllByContactListId(contactListId)).thenReturn(contacts);
 
@@ -185,7 +185,7 @@ class AwsEmailSenderAdapterTest {
         when(userRepository.findById(ownerId)).thenReturn(Optional.of(owner));
 
         ContactListId contactListId = ContactListId.generate();
-        Contact contact = Contact.create(ContactId.generate(), contactListId, new Email("recipient@example.com"), new Name("Recipient"), new Phone("123456789"), Collections.emptyMap(), true);
+        Contact contact = Contact.create(ContactId.generate(), contactListId, new Email("recipient@example.com"), new Name("Recipient"), new Phone("+1234567890"), Collections.emptyMap(), true);
         when(contactRepository.findAllByContactListId(contactListId)).thenReturn(List.of(contact));
 
         EmailSenderIdentity senderIdentity = new EmailSenderIdentity("TestSender");

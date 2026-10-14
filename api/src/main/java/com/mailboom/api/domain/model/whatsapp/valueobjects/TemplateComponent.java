@@ -1,14 +1,21 @@
 package com.mailboom.api.domain.model.whatsapp.valueobjects;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import java.util.List;
+
+@JsonIgnoreProperties(ignoreUnknown = true)
 public record TemplateComponent(
         ComponentType type,
-        String text
+        String text,
+        Object example,
+        List<Button> buttons
 ) {
-    // Validaciones de dominio (ej: máximo 1024 caracteres para BODY)
+    @JsonCreator
     public TemplateComponent {
-        if (type == ComponentType.BODY && text.length() > 1024) {
-            throw new IllegalArgumentException("El cuerpo no puede superar los 1024 caracteres");
-        }
+    }
+
+    public TemplateComponent(ComponentType type, String text) {
+        this(type, text, null, null);
     }
 }
-

@@ -11,30 +11,48 @@ import com.mailboom.api.domain.port.out.ContactRepository;
 import com.mailboom.api.domain.port.out.TemplateRepository;
 import com.mailboom.api.domain.port.out.WhatsAppGateway;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Component
+@Slf4j
 @AllArgsConstructor
-public class SendTemplateToListUseCaseImpl implements SendTemplateToListUseCase {
-
+public class SendTemplateMessageSharePropertyBsUseCaseImpl implements SendTemplateToListUseCase {
     private final TemplateRepository templateRepository;
     private final ClientConfigRepository clientConfigRepository;
     private final WhatsAppGateway whatsAppGateway;
     private final ContactRepository contactRepository;
 
     @Override
-    public void execute(SendTemplateToListCommand command) {
+    public void execute(SendTemplateToListCommand command){
         Template template = templateRepository.findByName(command.templateName()).orElseThrow(() -> new RuntimeException("Template not found"));
         List<Contact> recipientList = contactRepository.findAllByContactListId(command.to());
 
         for (Contact c : recipientList) {
+            // Skip contacts without phone number
+            if (c.getPhone() == null) {
+                continue;
+            }
             String to = c.getPhone().toString().trim();
             String name = c.getName().toString().trim();
-            List<String> extract = (List<String>) c.getCustomFields().get("Pedido");
+
+            // Get pedido as String and split by comma (handles both "pedido" and "Pedido" keys)
+            String pedidoValue = (String) c.getCustomFields().get("pedido");
+            if (pedidoValue == null) {
+                pedidoValue = (String) c.getCustomFields().get("Pedido");
+            }
+            List<String> extract = new ArrayList<>();
+            if (pedidoValue != null && !pedidoValue.isBlank()) {
+                for (String s : pedidoValue.split(",")) {
+                    String trimmed = s.trim();
+                    if (!trimmed.isEmpty()) {
+                        extract.add(trimmed);
+                    }
+                }
+            }
             String phrase = String.join(" en ", extract);
+
             List<String> parameters = new ArrayList<>();
             parameters.add(name);
             parameters.add(phrase);
@@ -46,12 +64,10 @@ public class SendTemplateToListUseCaseImpl implements SendTemplateToListUseCase 
             } catch (InterruptedException e) {
 
                 Thread.currentThread().interrupt();
-                System.err.println("La pausa fue interrumpida");
+                log.info("La pausa fue interrumpida");
                 break;
             }
         }
 
     }
-
-
 }

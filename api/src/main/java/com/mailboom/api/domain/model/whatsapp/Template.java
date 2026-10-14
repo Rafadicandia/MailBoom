@@ -11,7 +11,7 @@ import java.util.UUID;
 @Getter
 public class Template {
     private final UUID id;
-    //private final String idMeta;
+    private String idMeta;
     private final String name;
     private final Category category;
     private final ParameterFormat parameterFormat;
@@ -23,7 +23,7 @@ public class Template {
 
     public Template(UUID id, String name, Category category, ParameterFormat parameterFormat, List<TemplateComponent> components, Languajes language, TemplateStatus status, UserId ownerId) {
         this.id = id;
-        //this.idMeta = idMeta;
+        this.idMeta = null;
         this.name = name;
         this.category = category;
         this.parameterFormat = parameterFormat;
@@ -39,6 +39,11 @@ public class Template {
 
     public void updateStatusApproved(){
         this.setStatus(TemplateStatus.APPROVED);
+    }
+
+    public void updateMetaInfo(String idMeta, TemplateStatus status) {
+        this.idMeta = idMeta;
+        this.setStatus(status);
     }
 
 }

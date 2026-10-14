@@ -51,7 +51,6 @@ import org.testcontainers.utility.DockerImageName;
 
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -273,7 +272,7 @@ class CampaignControllerIT {
                 testList.getId(),
                 new Email("rdicandia@gmail.com"),
                 new Name("Recipient"),
-                new Phone("123456789"),
+                new Phone("+1234567890"),
                 Map.of(),
                 true
         );

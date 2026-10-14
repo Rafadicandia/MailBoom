@@ -37,8 +37,8 @@ class UpdateContactUseCaseImplTest {
         // Given
         var contactId = ContactId.generate();
         var contactListId = ContactListId.generate();
-        var command = new UpdateContactCommand(contactId.toString(), "new@email.com", "New Name", "123456789",null, true);
-        var existingContact = Contact.create(contactId, contactListId, new Email("old@email.com"), new Name("Old Name"), new Phone("938348485"), null, true);
+        var command = new UpdateContactCommand(contactId.toString(), "new@email.com", "New Name", "+1234567890",null, true);
+        var existingContact = Contact.create(contactId, contactListId, new Email("old@email.com"), new Name("Old Name"), new Phone("+9383484850"), null, true);
         var updatedContact = existingContact.updateContact(new Email(command.email()), new Name(command.name()), new Phone(command.phone()), command.customFields(), command.subscribed());
 
         when(contactRepository.findById(contactId)).thenReturn(Optional.of(existingContact));
@@ -55,7 +55,7 @@ class UpdateContactUseCaseImplTest {
     void shouldThrowExceptionWhenContactNotFound() {
         // Given
         var contactId = ContactId.generate();
-        var command = new UpdateContactCommand(contactId.toString(), "new@email.com", "New Name", "3453434543",null, true);
+        var command = new UpdateContactCommand(contactId.toString(), "new@email.com", "New Name", "+3453434543",null, true);
 
         when(contactRepository.findById(contactId)).thenReturn(Optional.empty());
 
