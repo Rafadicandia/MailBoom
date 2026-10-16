@@ -68,6 +68,7 @@ public class AwsEmailSenderAdapter implements EmailSender {
                             .replyToAddresses(owner.getEmail().email())
                             .feedbackForwardingEmailAddress(owner.getEmail().email())
                             .content(emailContent)
+                            .configurationSetName("ConfiguracionRebotes")
                             .build();
             try {
                 sesClient.sendEmail(emailRequest);
