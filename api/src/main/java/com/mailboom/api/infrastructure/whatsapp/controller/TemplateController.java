@@ -1,18 +1,13 @@
 package com.mailboom.api.infrastructure.whatsapp.controller;
 
 
-import com.mailboom.api.application.whatsapp.port.in.CreateTemplateUseCase;
-import com.mailboom.api.application.whatsapp.port.in.DeleteTemplateUseCase;
-import com.mailboom.api.application.whatsapp.port.in.GetAllTemplatesFromUserUseCase;
-import com.mailboom.api.application.whatsapp.port.in.GetTemplateByNameUseCase;
-import com.mailboom.api.application.whatsapp.usecase.command.CreateTemplateCommand;
-import com.mailboom.api.application.whatsapp.usecase.command.DeleteTemplateCommand;
-import com.mailboom.api.application.whatsapp.usecase.command.GetAllTemplatesFromUserCommand;
-import com.mailboom.api.application.whatsapp.usecase.command.GetTemplateByNameCommand;
+import com.mailboom.api.application.whatsapp.port.in.*;
+import com.mailboom.api.application.whatsapp.usecase.command.*;
 import com.mailboom.api.domain.model.whatsapp.Template;
 import com.mailboom.api.infrastructure.whatsapp.dto.CreateTemplateRequest;
 import com.mailboom.api.infrastructure.whatsapp.dto.CreateTemplateResponse;
 import com.mailboom.api.infrastructure.whatsapp.dto.TemplateResponse;
+import com.mailboom.api.infrastructure.whatsapp.dto.UpdateTemplateRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +29,7 @@ public class TemplateController {
     private final GetTemplateByNameUseCase getTemplateUseCase;
     private final GetAllTemplatesFromUserUseCase getAllTemplatesFromUserUseCase;
     private final DeleteTemplateUseCase deleteTemplateUseCase;
+    private final UpdateTemplateUseCase updateTemplateUseCase;
 
     @PostMapping("/templates/new")
     @PreAuthorize("@userSecurity.isOwner(authentication, #request.ownerId())")
@@ -111,5 +107,17 @@ public class TemplateController {
         return ResponseEntity.noContent().build();
     }
 
-}
+    @PatchMapping("template/{id}/update")
+    @Operation(summary = "Update template by id")
+    @PreAuthorize("@userSecurity.isOwner(authentication, #userId)")
+    public ResponseEntity<Void> updateTemplate(@PathVariable UUID id, @RequestBody UpdateTemplateRequest request) {
+        UpdateTemplateMessageCommand command = new UpdateTemplateMessageCommand(request.templateId(), request.name(), request.category(), request.parameterFormat(), request.components(), request.language(), request.ownerId());
+        updateTemplateUseCase.execute(command);
+        return ResponseEntity.noContent().build();
+    }
+    }
+
+
+
+
 
