@@ -62,21 +62,21 @@ public class CreateTemplateUseCaseImpl implements CreateTemplateUseCase {
 
         Template savedTemplate = templateRepository.save(template);
 
-        MetaTemplateResponse metaResponse = whatsAppGateway.sendTemplateForReview(savedTemplate, config);
-
-        TemplateStatus metaStatus = TemplateStatus.PENDING;
-        if (metaResponse != null && metaResponse.status() != null) {
-            try {
-                metaStatus = TemplateStatus.valueOf(metaResponse.status().toUpperCase());
-            } catch (IllegalArgumentException e) {
-                log.warn("Unknown Meta template status: {}", metaResponse.status());
-            }
-        }
-
-        savedTemplate.updateMetaInfo(
-            metaResponse != null ? metaResponse.id() : null,
-            metaStatus
-        );
+//        MetaTemplateResponse metaResponse = whatsAppGateway.sendTemplateForReview(savedTemplate, config);
+//
+//        TemplateStatus metaStatus = TemplateStatus.PENDING;
+//        if (metaResponse != null && metaResponse.status() != null) {
+//            try {
+//                metaStatus = TemplateStatus.valueOf(metaResponse.status().toUpperCase());
+//            } catch (IllegalArgumentException e) {
+//                log.warn("Unknown Meta template status: {}", metaResponse.status());
+//            }
+//        }
+//
+//        savedTemplate.updateMetaInfo(
+//            metaResponse != null ? metaResponse.id() : null,
+//            metaStatus
+//        );
 
         return templateRepository.save(savedTemplate);
     }
